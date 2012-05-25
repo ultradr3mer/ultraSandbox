@@ -1,0 +1,5 @@
+<material shader="hud.xsp">
+	<textures base="crosshair.png" />
+	<nocull/>
+	<additive/>
+</material>

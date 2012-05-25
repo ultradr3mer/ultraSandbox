@@ -1,0 +1,6 @@
+<template>
+	<material source="weapons\toolgun.xmf"/>
+	<mesh source="weapons\toolgun.obj"/>
+	<pmesh source="weapons\toolgun_pbox.obj"/>
+	<position offset="0.8"/>
+</template>

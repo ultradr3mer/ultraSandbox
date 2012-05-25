@@ -1,0 +1,6 @@
+<material shader="muzzleFlash.xsp">
+	<textures base="weapons\muzzle_a.png" base2="weapons\muzzle_b_2.png"/>
+	<transparency/>
+	<nodepthmask/>
+	<additive/>
+</material>

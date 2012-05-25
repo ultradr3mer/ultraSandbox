@@ -1,0 +1,5 @@
+<material shader="hud.xsp">
+	<textures base="hud\terrain_icon.png" />
+	<nocull/>
+	<additive/>
+</material>

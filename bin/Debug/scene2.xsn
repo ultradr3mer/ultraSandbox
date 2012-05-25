@@ -1,0 +1,29 @@
+<scene>
+	<pmodel name='GameObject'>
+		<position>5.621432|2.668098|3.23064</position>
+		<rotation>0.5892987|-0.7494119|0.3018437|0.3470405|-0.1025813|-0.9322236|0.7295824|0.65411|0.1996248</rotation>
+		<materials>spotlight.xmf</materials>
+		<meshes>spotlight.obj</meshes>
+		<pboxes>spotlight_pbox.obj</pboxes>
+		<isstatic/>
+		<lamp name=''>
+			<position>5.621432|2.668098|3.23064</position>
+			<direction>0.3470405|-0.1025813|-0.9322236</direction>
+			<color>0.5|0.7|1</color>
+		</lamp>
+	</pmodel>
+	<pmodel name='GameObject0'>
+		<position>5.466422|2.347383|-2.838428</position>
+		<rotation>0.9999995|0.0003748046|-0.0009238053|-0.0003753108|0.9999998|-0.0005478896|0.0009235997|0.0005482361|0.9999994</rotation>
+		<materials>temple_pillar.xmf</materials>
+		<meshes>temple_pillar.obj</meshes>
+		<pboxes>temple_pillar_pbox.obj</pboxes>
+	</pmodel>
+	<pmodel name='GameObject1'>
+		<position>7.452119|0.6922717|0.7101219</position>
+		<rotation>0.9976742|-0.003564332|-0.0680692|0.06806821|-0.0004010783|0.9976806|-0.003583364|-0.9999936|-0.0001575279</rotation>
+		<materials>temple_pillar.xmf</materials>
+		<meshes>temple_pillar.obj</meshes>
+		<pboxes>temple_pillar_pbox.obj</pboxes>
+	</pmodel>
+</scene>

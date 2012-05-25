@@ -1,0 +1,7 @@
+<material shader="dissolve.xsp">
+	<textures base="dissolve.png" normal="hex_n.png" />
+	<transparency/>
+	<nodepthmask/>
+	<additive/>
+	<nocull/>
+</material>

@@ -1,0 +1,5 @@
+<material shader="hud.xsp">
+	<textures base="hud\background.png" />
+	<nocull/>
+	<nodepthmask/>
+</material>

@@ -1,0 +1,6 @@
+<template>
+	<material source="sphere.xmf"/>
+	<mesh source="sphere.obj"/>
+	<pmesh source="sphere_pbox.obj"/>
+	<position offset="3"/>
+</template>

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F071CF81-3651-4143-94C2-CB95DB4EC2F7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenTkProject</RootNamespace>
+    <AssemblyName>OpenTkProject</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Jitter">
+      <HintPath>..\..\..\..\..\Jitter Physics 0.1.7.0\Jitter\bin\Debug\Jitter.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OpenTK\1.0\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Drawables\Models\MetaModel.cs" />
+    <Compile Include="Drawables\Models\Particles\ParticleAffector.cs" />
+    <Compile Include="Drawables\Models\Particles\ParticleSystem.cs" />
+    <Compile Include="Game\Lights\LightSpot.cs" />
+    <Compile Include="Game\Lights\LightSun.cs" />
+    <Compile Include="Game\Tools\GameMenu.cs" />
+    <Compile Include="Game\Tools\Grabber.cs" />
+    <Compile Include="Game\Tools\Remover.cs" />
+    <Compile Include="Game\Tools\Spawner.cs" />
+    <Compile Include="Game\Tools\Terrain.cs" />
+    <Compile Include="Game\Tools\Tool.cs" />
+    <Compile Include="Game\ViewPorts\SunViewInfo.cs" />
+    <Compile Include="Game\Voxel\VoxelChunk.cs" />
+    <Compile Include="Game\Voxel\VoxelDataGenerator.cs" />
+    <Compile Include="Game\Voxel\VoxelManager.cs" />
+    <Compile Include="Game\Voxel\VoxelMeshGenerator.cs" />
+    <Compile Include="Game\Voxel\VoxelVolume.cs" />
+    <Compile Include="GenericMethods.cs" />
+    <Compile Include="Drawables\Drawable.cs" />
+    <Compile Include="Drawables\Models\GhostModel.cs" />
+    <Compile Include="Drawables\Models\Gui\Hud.cs" />
+    <Compile Include="Drawables\Models\PhysModel.cs" />
+    <Compile Include="Drawables\Models\Pos2Model.cs" />
+    <Compile Include="Game\GameInput.cs" />
+    <Compile Include="Drawables\Models\dissovlingModel.cs" />
+    <Compile Include="Drawables\Models\Gui\Menu.cs" />
+    <Compile Include="Loader\FileSeeker.cs" />
+    <Compile Include="Drawables\Models\Gui\Gui.cs" />
+    <Compile Include="Loader\MaterialLoder.cs" />
+    <Compile Include="Drawables\Quad2d.cs" />
+    <Compile Include="FramebufferCreator.cs" />
+    <Compile Include="Game\GameObject.cs" />
+    <Compile Include="Drawables\Models\GroundPlane.cs" />
+    <Compile Include="Game\Lights\Light.cs" />
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="Loader\MeshLoader.cs" />
+    <Compile Include="Drawables\Models\Model.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Loader\ShaderLoader.cs" />
+    <Compile Include="Drawables\Models\Skybox.cs" />
+    <Compile Include="Loader\TemplateLoader.cs" />
+    <Compile Include="Loader\TextureLoader.cs" />
+    <Compile Include="Game\Scene.cs" />
+    <Compile Include="Game\ViewPorts\ViewInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

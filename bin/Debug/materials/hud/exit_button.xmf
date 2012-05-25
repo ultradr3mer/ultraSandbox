@@ -1,0 +1,6 @@
+<material shader="hud.xsp">
+	<textures base="hud\exit_button.png" />
+	<nocull/>
+	<additive/>
+	<nodepthmask/>
+</material>

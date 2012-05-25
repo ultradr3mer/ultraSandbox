@@ -1,0 +1,9 @@
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\OpenTkProject.exe
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\OpenTkProject.pdb
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\OpenTK.dll
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\OpenTK.xml
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\obj\x86\Release\ResolveAssemblyReference.cache
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\obj\x86\Release\OpenTkProject.exe
+F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\obj\x86\Release\OpenTkProject.pdb
+F:\Users\ultradr3mer\documents\visual studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\Jitter.dll
+F:\Users\ultradr3mer\documents\visual studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Release\Jitter.pdb

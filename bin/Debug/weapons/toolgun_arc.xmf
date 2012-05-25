@@ -1,0 +1,6 @@
+<material shader="electricArc.xsp">
+	<textures base="weapons\electric_arc.png" base2="weapons\electric_arc_displace.png"/>
+	<transparency/>
+	<nodepthmask/>
+	<additive/>
+</material>

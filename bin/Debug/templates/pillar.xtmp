@@ -1,0 +1,6 @@
+<template>
+	<material source="temple_pillar.xmf"/>
+	<mesh source="temple_pillar.obj"/>
+	<pmesh source="temple_pillar_pbox.obj"/>
+	<position offset="2.05"/>
+</template>

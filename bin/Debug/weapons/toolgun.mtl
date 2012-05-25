@@ -1,0 +1,15 @@
+# Blender MTL File: 'toolgun.blend'
+# Material Count: 1
+newmtl low_untitled.001
+Ns 37.254902
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd F:\Users\ultradr3mer\Documents\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Debug\models\weapons\toolgun.blend\toolgun.png
+map_Ks F:\\Users\\ultradr3mer\\Documents\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\models\\weapons\\toolgun.blend\\toolgun_n.png
+map_Bump F:\\Users\\ultradr3mer\\Documents\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\models\\weapons\\toolgun.blend\\toolgun_n.png
+
+

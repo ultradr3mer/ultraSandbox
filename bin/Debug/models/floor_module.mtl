@@ -1,0 +1,15 @@
+# Blender MTL File: 'floor_module.blend'
+# Material Count: 1
+newmtl Material.002_untitled.001
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd F:\Users\ultradr3mer\Documents\floor_module.blend\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Debug\materials\floor_module_n.png
+map_Ks F:\\Users\\ultradr3mer\\Documents\\floor_module.blend\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\materials\\floor_module.png
+map_Bump F:\\Users\\ultradr3mer\\Documents\\floor_module.blend\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\materials\\floor_module_n.png
+
+

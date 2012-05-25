@@ -1,0 +1,4 @@
+<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
+	<textures base="metroid.png" normal="metroid_n.png" />
+	<lighted/>
+</material>

@@ -1,0 +1,6 @@
+<template type="meta">
+	<material source="rock_face.xmf"/>
+	<mesh source="rock_volume_1_big.obj"/>
+	<pmesh source="rock_volume_big_pbox_1.obj"/>
+	<volume radius="6"/>
+</template>

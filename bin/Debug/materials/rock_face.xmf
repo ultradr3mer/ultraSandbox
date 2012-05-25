@@ -1,0 +1,5 @@
+<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
+	<textures base="rock_face.png" normal="rock_face_n.png"/>
+	<lighted/>
+	<specmap tint="0.7|0.7|0.7" source="normalalpha" exp="15" />
+</material>

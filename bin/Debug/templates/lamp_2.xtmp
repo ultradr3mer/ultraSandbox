@@ -1,0 +1,9 @@
+<template>
+	<material source="spotlight.xmf"/>
+	<mesh source="spotlight.obj"/>
+	<pmesh source="spotlight_pbox.obj"/>
+	<position offset="-0.1"/>
+	<light color="0.8|0.3|0.8"/>
+	<normal/>
+	<static/>
+</template>

@@ -1,0 +1,5 @@
+<material shader="hudnumber.xsp">
+	<textures base="scala.png" base2="scala_b.png" base3="scala_c.png" />
+	<nocull/>
+	<additive/>
+</material>

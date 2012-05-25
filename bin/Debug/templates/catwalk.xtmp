@@ -1,0 +1,6 @@
+<template>
+	<material source="catwalk.xmf"/>
+	<mesh source="catwalk.obj"/>
+	<pmesh source="catwalk_pbox.obj"/>
+	<position offset="1"/>
+</template>

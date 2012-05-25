@@ -1,0 +1,7 @@
+<template>
+	<material source="handrail.xmf"/>
+	<mesh source="handrail.obj"/>
+	<pmesh source="handrail_pbox.obj"/>
+	<position offset="1"/>
+	<static/>
+</template>

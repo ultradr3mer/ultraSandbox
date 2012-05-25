@@ -1,0 +1,15 @@
+# Blender MTL File: 'catwalk.blend'
+# Material Count: 1
+newmtl Material.001_untitled
+Ns 37.254902
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd F:\Users\ultradr3mer\Documents\catwalk.blend\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Debug\materials\catwalk_n.png
+map_Ks F:\\Users\\ultradr3mer\\Documents\\catwalk.blend\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\materials\\catwalk.png
+map_Bump F:\\Users\\ultradr3mer\\Documents\\catwalk.blend\\Visual Studio 2010\\Projects\\OpenTkProject\\OpenTkProject\\bin\\Debug\\materials\\catwalk_n.png
+
+

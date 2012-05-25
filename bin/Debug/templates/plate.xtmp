@@ -1,0 +1,7 @@
+<template>
+	<material source="floor_module.xmf"/>
+	<mesh source="floor_module.obj"/>
+	<pmesh source="floor_module_pbox.obj"/>
+	<position offset="1"/>
+	<static/>
+</template>
