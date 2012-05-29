@@ -211,7 +211,7 @@
 		<vradius>3</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-45153.04|5.577117</position>
+		<position>-6.693132|-91488.27|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -240,28 +240,28 @@
 		<isstatic/>
 	</pmodel>
 	<pmodel name='GameObject0'>
-		<position>14.33188|3.342094|13.24325</position>
+		<position>13.21459|4.635303|15.62023</position>
 		<rotation>0.02356026|0.5825946|0.8124248|-0.9997253|0.01423774|0.01878402|-0.0006233379|-0.8126428|0.5827683</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name='GameObject1'>
-			<position>14.33188|3.342094|13.24325</position>
+			<position>13.21459|4.635303|15.62023</position>
 			<direction>-0.9997253|0.01423774|0.01878402</direction>
 			<color>0.5|0.7|1</color>
 		</lamp>
 	</pmodel>
 	<pmodel name='GameObject1'>
-		<position>-13.37905|2.16118|1.807238</position>
-		<rotation>0.07332061|0.9959034|-0.05293509|-0.510343|-0.008135239|-0.8599334|-0.8568403|0.09006614|0.5076549</rotation>
+		<position>-4.341379|3.814634|-16.18473</position>
+		<rotation>-0.5497411|0.7769229|0.3069085|-0.6545909|-0.1724124|-0.7360704|-0.5189546|-0.6055429|0.603346</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name='GameObject2'>
-			<position>-13.37905|2.16118|1.807238</position>
-			<direction>-0.510343|-0.008135239|-0.8599334</direction>
+			<position>-4.341379|3.814634|-16.18473</position>
+			<direction>-0.6545909|-0.1724124|-0.7360704</direction>
 			<color>0.8|0.3|0.8</color>
 		</lamp>
 	</pmodel>

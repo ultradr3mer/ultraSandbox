@@ -198,18 +198,18 @@ vec4 getback(vec2 coord,float blur_size) {
 	return col/samples/rings;
 }
 
-float shadowSample(vec3 coord){
-	float distanceFromLight = texture(shadowTexture ,coord.st).a + 0.005;	
+float shadowSample(vec3 coord, float bias){
+	float distanceFromLight = texture(shadowTexture ,coord.st).a + bias;	
 	return distanceFromLight < coord.z ? 0.0 : 1.0 ;
 }
 
-float sunShadowSample(vec3 coord){
-	float distanceFromLight = texture(sunShadowTexture ,coord.st).z + 0.005;	
+float sunShadowSample(vec3 coord, float bias){
+	float distanceFromLight = texture(sunShadowTexture ,coord.st).z + bias;	
 	return distanceFromLight < coord.z ? 0.0 : 1.0 ;
 }
 
-float sunInnerShadowSample(vec3 coord){
-	float distanceFromLight = texture(sunInnerShadowTexture ,coord.st).z + 0.001;	
+float sunInnerShadowSample(vec3 coord, float bias){
+	float distanceFromLight = texture(sunInnerShadowTexture ,coord.st).z + bias;	
 	return distanceFromLight < coord.z ? 0.0 : 1.0 ;
 }
 
@@ -238,7 +238,8 @@ vec3 getlight(vec3 N,int number,vec2 rnd){
 			vec3 light_vec = normalize(lightStructs[number].position-g_pos.xyz);
 			vec3 light_dir = normalize(lightStructs[number].direction);
 			
-			float light_diffuse = clamp(dot(light_vec, N), 0.0, 1.0);
+			float angle = dot(light_vec, N);
+			float light_diffuse = clamp(angle, 0.0, 1.0);
 			
 			if(light_diffuse < 0.01)
 				return vec3(0,0,0);
@@ -256,25 +257,24 @@ vec3 getlight(vec3 N,int number,vec2 rnd){
 			
 			if(light_angular.r < 0.01 && light_angular.g < 0.01 && light_angular.b < 0.01)
 				return vec3(0,0,0);
-			
-			//float light_distance = 1/exp2(length(lightStructs[number].position-g_pos.xyz)*lenth_mult);
-			float light_distance = pow(1-shadowCoordinateWdivide.z,1.3);
-			
+
 			float shadow = 0;
 			
 			float distanceFromLight = texture(shadowTexture ,shadowCoordinateWdivide.st).z;
+			float light_distance = pow(1-shadowCoordinateWdivide.z,1.3);
 			
 			shadowCoordinateWdivide.xy += rnd*vec2(radius/float(in_no_lights),radius)*0.7;
+			float bias = 0.004/clamp(angle,0.02,1.0);
 			
 			if(shadow_quality > 0.1){
 				float x,y;
 				for (y = -shadow_quality ; y <=shadow_quality ; y+=1.0)
 					for (x = -shadow_quality ; x <=shadow_quality ; x+=1.0)
-						shadow += shadowSample(shadowCoordinateWdivide.xyz+vec3(x*radius/float(in_no_lights),y*radius,0));
+						shadow += shadowSample(shadowCoordinateWdivide.xyz+vec3(x*radius/float(in_no_lights),y*radius,0),bias);
 							
 				shadow /= pow(shadow_quality*2+1,2);
 			} else {
-				shadow = shadowSample(shadowCoordinateWdivide.xyz);
+				shadow = shadowSample(shadowCoordinateWdivide.xyz,bias);
 			}
 
 			light_final += shadow*light_angular*light_diffuse*light_distance*brightness*lightStructs[number].color;
@@ -290,7 +290,8 @@ vec3 getSunLight(vec3 N, vec2 rnd){
 
 	float sunShadowQuality = 1;
 	
-	float light_diffuse = clamp(dot(-sunLightStruct.direction, N), 0.0, 1.0);
+	float angle = dot(-sunLightStruct.direction, N);
+	float light_diffuse = clamp(angle, 0.0, 1.0);
 	
 	if(light_diffuse < 0.01)
 		return vec3(0,0,0);
@@ -306,15 +307,17 @@ vec3 getSunLight(vec3 N, vec2 rnd){
 
 		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*sunradius*0.7;
 		
+		float bias = 0.001/clamp(angle,0.01,1.0);
+		
 		if(sunShadowQuality > 0.1){
 			float x,y;
 			for (y = -sunShadowQuality ; y <=sunShadowQuality ; y+=1.0)
 				for (x = -sunShadowQuality ; x <=sunShadowQuality ; x+=1.0)
-					shadow += sunInnerShadowSample(shadowCoordinateWdivide.xyz+vec3(x*sunradius,y*sunradius,0));
+					shadow += sunInnerShadowSample(shadowCoordinateWdivide.xyz+vec3(x*sunradius,y*sunradius,0),bias);
 								
 			shadow /= pow(sunShadowQuality*2+1,2);
 		} else {
-			shadow = sunInnerShadowSample(shadowCoordinateWdivide.xyz);
+			shadow = sunInnerShadowSample(shadowCoordinateWdivide.xyz,bias);
 		}
 
 		return sunLightStruct.color * shadow * light_diffuse;
@@ -324,6 +327,8 @@ vec3 getSunLight(vec3 N, vec2 rnd){
 		sunShadowQuality -= 0.5;
 	
 		shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
+		
+		float bias = 0.003/clamp(angle,0.01,1.0);
 		
 		if(0 < shadowCoordinateWdivide.x 
 		&& 1 > shadowCoordinateWdivide.x 
@@ -340,11 +345,11 @@ vec3 getSunLight(vec3 N, vec2 rnd){
 				float x,y;
 				for (y = -sunShadowQuality ; y <=sunShadowQuality ; y+=1.0)
 					for (x = -sunShadowQuality ; x <=sunShadowQuality ; x+=1.0)
-						shadow += sunShadowSample(shadowCoordinateWdivide.xyz+vec3(x*sunradius,y*sunradius,0));
+						shadow += sunShadowSample(shadowCoordinateWdivide.xyz+vec3(x*sunradius,y*sunradius,0),bias);
 									
 				shadow /= pow(sunShadowQuality*2+1,2);
 			} else {
-				shadow = sunShadowSample(shadowCoordinateWdivide.xyz);
+				shadow = sunShadowSample(shadowCoordinateWdivide.xyz,bias);
 			}
 			
 			//return sunLightStruct.color*sunShadowSample(shadowCoordinateWdivide.xyz);
