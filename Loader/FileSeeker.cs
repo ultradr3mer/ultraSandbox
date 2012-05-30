@@ -25,6 +25,11 @@ namespace OpenTkProject
                     mGameWindow.log("found object file: " + relativePath);
                     mGameWindow.meshLoader.fromObj(relativePath);
                 }
+                if (extention == ".dae")
+                {
+                    mGameWindow.log("found object file: " + relativePath);
+                    mGameWindow.meshLoader.fromCollada(relativePath);
+                }
                 if (extention == ".png")
                 {
                     mGameWindow.log("found image file: " + relativePath);

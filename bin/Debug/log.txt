@@ -1,6 +1,7 @@
 3.0.11631 Core Profile Forward-Compatible/Debug Context
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
+load Wavefront: models\sprite_plane.obj
 parsing shader pair: composite.xsp
 Shaderlog (shaders\composite.vs):Vertex shader was successfully compiled to run on hardware.
  
@@ -35,6 +36,7 @@ found image file: screenshot25.png
 found image file: screenshot26.png
 found image file: screenshot27.png
 found image file: screenshot28.png
+found image file: screenshot29.png
 found image file: screenshot3.png
 found image file: screenshot4.png
 found image file: screenshot5.png
@@ -138,6 +140,8 @@ found object file: models\metroid.obj
 found object file: models\metroid_cap.obj
 found object file: models\metroid_pbox.obj
 found object file: models\normal_tester.obj
+found object file: models\rock_small.dae
+found object file: models\rock_small_pbox.dae
 found object file: models\rock_volume_1.obj
 found object file: models\rock_volume_1_big.obj
 found object file: models\rock_volume_big_pbox_1.obj
@@ -152,8 +156,10 @@ found object file: models\stones_pbox1.obj
 found object file: models\stones_pbox2.obj
 found object file: models\temple_pillar.obj
 found object file: models\temple_pillar_pbox.obj
+found object file: models\untitled.dae
 found object file: models\untitled.obj
 found object file: models\water_plane.obj
+found image file: models\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Debug\materials\rock_face.png
 found shaderpair file: shaders\ao_blur.xsp
 found shaderpair file: shaders\ao_blur_a.xsp
 found shaderpair file: shaders\backdrop.xsp
@@ -208,6 +214,7 @@ found template file: templates\metaModel2.xtmp
 found template file: templates\metroid.xtmp
 found template file: templates\pillar.xtmp
 found template file: templates\plate.xtmp
+found template file: templates\rock.xtmp
 found template file: templates\sphere.xtmp
 found template file: templates\toolgun.xtmp
 found image file: weapons\electric_arc.png
@@ -250,6 +257,48 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
+load Wavefront: models\catwalk.obj
+load Wavefront: models\catwalk_pbox.obj
+load Wavefront: models\cubemap_tester.obj
+load Wavefront: models\floor_module.obj
+load Wavefront: models\floor_module_pbox.obj
+load Wavefront: models\grid.obj
+load Wavefront: models\handrail.obj
+load Wavefront: models\handrail_pbox.obj
+load Wavefront: models\landscape.obj
+load Wavefront: models\lightcone.obj
+load Wavefront: models\metroid.obj
+load Wavefront: models\metroid_cap.obj
+load Wavefront: models\metroid_pbox.obj
+load Wavefront: models\normal_tester.obj
+load Collada: models\rock_small.dae
+load Collada: models\rock_small_pbox.dae
+load Wavefront: models\rock_volume_1.obj
+load Wavefront: models\rock_volume_1_big.obj
+load Wavefront: models\rock_volume_big_pbox_1.obj
+load Wavefront: models\rock_volume_pbox_1.obj
+load Wavefront: models\sphere.obj
+load Wavefront: models\sphere_pbox.obj
+load Wavefront: models\spotlight.obj
+load Wavefront: models\spotlight_pbox.obj
+load Wavefront: models\stones.obj
+load Wavefront: models\stones_pbox1.obj
+load Wavefront: models\stones_pbox2.obj
+load Wavefront: models\temple_pillar.obj
+load Wavefront: models\temple_pillar_pbox.obj
+load Collada: models\untitled.dae
+load Wavefront: models\untitled.obj
+load Wavefront: models\water_plane.obj
+load Wavefront: skybox\sky_1.obj
+load Wavefront: skybox\sky_2.obj
+load Wavefront: skybox\sky_3.obj
+load Wavefront: skybox\sky_4.obj
+load Wavefront: skybox\sky_5.obj
+load Wavefront: skybox\sky_6.obj
+load Wavefront: weapons\toolgun.obj
+load Wavefront: weapons\toolgun_arc.obj
+load Wavefront: weapons\toolgun_muzzle.obj
+load Wavefront: weapons\toolgun_pbox.obj
 parsing shader pair: ao_blur.xsp
 Shaderlog (shaders\composite.vs):Vertex shader was successfully compiled to run on hardware.
  
@@ -380,157 +429,158 @@ Shaderlog (skybox\sky.vs):Vertex shader was successfully compiled to run on hard
  
 Shaderlog (skybox\sky.fs):Fragment shader was successfully compiled to run on hardware.
  
+--uncaught ERROR drawing 2d Quad--splash_shader.fs: OutOfMemory
 parsing material: catwalk.xmf
 shader: defaultgeo.xsp
-base: 82
-normal: 83
+base: 83
+normal: 84
 parsing material: crosshair.xmf
 shader: hud.xsp
-base: 84
+base: 85
 normal: 0
 parsing material: dissolve.xmf
 shader: dissolve.xsp
-base: 85
-normal: 95
+base: 86
+normal: 96
 parsing material: floor.xmf
 shader: mirror_floor.xsp
-base: 87
-normal: 104
+base: 88
+normal: 105
 parsing material: floor_module.xmf
 shader: defaultgeo.xsp
-base: 88
-normal: 89
+base: 89
+normal: 90
 parsing material: grid - Kopie.xmf
 shader: unlitGeneric.xsp
-base: 112
+base: 113
 normal: 0
 parsing material: grid.xmf
 shader: unlitGeneric.xsp
-base: 112
+base: 113
 normal: 0
 parsing material: handrail.xmf
 shader: defaultgeo.xsp
-base: 92
-normal: 93
+base: 93
+normal: 94
 parsing material: marker.xmf
 shader: sprite.xsp
-base: 84
+base: 85
 normal: 0
 parsing material: metroid.xmf
 shader: defaultgeo.xsp
-base: 97
-normal: 101
+base: 98
+normal: 102
 parsing material: metroid_cap.xmf
 shader: defaultgeo.xsp
-base: 98
-normal: 100
+base: 99
+normal: 101
 parsing material: number.xmf
 shader: hudnumber.xsp
-base: 109
+base: 110
 normal: 0
 parsing material: rock_face.xmf
 shader: defaultgeo.xsp
-base: 107
-normal: 108
+base: 108
+normal: 109
 parsing material: sphere.xmf
 shader: defaultgeo.xsp
-base: 90
-normal: 95
+base: 91
+normal: 96
 parsing material: spotlight.xmf
 shader: defaultgeo.xsp
-base: 113
-normal: 115
+base: 114
+normal: 116
 parsing material: temple_pillar.xmf
 shader: defaultgeo.xsp
-base: 116
-normal: 117
+base: 117
+normal: 118
 parsing material: voxel_debug.xmf
 shader: normaldebug.xsp
-base: 120
-normal: 104
-parsing material: hud\background.xmf
-shader: hud.xsp
 base: 121
-normal: 0
-parsing material: hud\blank_icon.xmf
+normal: 105
+parsing material: hud\background.xmf
 shader: hud.xsp
 base: 122
 normal: 0
-parsing material: hud\cursor.xmf
+parsing material: hud\blank_icon.xmf
 shader: hud.xsp
 base: 123
 normal: 0
-parsing material: hud\exit_button.xmf
+parsing material: hud\cursor.xmf
 shader: hud.xsp
 base: 124
 normal: 0
-parsing material: hud\grabber_icon.xmf
+parsing material: hud\exit_button.xmf
 shader: hud.xsp
 base: 125
 normal: 0
-parsing material: hud\remover_icon.xmf
+parsing material: hud\grabber_icon.xmf
 shader: hud.xsp
 base: 126
 normal: 0
-parsing material: hud\resume_button.xmf
+parsing material: hud\remover_icon.xmf
 shader: hud.xsp
 base: 127
 normal: 0
-parsing material: hud\spawner_icon.xmf
+parsing material: hud\resume_button.xmf
 shader: hud.xsp
 base: 128
 normal: 0
-parsing material: hud\terrain_icon.xmf
+parsing material: hud\spawner_icon.xmf
 shader: hud.xsp
 base: 129
 normal: 0
-parsing material: particles\particle_a.xmf
-shader: sprite.xsp
+parsing material: hud\terrain_icon.xmf
+shader: hud.xsp
 base: 130
 normal: 0
-parsing material: particles\particle_b.xmf
+parsing material: particles\particle_a.xmf
 shader: sprite.xsp
 base: 131
 normal: 0
-parsing material: skybox\sky1.xmf
-shader: skybox\sky.xsp
+parsing material: particles\particle_b.xmf
+shader: sprite.xsp
 base: 132
 normal: 0
-parsing material: skybox\sky2.xmf
-shader: skybox\sky.xsp
-base: 133
-normal: 0
-parsing material: skybox\sky3.xmf
+parsing material: skybox\sky1.xmf
 shader: skybox\sky.xsp
 base: 134
 normal: 0
-parsing material: skybox\sky4.xmf
+parsing material: skybox\sky2.xmf
 shader: skybox\sky.xsp
 base: 135
 normal: 0
-parsing material: skybox\sky5.xmf
+parsing material: skybox\sky3.xmf
 shader: skybox\sky.xsp
 base: 136
 normal: 0
-parsing material: skybox\sky6.xmf
+parsing material: skybox\sky4.xmf
 shader: skybox\sky.xsp
 base: 137
 normal: 0
+parsing material: skybox\sky5.xmf
+shader: skybox\sky.xsp
+base: 138
+normal: 0
+parsing material: skybox\sky6.xmf
+shader: skybox\sky.xsp
+base: 139
+normal: 0
 parsing material: weapons\grabber_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 140
+base: 142
 normal: 0
 parsing material: weapons\toolgun.xmf
 shader: defaultgeo.xsp
-base: 144
-normal: 147
+base: 146
+normal: 149
 parsing material: weapons\toolgun_arc.xmf
 shader: electricArc.xsp
-base: 138
+base: 140
 normal: 0
 parsing material: weapons\toolgun_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 140
+base: 142
 normal: 0
 parsing template: catwalk.xtmp
 material: catwalk.xmf
@@ -579,6 +629,11 @@ material: floor_module.xmf
 mesh: floor_module.obj
 phys mesh: floor_module_pbox.obj
 offset: 1
+parsing template: rock.xtmp
+material: rock_face.xmf
+mesh: rock_small.dae
+phys mesh: rock_small_pbox.dae
+offset: 1
 parsing template: sphere.xtmp
 material: sphere.xmf
 mesh: sphere.obj
@@ -601,32 +656,56 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
-generated Chunk:00:00:00.0119568
-generated Chunk:00:00:00.0170085
-generated Chunk:00:00:00.0200656
-generated Chunk:00:00:00.0331899
-generated Chunk:00:00:00.0382562
-generated Chunk:00:00:00.0429797
-generated Chunk:00:00:00.0458778
-generated Chunk:00:00:00.0518845
-generated Chunk:00:00:00.0551609
-generated Chunk:00:00:00.0581800
-generated Chunk:00:00:00.0609809
-generated Chunk:00:00:00.0710981
-generated Chunk:00:00:00.0731263
-generated Chunk:00:00:00.0783848
-generated Chunk:00:00:00.0823803
-generated Chunk:00:00:00.0899251
-generated Chunk:00:00:00.0951897
-generated Chunk:00:00:00.1023169
-generated Chunk:00:00:00.1046906
-generated Chunk:00:00:00.1079117
-generated Chunk:00:00:00.1157278
-generated Chunk:00:00:00.1178560
-generated Chunk:00:00:00.1203773
-generated Chunk:00:00:00.1223697
-generated Chunk:00:00:00.1260447
-generated Chunk:00:00:00.1308604
-generated Chunk:00:00:00.1347729
-generated Chunk:00:00:00.1435403
+generated Chunk:00:00:00.0125356
+generated Chunk:00:00:00.0191770
+generated Chunk:00:00:00.0229224
+generated Chunk:00:00:00.0297476
+generated Chunk:00:00:00.0355439
+generated Chunk:00:00:00.0422648
+generated Chunk:00:00:00.0462505
+generated Chunk:00:00:00.0529002
+generated Chunk:00:00:00.0567915
+generated Chunk:00:00:00.0659041
+generated Chunk:00:00:00.0698063
+generated Chunk:00:00:00.0739311
+generated Chunk:00:00:00.0765661
+generated Chunk:00:00:00.0841944
+generated Chunk:00:00:00.0884090
+generated Chunk:00:00:00.0950637
+generated Chunk:00:00:00.1019118
+generated Chunk:00:00:00.1192483
+generated Chunk:00:00:00.1220345
+generated Chunk:00:00:00.1257902
+generated Chunk:00:00:00.1291231
+generated Chunk:00:00:00.1315460
+generated Chunk:00:00:00.1353487
+generated Chunk:00:00:00.1376697
+generated Chunk:00:00:00.1417484
+generated Chunk:00:00:00.1536899
+generated Chunk:00:00:00.1588883
+generated Chunk:00:00:00.1616772
 FBO: The framebuffer is complete and valid for rendering.
+generated Chunk:00:00:00.1648891
+generated Chunk:00:00:00.1705012
+generated Chunk:00:00:00.1759653
+generated Chunk:00:00:00.1816401
+generated Chunk:00:00:00.1868388
+generated Chunk:00:00:00.1928219
+generated Chunk:00:00:00.1992839
+generated Chunk:00:00:00.2051802
+generated Chunk:00:00:00.2087921
+generated Chunk:00:00:00.2121683
+generated Chunk:00:00:00.2178139
+generated Chunk:00:00:00.2268464
+generated Chunk:00:00:00.2299088
+generated Chunk:00:00:00.2349005
+generated Chunk:00:00:00.2417192
+generated Chunk:00:00:00.2469679
+generated Chunk:00:00:00.2518535
+generated Chunk:00:00:00.2570927
+generated Chunk:00:00:00.2628535
+generated Chunk:00:00:00.2693568
+generated Chunk:00:00:00.2723538
+generated Chunk:00:00:00.2755869
+generated Chunk:00:00:00.2840151
+generated Chunk:00:00:00.2931288

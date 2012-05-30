@@ -78,6 +78,7 @@
     <Compile Include="Game\GameInput.cs" />
     <Compile Include="Drawables\Models\dissovlingModel.cs" />
     <Compile Include="Drawables\Models\Gui\Menu.cs" />
+    <Compile Include="Loader\ColladaScene.cs" />
     <Compile Include="Loader\FileSeeker.cs" />
     <Compile Include="Drawables\Models\Gui\Gui.cs" />
     <Compile Include="Loader\MaterialLoder.cs" />

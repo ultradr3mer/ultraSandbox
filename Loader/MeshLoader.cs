@@ -8,6 +8,8 @@ using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Collections;
+using System.Xml;
+using OpenTkProject.Loader;
 
 namespace OpenTkProject
 {
@@ -24,6 +26,7 @@ namespace OpenTkProject
         public int identifier;
         public const int TYPE_OBJ = 1;
         public const int TYPE_VOX = 2;
+        public const int TYPE_DAE = 3;
 
         public int type;
         public string pointer;
@@ -45,6 +48,7 @@ namespace OpenTkProject
         public bool containsVbo;
 
         public float boundingSphere;
+
 
         /*
         public Mesh(Vector3[] positionVboData, Vector3[] normalVboData, Vector3[] tangentVboData, Vector2[] textureVboData, int[] indicesVboData)
@@ -72,14 +76,10 @@ namespace OpenTkProject
 
         public Hashtable MeshesNames = new Hashtable();
 
-        System.Globalization.NumberFormatInfo nfi;
+        NumberFormatInfo nfi = GenericMethods.getNfi();
 
         public Mesh fromObj(string pointer)
         {
-            nfi = new System.Globalization.NumberFormatInfo();
-            nfi.NumberGroupSeparator = ",";
-            nfi.NumberDecimalSeparator = ".";
-
             string name = pointer.Replace(gameWindow.modelFolder, "");
 
             if (!MeshesNames.ContainsKey(name))
@@ -87,7 +87,7 @@ namespace OpenTkProject
  
                 Mesh curMesh = new Mesh();
 
-                curMesh.identifier = Mesh.TYPE_OBJ;
+                curMesh.type = Mesh.TYPE_OBJ;
                 curMesh.pointer = pointer;
                 curMesh.identifier = Meshes.Count;
                 curMesh.name = name;
@@ -105,6 +105,32 @@ namespace OpenTkProject
 
         }
 
+        public Mesh fromCollada(string pointer)
+        {
+            string name = pointer.Replace(gameWindow.modelFolder, "");
+
+            if (!MeshesNames.ContainsKey(name))
+            {
+
+                Mesh curMesh = new Mesh();
+
+                curMesh.type = Mesh.TYPE_DAE;
+                curMesh.pointer = pointer;
+                curMesh.identifier = Meshes.Count;
+                curMesh.name = name;
+
+                MeshesNames.Add(curMesh.name, curMesh.identifier);
+
+                Meshes.Add(curMesh);
+
+                return curMesh;
+            }
+            else
+            {
+                return getMesh(name);
+            }
+        }
+
         public Mesh getMesh(string name)
         {
             int id = (int)MeshesNames[name];
@@ -113,27 +139,64 @@ namespace OpenTkProject
 
         public void loadMeshes()
         {
+            Mesh curMesh;
             for (int i = 0; i < Meshes.Count; i++)
             {
-                if (!Meshes[i].loaded)
+                curMesh = Meshes[i];
+                if (!curMesh.loaded)
                 {
-                    loadObj(Meshes[i]);
+                    loadMesh(curMesh);
                 }
             }
         }
 
         public float loadSingleMeshes()
         {
+            Mesh curMesh;
             for (int i = 0; i < Meshes.Count; i++)
             {
-                if (!Meshes[i].loaded)
+                curMesh = Meshes[i];
+                if (!curMesh.loaded)
                 {
-                    Mesh curMesh = Meshes[i];
-                    loadObj(curMesh);
+                    loadMesh(curMesh);
                     return (float)i / (float)Meshes.Count;
                 }
             }
             return 1;
+        }
+
+        private void loadMesh(Mesh curMesh)
+        {
+            switch (curMesh.type)
+            {
+                case Mesh.TYPE_OBJ:
+                    loadObj(curMesh);
+                    break;
+                case Mesh.TYPE_DAE:
+                    loadDae(curMesh);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void loadDae(Mesh target)
+        {
+            gameWindow.log("load Collada: " + target.pointer);
+
+            ColladaScene colladaScene = new ColladaScene(target.pointer);
+            colladaScene.saveTo(ref target);
+
+            parseFaceList(ref target, false);
+
+            target.loaded = true;
+
+            generateVBO(ref target);
+
+            if (target.identifier != -1)
+            {
+                Meshes[target.identifier] = target;
+            }
         }
 
         public void generateVBO(ref Mesh target)
@@ -183,19 +246,17 @@ namespace OpenTkProject
 
             gameWindow.checkGlError("Create indice Buffer");
 
-            // --- causes crash ---
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // --- causes crash ---
             //GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
             target.containsVbo = true;
-            if (target.identifier != -1)
-            {
-                Meshes[target.identifier] = target;
-            }
         }
 
         public void loadObj(Mesh target)
         {
+            gameWindow.log("load Wavefront: " + target.pointer);
             List<Vector3> positionVboDataList = new List<Vector3> { };
             List<Vector3> normalVboDataList = new List<Vector3> { };
             List<Vector2> textureVboDataList = new List<Vector2> { };
@@ -267,6 +328,11 @@ namespace OpenTkProject
             //Meshes[target.identifier] = target;
 
             generateVBO(ref target);
+
+            if (target.identifier != -1)
+            {
+                Meshes[target.identifier] = target;
+            }
         }
 
         public void parseFaceList(ref Mesh target, bool genNormal)
@@ -457,22 +523,20 @@ namespace OpenTkProject
 
     public class Vertice
     {
-        public int Vi;
-        public int Ti;
-        public int Ni;
+        public int Vi = 0;
+        public int Ti = 0;
+        public int Ni = 0;
         public int Normalihelper = -1;
 
-        /*
-        public Vector3 position;
-        public Vector3 normal;
-        public Vector2 texture;
-        */
-        public Vertice(int chi, int ti, int ni)
+        public Vertice(int vi, int ti, int ni)
         {
-            Vi = chi;
+            Vi = vi;
             Ti = ti;
             Ni = ni;
-            // Log.e("VboCube",Vi+"/"+Ti+"/"+Ni);
+        }
+
+        public Vertice()
+        {
         }
     }
 
@@ -480,6 +544,7 @@ namespace OpenTkProject
     {
         public Vertice[] Vertice;
         public bool isTemp;
+        public int position;
 
         public Face(Vertice ind1, Vertice ind2, Vertice ind3)
         {
@@ -498,6 +563,16 @@ namespace OpenTkProject
             Vertice[2] = ind3;
             Vertice[3] = ind4;
             // Log.e("VboCube",Vi+"/"+Ti+"/"+Ni);
+        }
+
+        public Face(int vCount, int position)
+        {
+            Vertice = new Vertice[vCount];
+            this.position = position;
+
+            for (int i = 0; i < vCount; i++)
+                Vertice[i] = new Vertice();
+
         }
     }
 }

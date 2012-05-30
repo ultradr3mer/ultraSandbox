@@ -145,6 +145,12 @@ namespace OpenTkProject
             return float.Parse(mString, nfi);
         }
 
+        internal static int IntFromString(string mString)
+        {
+            NumberFormatInfo nfi = getNfi();
+            return int.Parse(mString, nfi);
+        }
+
         public static string StringFromFloat(float mFloat)
         {
             NumberFormatInfo nfi = getNfi();
@@ -332,15 +338,6 @@ namespace OpenTkProject
 
             return value;
         }
-        /*
-        public static Vector3 operator *(Vector3 v1, Vector3 v2)
-        {
-            v1.X *= v2.X;
-            v1.Y *= v2.Y;
-            v1.Z *= v2.Z;
-            return v1;
-        }
-         */
     }
 
     

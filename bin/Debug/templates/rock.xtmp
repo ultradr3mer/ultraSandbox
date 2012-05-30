@@ -1,0 +1,6 @@
+<template>
+	<material source="rock_face.xmf"/>
+	<mesh source="rock_small.dae"/>
+	<pmesh source="rock_small_pbox.dae"/>
+	<position offset="1"/>
+</template>
