@@ -1,0 +1,50 @@
+#variables
+precision lowp float;
+
+uniform vec3 in_lightambient;
+
+in vec4 g_pos;
+in vec3 v_eyedirection;
+in vec3 v_normal;
+in vec2 v_texture;
+in vec3 v_tangent;
+in vec3 v_bnormal;
+
+in float v_depth;
+
+in vec3 v_ss_normal;
+in vec3 v_ss_tangent;
+in vec3 v_ss_bnormal;
+
+uniform sampler2D baseTexture;
+uniform sampler2D normalTexture;
+uniform sampler2D emitTexture;
+
+uniform sampler2D backColorTexture;
+
+out vec4 out_frag_color;
+
+uniform sampler2D noiseTexture;
+
+uniform bool use_emit;
+uniform bool emit_a_base;
+uniform bool emit_a_normal;
+uniform vec3 in_emitcolor;
+
+uniform bool use_alpha;
+uniform vec2 in_rendersize;
+
+uniform float ref_size;
+uniform float blur_size;
+uniform float fresnel_str;
+#functions
+vec2 screenpos(){
+	return gl_FragCoord.xy/in_rendersize;
+}
+#code
+	vec2 rnd = texture(noiseTexture,gl_FragCoord.xy/128).xy * 2 -1;
+	
+	float depth = gl_FragCoord.z;
+	vec2 screenposition = screenpos();
+	vec3 refn = reflect(v_eyedirection,N);
+	vec4 base = texture(baseTexture, v_texture);

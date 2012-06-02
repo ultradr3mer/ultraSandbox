@@ -1,0 +1,33 @@
+#variables
+struct Light
+{
+    bool active;
+    vec3 position;
+	vec3 direction;
+    vec3 color;
+	mat4 view_matrix;
+	bool texture;
+};
+
+struct SunLight
+{
+    bool active;
+	vec3 direction;
+    vec3 color;
+	mat4 view_matrix;
+	mat4 inner_view_matrix;
+};
+
+out vec4 v_sun_map_pos;
+out vec4 v_inner_sun_map_pos;
+
+uniform Light lightStructs[no_lights];
+uniform SunLight sunLightStruct;
+#code
+	for(int i = 0; i < no_lights; i++) {
+		if(i < in_no_lights && lightStructs[i].active)
+			v_s_map_pos[i] = lightStructs[i].view_matrix * g_pos;
+	}
+	
+	v_sun_map_pos = sunLightStruct.view_matrix * g_pos;
+	v_inner_sun_map_pos = sunLightStruct.inner_view_matrix * g_pos;

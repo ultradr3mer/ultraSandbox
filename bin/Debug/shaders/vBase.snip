@@ -1,0 +1,50 @@
+#variables
+
+precision lowp float;
+
+const int no_lights = 10;
+
+uniform mat4 projection_matrix;
+uniform mat4 modelview_matrix;
+uniform mat4 model_matrix;
+uniform mat4 rotation_matrix;
+
+uniform vec3 in_light;
+uniform vec3 in_eyepos;
+
+uniform int in_no_lights;
+
+in vec3 in_normal;
+in vec3 in_position;
+in vec2 in_texture;
+in vec3 in_tangent;
+
+out vec4 g_pos;
+out vec3 v_eyedirection;
+out vec3 v_normal;
+out vec2 v_texture;
+out vec3 v_tangent;
+out vec3 v_bnormal;
+out vec3 v_ss_normal;
+out vec3 v_ss_tangent;
+out vec3 v_ss_bnormal;
+out float v_depth;
+
+out vec4 v_s_map_pos[no_lights];
+
+uniform bool use_alpha;
+#code
+	g_pos = model_matrix * rotation_matrix * vec4(in_position, 1);
+	gl_Position = projection_matrix * modelview_matrix * g_pos;
+	
+	v_eyedirection = normalize(g_pos.xyz - in_eyepos);
+  
+	v_texture = in_texture;
+	
+	v_normal = normalize((rotation_matrix * vec4(in_normal, 0)).xyz);
+	v_tangent = normalize((rotation_matrix * vec4(in_tangent, 0)).xyz);
+	v_bnormal = normalize(cross(v_normal, v_tangent));
+	
+	v_texture = in_texture;
+	
+	v_depth = gl_Position.z;

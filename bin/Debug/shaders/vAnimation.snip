@@ -1,0 +1,29 @@
+#variables
+attribute float in_weight_0;
+attribute float in_weight_1;
+attribute float in_weight_2;
+attribute float in_joint_0;
+attribute float in_joint_1;
+attribute float in_joint_2;
+
+out vec3 heat;
+#functions
+vec3 boneWeights()
+{
+	vec3 boneheat = vec3(0,0,0);
+	
+	int int_joint_0 = int(in_joint_0);
+	int int_joint_1 = int(in_joint_1);
+	int int_joint_2 = int(in_joint_2);
+
+	if(int_joint_0 != 0)
+		boneheat[int_joint_0] = in_weight_0;
+	if(int_joint_1 != 0)
+		boneheat[int_joint_1] = in_weight_1;
+	if(int_joint_2 != 0)
+		boneheat[int_joint_2] = in_weight_2;
+		
+	return boneheat;
+}
+#code
+heat = boneWeights();

@@ -22,3 +22,5 @@ F:\Dropbox\fatal\ultradr3mer\opentkSource\OpenTkProject\bin\Debug\Jitter.pdb
 F:\Dropbox\fatal\ultradr3mer\opentkSource\OpenTkProject\bin\Debug\OpenTK.xml
 F:\Dropbox\fatal\ultradr3mer\opentkSource\OpenTkProject\bin\Debug\System.Data.SQLite.pdb
 F:\Dropbox\fatal\ultradr3mer\opentkSource\OpenTkProject\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\Users\ultradr3mer\ultraSandbox\obj\x86\Debug\OpenTkProject.exe
+F:\Users\ultradr3mer\ultraSandbox\obj\x86\Debug\OpenTkProject.pdb

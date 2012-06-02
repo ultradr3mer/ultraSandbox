@@ -1,0 +1,51 @@
+#variables
+uniform sampler2D EnvTexture1;
+uniform sampler2D EnvTexture2;
+uniform sampler2D EnvTexture3;
+uniform sampler2D EnvTexture4;
+uniform sampler2D EnvTexture5;
+uniform sampler2D EnvTexture6;
+
+uniform bool use_env;
+uniform bool env_a_base;
+uniform bool env_a_normal;
+uniform vec3 env_tint;
+#code
+vec4 get_env(vec3 refn){
+	vec3 tmpn = refn;
+	
+	refn.x = -refn.x;
+
+	tmpn.x *= sign(tmpn.x);
+	tmpn.y *= sign(tmpn.y);
+	tmpn.z *= sign(tmpn.z);
+		
+	vec4 env = vec4(0,0,0,1);
+	if(tmpn.x > tmpn.y && tmpn.x > tmpn.z){
+		if(refn.x < 0){
+			vec2 envuv = vec2(refn.z/refn.x,refn.y/refn.x)*0.5+0.5;
+			return texture(EnvTexture3,envuv);
+		} else {
+			vec2 envuv = vec2(refn.z/refn.x,-refn.y/refn.x)*0.5+0.5;
+			return texture(EnvTexture1,envuv);
+		}
+	} 
+	if(tmpn.z > tmpn.y && tmpn.z > tmpn.x){
+		if(refn.z < 0){
+			vec2 envuv = vec2(-refn.x/refn.z,refn.y/refn.z)*0.5+0.5;
+			return texture(EnvTexture4,envuv);
+		} else {
+			vec2 envuv = vec2(-refn.x/refn.z,-refn.y/refn.z)*0.5+0.5;
+			return texture(EnvTexture2,envuv);
+		}
+	}
+	if(tmpn.y > tmpn.z && tmpn.y > tmpn.x){
+		if(refn.y < 0){
+			vec2 envuv = vec2(-refn.x/refn.y,-refn.z/refn.y)*0.5+0.5;
+			return texture(EnvTexture6,envuv);
+		} else {
+			vec2 envuv = vec2(refn.x/refn.y,-refn.z/refn.y)*0.5+0.5;
+			return texture(EnvTexture5,envuv);
+		}
+	} 
+}
