@@ -254,8 +254,8 @@ namespace OpenTkProject.Game.Voxel
 
         private void generateRightFace(int i, bool isBorder, Vector3 postion)
         {
-            Vector3 position1 = postion + new Vector3(1, 1, 0);
-            Vector3 position2 = postion + new Vector3(1, 0, 0);
+            Vector3 position1 = postion + new Vector3(1, 0, 0);
+            Vector3 position2 = postion + new Vector3(1, 1, 0);
             Vector3 position3 = postion + new Vector3(1, 1, 1);
             Vector3 position4 = postion + new Vector3(1, 0, 1);
 
@@ -266,10 +266,10 @@ namespace OpenTkProject.Game.Voxel
 
         private void generateLeftFace(int i, bool isBorder, Vector3 postion)
         {
-            Vector3 position1 = postion + new Vector3(0, 1, 1);
+            Vector3 position1 = postion + new Vector3(0, 0, 0);
             Vector3 position2 = postion + new Vector3(0, 0, 1);
-            Vector3 position3 = postion + new Vector3(0, 1, 0);
-            Vector3 position4 = postion + new Vector3(0, 0, 0);
+            Vector3 position3 = postion + new Vector3(0, 1, 1);
+            Vector3 position4 = postion + new Vector3(0, 1, 0);
 
             Vector3 normal = new Vector3(-1, 0, 0);
 
@@ -279,9 +279,9 @@ namespace OpenTkProject.Game.Voxel
         private void generateFrontFace(int i, bool isBorder, Vector3 postion)
         {
             Vector3 position1 = postion + new Vector3(0, 0, 1);
-            Vector3 position2 = postion + new Vector3(0, 1, 1);
-            Vector3 position3 = postion + new Vector3(1, 0, 1);
-            Vector3 position4 = postion + new Vector3(1, 1, 1);
+            Vector3 position2 = postion + new Vector3(1, 0, 1);
+            Vector3 position3 = postion + new Vector3(1, 1, 1);
+            Vector3 position4 = postion + new Vector3(0, 1, 1);
 
             Vector3 normal = new Vector3(0, 0, 1);
 
@@ -290,10 +290,10 @@ namespace OpenTkProject.Game.Voxel
 
         private void generateBackFace(int i, bool isBorder, Vector3 postion)
         {
-            Vector3 position1 = postion + new Vector3(1, 0, 0);
-            Vector3 position2 = postion + new Vector3(1, 1, 0);
-            Vector3 position3 = postion + new Vector3(0, 0, 0);
-            Vector3 position4 = postion + new Vector3(0, 1, 0);
+            Vector3 position1 = postion + new Vector3(0, 0, 0);
+            Vector3 position2 = postion + new Vector3(0, 1, 0);
+            Vector3 position3 = postion + new Vector3(1, 1, 0);
+            Vector3 position4 = postion + new Vector3(1, 0, 0);
 
             Vector3 normal = new Vector3(0, 0, -1);
 
@@ -303,9 +303,9 @@ namespace OpenTkProject.Game.Voxel
         private void generateTopFace(int i, bool isBorder, Vector3 postion)
         {
             Vector3 position1 = postion + new Vector3(0, 1, 0);
-            Vector3 position2 = postion + new Vector3(1, 1, 0);
-            Vector3 position3 = postion + new Vector3(0, 1, 1);
-            Vector3 position4 = postion + new Vector3(1, 1, 1);
+            Vector3 position2 = postion + new Vector3(0, 1, 1);
+            Vector3 position3 = postion + new Vector3(1, 1, 1);
+            Vector3 position4 = postion + new Vector3(1, 1, 0);
 
             Vector3 normal = new Vector3(0, 1, 0);
 
@@ -314,10 +314,10 @@ namespace OpenTkProject.Game.Voxel
 
         private void generateDownFace(int i, bool isBorder, Vector3 postion)
         {
-            Vector3 position1 = postion + new Vector3(0, 0, 1);
-            Vector3 position2 = postion + new Vector3(1, 0, 1);
-            Vector3 position3 = postion + new Vector3(0, 0, 0);
-            Vector3 position4 = postion + new Vector3(1, 0, 0);
+            Vector3 position1 = postion + new Vector3(0, 0, 0);
+            Vector3 position2 = postion + new Vector3(1, 0, 0);
+            Vector3 position3 = postion + new Vector3(1, 0, 1);
+            Vector3 position4 = postion + new Vector3(0, 0, 1);
 
             Vector3 normal = new Vector3(0, -1, 0);
 

@@ -45,6 +45,11 @@ namespace OpenTkProject
                     mGameWindow.log("found shaderpair file: " + relativePath);
                     mGameWindow.shaderLoader.fromXmlFile(relativePath);
                 }
+                if (extention == ".snip")
+                {
+                    mGameWindow.log("found shader snipet: " + relativePath);
+                    mGameWindow.shaderLoader.loadSnippet(relativePath);
+                }
                 if (extention == ".xtmp")
                 {
                     mGameWindow.log("found template file: " + relativePath);

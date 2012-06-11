@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawables\Models\MetaModel.cs" />
+    <Compile Include="Drawables\Models\AnimatedModel.cs" />
     <Compile Include="Drawables\Models\Particles\ParticleAffector.cs" />
     <Compile Include="Drawables\Models\Particles\ParticleSystem.cs" />
     <Compile Include="Game\Lights\LightSpot.cs" />

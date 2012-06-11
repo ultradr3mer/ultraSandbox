@@ -49,7 +49,7 @@ namespace OpenTkProject.Drawables.Models
             updateChilds();
         }
 
-        protected override void setSpecialUniforms(Shader shader)
+        protected override void setSpecialUniforms(ref Shader shader, ref Mesh curMesh)
         {
             Vector3 sunColor = Scene.sunLight.Color.Xyz; ;
             GL.Uniform3(shader.lightSunLocation, ref sunColor);

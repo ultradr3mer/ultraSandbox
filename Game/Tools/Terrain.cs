@@ -70,7 +70,7 @@ namespace OpenTkProject.Game.Tools
 
         private void ensureType()
         {
-            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != "meta")
+            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != Template.UseType.Meta)
                 stepTemplateId();
         }
 

@@ -6,11 +6,9 @@
 
 void main(void)
 {
-  //works only for orthogonal modelview
-  //normal = normalize((modelview_matrix * vec4(in_normal, 0)).xyz);
-    
+  	#include vAnimation.snip
 
-	#include vBase.snip
+	#include vBase.snip replace:in_position:ani_position
 	
 	if(use_alpha)
 	{
@@ -18,8 +16,6 @@ void main(void)
 		v_ss_tangent = normalize((modelview_matrix * rotation_matrix * vec4(in_tangent, 0)).xyz);
 		v_ss_bnormal = normalize(cross(v_ss_normal, v_ss_tangent));
 	}
-  	
-	v_depth = gl_Position.a;
 	
 	#include vLightCalc.snip
 }

@@ -16,10 +16,13 @@ int rings = 4; //ring count (2-6)
 void main() {
 	float ao = texture(Texture1, v_texture).a;
 	if(ao != 0){
-		out_frag_color = vec4(0,0,0,1-texture(Texture1, v_texture).a*2);
+		float ao_factor = texture(Texture1, v_texture).a*2;
+		out_frag_color = texture(Texture2, v_texture)*ao_factor;
+		out_frag_color.a = 1;
 	} else {
 		discard;
 	}	
-	//out_frag_color = vec4(1,1,1,1)*(1-texture(Texture1, v_texture).a*2);
+	//out_frag_color = vec4(1,1,1,1)*ao;
+	//out_frag_color = texture(Texture2, v_texture);
 	//out_frag_color.a = 1;
 }

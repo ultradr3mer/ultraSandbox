@@ -18,6 +18,8 @@ namespace OpenTkProject
 
         public bool wasUpdated = true;
 
+        public static string nodename = "";
+
         public string name = "";
 
         //public bool savable = false;
@@ -203,7 +205,8 @@ namespace OpenTkProject
 
         protected void genericLoad(ref XmlTextReader reader, string type)
         {
-            if (reader.Name == "pmodel")
+
+            if (reader.Name == PhysModel.nodename)
             {
                 string childname = scene.getUniqueName();
 
@@ -218,7 +221,22 @@ namespace OpenTkProject
                 child.load(ref reader, "pmodel");
             }
 
-            if (reader.Name == "metamodel")
+            if (reader.Name == AnimatedModel.nodename)
+            {
+                string childname = scene.getUniqueName();
+
+                while (reader.MoveToNextAttribute())
+                {
+                    if (reader.Name == "name")
+                        childname = reader.Value;
+                }
+
+                GameObject child = new AnimatedModel(this);
+                child.name = childname;
+                child.load(ref reader, "animodel");
+            }
+
+            if (reader.Name == MetaModel.nodename)
             {
                 string childname = scene.getUniqueName();
 
@@ -233,7 +251,7 @@ namespace OpenTkProject
                 child.load(ref reader, "metamodel");
             }
 
-            if (reader.Name == "lamp")
+            if (reader.Name == LightSpot.nodename)
             {
                 string childname = scene.getUniqueName();
 

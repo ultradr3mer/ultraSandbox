@@ -17,12 +17,13 @@ namespace OpenTkProject.Drawables.Models
 
         private List<string> pBoxList = new List<string> { };
 
+        new public static string nodename = "pmodel";
+
         public bool grabable = true;
 
         public PhysModel(GameObject parent)
             : base(parent)
         {
-
         }
 
         public override RigidBody Body { get { return body; } set { body = value; forceUpdate(); } }
@@ -40,7 +41,7 @@ namespace OpenTkProject.Drawables.Models
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<pmodel name='" + name + "'>");
+            sb.AppendLine(tab + "<"+nodename+" name='" + name + "'>");
             sb.AppendLine(tab2 + "<position>" + position + "</position>");
             sb.AppendLine(tab2 + "<rotation>" + rotation + "</rotation>");
             sb.AppendLine(tab2 + "<materials>" + stringMaterial + "</materials>");
@@ -64,7 +65,7 @@ namespace OpenTkProject.Drawables.Models
 
             saveChilds(ref sb,level);
 
-            sb.AppendLine(tab+"</pmodel>");
+            sb.AppendLine(tab+"</"+nodename+">");
         }
 
         public override Matrix4 Orientation

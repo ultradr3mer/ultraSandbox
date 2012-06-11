@@ -16,6 +16,8 @@ namespace OpenTkProject.Drawables
         private string texturename;
         private bool useProjectionTexture = false;
 
+        new public static string nodename = "lamp";
+
         public LightSpot(GameObject parent)
         {
             Parent = (Drawable)parent;

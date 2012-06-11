@@ -20,6 +20,7 @@ namespace OpenTkProject.Game.Tools
 
         public Spawner(Player player, GameInput gameInput) : base(player, gameInput)
         {
+            ensureTempType();
             template = gameWindow.templateLoader.getTemplate(tempId);
             generateGhost();
 
@@ -110,10 +111,15 @@ namespace OpenTkProject.Game.Tools
         {
             stepTemplateId();
 
-            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != "pmodel")
-                stepTemplateId();
+            ensureTempType();
 
             generateGhost();
+        }
+
+        private void ensureTempType()
+        {
+            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != Template.UseType.Model)
+                stepTemplateId();
         }
 
         private void stepTemplateId()
@@ -130,7 +136,17 @@ namespace OpenTkProject.Game.Tools
 
         private void objectFromTemplate()
         {
-            PhysModel curModel = new PhysModel(Scene);
+            PhysModel curModel;
+            switch (template.useType)
+            {
+                case Template.UseType.Animated:
+                    curModel = new AnimatedModel(Scene);
+                    break;
+                default:
+                    curModel = new PhysModel(Scene);
+                    break;
+            }
+            
 
             curModel.Materials = template.materials;
             curModel.Meshes = template.meshes;

@@ -48,13 +48,15 @@ namespace OpenTkProject.Drawables.Models
                 //Vector4 screenpos;
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
-                    gameWindow.checkGlError("--uncaught ERROR drawing Model--" + meshes[i].name);
+                    Mesh curMesh = meshes[i];
+                    Material curMaterial = materials[i];
+                    gameWindow.checkGlError("--uncaught ERROR drawing Model--" + curMesh.name);
 
-                    if (materials[i].useAlpha == targetLayer)
+                    if (curMaterial.useAlpha == targetLayer)
                     {
                         //Console.WriteLine("drawing: " + mMesh[i].name);
 
-                        Shader curShader = activateMaterial(materials[i]);
+                        Shader curShader = activateMaterial(ref curMaterial);
 
                         if (curShader.loaded)
                         {
@@ -69,22 +71,22 @@ namespace OpenTkProject.Drawables.Models
 
                             if (Scene != null)
                             {
-                                setupMatrices(curView, curShader);
+                                setupMatrices(ref curView, ref curShader, ref curMesh);
                             }
 
-                            setSpecialUniforms(curShader);
+                            setSpecialUniforms(ref curShader, ref curMesh);
 
                             GL.BindVertexArray(vaoHandle[i]);
-                            GL.DrawElements(BeginMode.Triangles, meshes[i].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                            GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-                            gameWindow.checkGlError("--Drawing ERROR--" + meshes[i].name);
+                            gameWindow.checkGlError("--Drawing ERROR--" + curMesh.name);
                         }
                     }
                 }
             }
         }
 
-        protected virtual void setSpecialUniforms(Shader curShader)
+        protected virtual void setSpecialUniforms(ref Shader curShader, ref Mesh CurMesh)
         {
         }
 
@@ -95,18 +97,19 @@ namespace OpenTkProject.Drawables.Models
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
                     Shader curShader = activateMaterialSelection(materials[i]);
+                    Mesh curMesh = meshes[i];
 
                     if (curShader.loaded)
                     {
                         if (Scene != null)
                         {
-                            setupMatrices(curView, curShader);
+                            setupMatrices(ref curView, ref curShader, ref curMesh);
                         }
 
                         GL.Uniform1(GL.GetUniformLocation(curShader.handle, "selected"), 1, ref selectedSmooth);
 
                         GL.BindVertexArray(vaoHandle[i]);
-                        GL.DrawElements(BeginMode.Triangles, meshes[i].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                     }
                 }
             }
@@ -119,18 +122,19 @@ namespace OpenTkProject.Drawables.Models
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
                     Shader curShader = activateMaterialSSN(materials[i]);
+                    Mesh curMesh = meshes[i];
 
                     if (curShader.loaded)
                     {
                         if (Scene != null)
                         {
 
-                            setupMatrices(curView, curShader);
+                            setupMatrices(ref curView, ref curShader, ref curMesh);
 
                         }
 
                         GL.BindVertexArray(vaoHandle[i]);
-                        GL.DrawElements(BeginMode.Triangles, meshes[i].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                     }
                 }
             }
@@ -143,17 +147,18 @@ namespace OpenTkProject.Drawables.Models
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
                     Shader curShader = activateMaterialShadow(materials[i]);
+                    Mesh curMesh = meshes[i];
 
                     if (curShader.loaded)
                     {
                         if (Scene != null)
                         {
-                            setupMatrices(curView, curShader);
+                            setupMatrices(ref curView, ref curShader, ref curMesh);
                         }
 
                         GL.Uniform2(curShader.renderSizeLocation, ref gameWindow.currentSize);
                         GL.BindVertexArray(vaoHandle[i]);
-                        GL.DrawElements(BeginMode.Triangles, meshes[i].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                     }
                 }
             }

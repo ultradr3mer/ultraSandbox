@@ -53,7 +53,7 @@ namespace OpenTkProject.Drawables
         }
 
         #region matices/position
-        protected virtual void setupMatrices(ViewInfo curView, Shader curShader)
+        protected virtual void setupMatrices(ref ViewInfo curView,ref Shader curShader, ref Mesh curMesh)
         {
             GL.UniformMatrix4(curShader.projectionMatrixLocation, false, ref curView.projectionMatrix);
             GL.UniformMatrix4(curShader.modelviewMatrixLocation, false, ref curView.modelviewMatrix);
@@ -215,7 +215,7 @@ namespace OpenTkProject.Drawables
             materials = tmpMaterials;
         }
 
-        public Shader activateMaterial(Material curMat)
+        public Shader activateMaterial(ref Material curMat)
         {
             int texunit = 0;
             Shader shader = curMat.shader;
@@ -413,8 +413,8 @@ namespace OpenTkProject.Drawables
 
 
                 float quality = 0.5f;
-                
-                if(distToCamera < 10)
+
+                if (distToCamera < 10)
                     quality += 0.5f;
 
                 GL.Uniform1(shader.LightCountLocation, 1, ref Scene.lightCount);
@@ -422,7 +422,7 @@ namespace OpenTkProject.Drawables
 
                 for (int i = 0; i < Scene.spotlights.Count; i++)
                 {
-                    Scene.spotlights[i].activate(shader, i,this);
+                    Scene.spotlights[i].activate(shader, i, this);
                 }
 
 
@@ -668,6 +668,7 @@ namespace OpenTkProject.Drawables
             for (int i = 0; i < meshes.Length; i++)
             {
                 Shader curShader = materials[i].shader;
+                Mesh curMesh = meshes[i];
                 int shaderHandle = curShader.handle;
 
                 int normalIndex = GL.GetAttribLocation(shaderHandle, "in_normal");
@@ -683,10 +684,31 @@ namespace OpenTkProject.Drawables
                 GL.GenVertexArrays(1, out vaoHandle[i]);
                 GL.BindVertexArray(vaoHandle[i]);
 
+                int affectingBonesCount = curMesh.affectingBonesCount;
+                for (int j = 0; j < affectingBonesCount; j++)
+                {
+                    int boneIdIndex = GL.GetAttribLocation(shaderHandle, "in_joint_"+j);
+                    int boneWeightIndex = GL.GetAttribLocation(shaderHandle, "in_weight_"+j);
+
+                    if (boneIdIndex != -1)
+                    {
+                        GL.EnableVertexAttribArray(boneIdIndex);
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.boneIdVboHandles[j]);
+                        GL.VertexAttribPointer(boneIdIndex, 1, VertexAttribPointerType.Int, false, sizeof(int), 0);
+                    }
+
+                    if (boneWeightIndex != -1)
+                    {
+                        GL.EnableVertexAttribArray(boneWeightIndex);
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.boneWeightVboHandles[j]);
+                        GL.VertexAttribPointer(boneWeightIndex, 1, VertexAttribPointerType.Float, true, sizeof(float), 0);
+                    }
+                }
+
                 if (normalIndex != -1)
                 {
                     GL.EnableVertexAttribArray(normalIndex);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, meshes[i].normalVboHandle);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.normalVboHandle);
                     GL.VertexAttribPointer(normalIndex, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
                     //GL.BindAttribLocation(shaderHandle, 0, "in_normal");
                 }
@@ -694,7 +716,7 @@ namespace OpenTkProject.Drawables
                 if (positionIndex != -1)
                 {
                     GL.EnableVertexAttribArray(positionIndex);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, meshes[i].positionVboHandle);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.positionVboHandle);
                     GL.VertexAttribPointer(positionIndex, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
                     //GL.BindAttribLocation(shaderHandle, 1, "in_position");
                 }
@@ -702,7 +724,7 @@ namespace OpenTkProject.Drawables
                 if (tangentIndex != -1)
                 {
                     GL.EnableVertexAttribArray(tangentIndex);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, meshes[i].tangentVboHandle);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.tangentVboHandle);
                     GL.VertexAttribPointer(tangentIndex, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
                     //GL.BindAttribLocation(shaderHandle, 2, "in_tangent");
                 }
@@ -710,13 +732,13 @@ namespace OpenTkProject.Drawables
                 if (textureIndex != -1)
                 {
                     GL.EnableVertexAttribArray(textureIndex);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, meshes[i].textureVboHandle);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, curMesh.textureVboHandle);
                     GL.VertexAttribPointer(textureIndex, 2, VertexAttribPointerType.Float, true, Vector2.SizeInBytes, 0);
                     //GL.BindAttribLocation(shaderHandle, 3, "in_texture");
                 }
 
 
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, meshes[i].eboHandle);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, curMesh.eboHandle);
 
                 GL.BindVertexArray(0);
             }

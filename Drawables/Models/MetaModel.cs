@@ -13,6 +13,8 @@ namespace OpenTkProject.Drawables.Models
     {
         public VoxelVolume volume;
 
+        new public static string nodename = "metamodel";
+
         public MetaModel(GameObject parent)
             : base(parent)
         {
@@ -36,7 +38,7 @@ namespace OpenTkProject.Drawables.Models
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<metamodel name='" + name + "'>");
+            sb.AppendLine(tab + "<"+nodename+" name='" + name + "'>");
             sb.AppendLine(tab2 + "<position>" + position + "</position>");
             //sb.AppendLine(tab2 + "<rotation>" + rotation + "</rotation>");
             sb.AppendLine(tab2 + "<materials>" + stringMaterial + "</materials>");
@@ -49,7 +51,7 @@ namespace OpenTkProject.Drawables.Models
 
             saveChilds(ref sb, level);
 
-            sb.AppendLine(tab + "</metamodel>");
+            sb.AppendLine(tab + "</"+nodename+">");
         }
 
         protected override void specialLoad(ref System.Xml.XmlTextReader reader, string type)

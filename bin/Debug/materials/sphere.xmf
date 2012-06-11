@@ -1,4 +1,4 @@
-<material shader="defaultgeo.xsp" ssnshader="ssnormals_notex.xsp" selection="selection.xsp" shadow="shadow.xsp">
+<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
 	<textures base="grey.png" normal="hex_n.png" />
 	<envmap  source="normalalpha" />
 	<lighted/>

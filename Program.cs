@@ -84,9 +84,11 @@ namespace OpenTkProject
         float loadingPercentage = 0;
 
         public OpenTkProjectWindow()
-            : base(1920, 1080, new GraphicsMode(), "Ultra", GameWindowFlags.Fullscreen , DisplayDevice.Default, 3, 0, 
+            : base(1920, 1080, new GraphicsMode(), "ultraSandbox", GameWindowFlags.Fullscreen , DisplayDevice.Default, 3, 0, 
             GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug)
         {
+
+
         }
 
         protected override void OnLoad(System.EventArgs e)
@@ -370,8 +372,6 @@ namespace OpenTkProject
                     mScene.dofShader = shaderLoader.getShader("dof_shader.xsp");
                     mScene.compositeShader = shaderLoader.getShader("composite.xsp");
                     mScene.ssaoBlendShader = shaderLoader.getShader("ssao_blend.xsp");
-                    mScene.normalShader = shaderLoader.getShader("ssnormals.xsp");
-                    mScene.selectionShader = shaderLoader.getShader("selection.xsp");
                     mScene.copycatShader = shaderLoader.getShader("backdrop.xsp");
                     mScene.wipingShader = shaderLoader.getShader("sMapWipe.xsp");
 
@@ -384,10 +384,6 @@ namespace OpenTkProject
 
                     // load objects saved in database
                     mScene.loadObjects();
-
-                    mScene.selectionShader = shaderLoader.getShader("selection.xsp");
-                    mScene.ssNormalShader = shaderLoader.getShader("ssnormals.xsp");
-                    mScene.ssNormalShaderNoTex = shaderLoader.getShader("ssnormals_notex.xsp");
 
                     state = GameState.Playing;
                 }
@@ -414,7 +410,6 @@ namespace OpenTkProject
         {
             using (OpenTkProjectWindow game = new OpenTkProjectWindow())
             {
-                //Utilities.SetWindowTitle(example);
                 game.Run(60);
             }
         }

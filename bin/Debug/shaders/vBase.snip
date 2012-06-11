@@ -30,8 +30,6 @@ out vec3 v_ss_tangent;
 out vec3 v_ss_bnormal;
 out float v_depth;
 
-out vec4 v_s_map_pos[no_lights];
-
 uniform bool use_alpha;
 #code
 	g_pos = model_matrix * rotation_matrix * vec4(in_position, 1);

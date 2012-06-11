@@ -11,7 +11,7 @@ namespace OpenTkProject
 {
     public struct Template
     {
-        const int FROM_XML = 0;
+        public enum Type { FromXml };
 
         public int type;
         public int identifier;
@@ -32,8 +32,16 @@ namespace OpenTkProject
         public bool hasLight;
         public Vector3 lightColor;
         public bool normal;
-        public string useType;
+
+        public enum UseType
+        {
+            Model,
+            Animated,
+            Meta
+        }
+
         public float volumeRadius;
+        public UseType useType;
     }
 
     public class TemplateLoader : GameObject
@@ -113,7 +121,7 @@ namespace OpenTkProject
             target.materials = new List<string> { };
 
             target.isStatic = false;
-            target.useType = "pmodel";
+            target.useType = Template.UseType.Model;
 
             while (reader.Read())
             {
@@ -126,7 +134,20 @@ namespace OpenTkProject
                             target.name = reader.Value;
 
                         if (reader.Name == "type")
-                            target.useType = reader.Value;
+                        {
+                            switch (reader.Value)
+                            {
+                                case "animated":
+                                    target.useType = Template.UseType.Animated;
+                                    break;
+                                case "meta":
+                                    target.useType = Template.UseType.Meta;
+                                    break;
+                                default:
+                                    target.useType = Template.UseType.Model;
+                                    break;
+                            }
+                        }
 
                     }
 

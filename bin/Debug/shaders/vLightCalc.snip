@@ -23,6 +23,8 @@ out vec4 v_inner_sun_map_pos;
 
 uniform Light lightStructs[no_lights];
 uniform SunLight sunLightStruct;
+
+out vec4 v_s_map_pos[no_lights];
 #code
 	for(int i = 0; i < no_lights; i++) {
 		if(i < in_no_lights && lightStructs[i].active)

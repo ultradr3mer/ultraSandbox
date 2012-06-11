@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.59.0 r39307</authoring_tool>
     </contributor>
-    <created>2012-05-29T17:42:01</created>
-    <modified>2012-05-29T17:42:01</modified>
+    <created>2012-05-30T15:40:53</created>
+    <modified>2012-05-30T15:40:53</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -36,7 +36,7 @@
           </technique_common>
         </source>
         <source id="Cube-mesh-map-0">
-          <float_array id="Cube-mesh-map-0-array" count="96">0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1</float_array>
+          <float_array id="Cube-mesh-map-0-array" count="96">0.4202492 0.3885774 0.456075 0.3269785 0.367119 0.2971857 0.3312933 0.3587847 0.4136812 0.4560886 0.3247252 0.4262958 0.3605509 0.3646968 0.4495069 0.3944896 0.4202492 0.3885774 0.4136812 0.4560886 0.4495069 0.3944896 0.456075 0.3269785 0.456075 0.3269785 0.4495069 0.3944896 0.3605509 0.3646968 0.367119 0.2971857 0.367119 0.2971857 0.3605509 0.3646968 0.3247252 0.4262958 0.3312933 0.3587847 0.4136812 0.4560886 0.4202492 0.3885774 0.3312933 0.3587847 0.3247252 0.4262958 0.5471153 0.5007777 0.5536833 0.4332666 0.4647273 0.4034739 0.4581592 0.470985 0.500553 0.3418749 0.4939849 0.409386 0.4581592 0.470985 0.4647273 0.4034739 0.589509 0.3716676 0.582941 0.4391787 0.4939849 0.409386 0.500553 0.3418749 0.5536833 0.4332666 0.5471153 0.5007777 0.582941 0.4391787 0.589509 0.3716676 0.5471153 0.5007777 0.4581592 0.470985 0.4939849 0.409386 0.582941 0.4391787 0.5536833 0.4332666 0.589509 0.3716676 0.500553 0.3418749 0.4647273 0.4034739</float_array>
           <technique_common>
             <accessor source="#Cube-mesh-map-0-array" count="48" stride="2">
               <param name="S" type="float"/>
@@ -61,17 +61,17 @@
   <library_animations>
     <animation id="Armature_Bone_location">
       <source id="Armature_Bone_location-input">
-        <float_array id="Armature_Bone_location-input-array" count="3">0.04166662 0.08333331 0.1666666</float_array>
+        <float_array id="Armature_Bone_location-input-array" count="2">0.04166662 0.7</float_array>
         <technique_common>
-          <accessor source="#Armature_Bone_location-input-array" count="3" stride="1">
+          <accessor source="#Armature_Bone_location-input-array" count="2" stride="1">
             <param name="TIME" type="float"/>
           </accessor>
         </technique_common>
       </source>
       <source id="Armature_Bone_location-output">
-        <float_array id="Armature_Bone_location-output-array" count="9">0 0 0 0 0 0 -2.099983 1.446495 1.372648</float_array>
+        <float_array id="Armature_Bone_location-output-array" count="6">0 0 0 0 2 0</float_array>
         <technique_common>
-          <accessor source="#Armature_Bone_location-output-array" count="3" stride="3">
+          <accessor source="#Armature_Bone_location-output-array" count="2" stride="3">
             <param name="X" type="float"/>
             <param name="Y" type="float"/>
             <param name="Z" type="float"/>
@@ -79,9 +79,9 @@
         </technique_common>
       </source>
       <source id="Armature_Bone_location-interpolation">
-        <Name_array id="Armature_Bone_location-interpolation-array" count="3">LINEAR LINEAR LINEAR</Name_array>
+        <Name_array id="Armature_Bone_location-interpolation-array" count="2">LINEAR LINEAR</Name_array>
         <technique_common>
-          <accessor source="#Armature_Bone_location-interpolation-array" count="3" stride="1">
+          <accessor source="#Armature_Bone_location-interpolation-array" count="2" stride="1">
             <param name="INTERPOLATION" type="name"/>
           </accessor>
         </technique_common>
@@ -95,7 +95,7 @@
     </animation>
     <animation id="Armature_Bone_001_location">
       <source id="Armature_Bone_001_location-input">
-        <float_array id="Armature_Bone_001_location-input-array" count="2">0.04166662 0.08333331</float_array>
+        <float_array id="Armature_Bone_001_location-input-array" count="2">0.04166662 0.2916666</float_array>
         <technique_common>
           <accessor source="#Armature_Bone_001_location-input-array" count="2" stride="1">
             <param name="TIME" type="float"/>
@@ -103,7 +103,7 @@
         </technique_common>
       </source>
       <source id="Armature_Bone_001_location-output">
-        <float_array id="Armature_Bone_001_location-output-array" count="6">3 0 0 4.381824 -0.01797318 1.813609</float_array>
+        <float_array id="Armature_Bone_001_location-output-array" count="6">3 0 0 3.099834 1.899589 0.7944285</float_array>
         <technique_common>
           <accessor source="#Armature_Bone_001_location-output-array" count="2" stride="3">
             <param name="X" type="float"/>
@@ -178,14 +178,14 @@
         <rotate sid="rotationX">1 0 0 0</rotate>
         <scale sid="scale">1 1 1</scale>
         <node id="Bone" name="Bone" sid="Bone" type="JOINT">
-          <translate sid="location">-2.099983 1.446495 1.372648</translate>
+          <translate sid="location">0 0 0</translate>
           <rotate sid="rotationZ">0 0 1 0</rotate>
           <rotate sid="rotationY">0 1 0 0</rotate>
           <rotate sid="rotationX">1 0 0 89.99999</rotate>
           <scale sid="scale">1 1 1</scale>
         </node>
         <node id="Bone_001" name="Bone.001" sid="Bone_001" type="JOINT">
-          <translate sid="location">4.381824 -0.01797318 1.813609</translate>
+          <translate sid="location">3.099834 1.899589 0.7944285</translate>
           <rotate sid="rotationZ">0 0 1 0</rotate>
           <rotate sid="rotationY">0 1 0 0</rotate>
           <rotate sid="rotationX">1 0 0 89.99999</rotate>

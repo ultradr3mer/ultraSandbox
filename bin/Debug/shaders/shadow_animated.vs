@@ -10,8 +10,10 @@ void main(void)
 {
   //works only for orthogonal modelview
   //normal = normalize((modelview_matrix * vec4(in_normal, 0)).xyz);
-
-	#include vBase.snip
+		
+	#include vAnimation.snip
+	
+	#include vBase.snip replace:in_position:ani_position
 
 	vec4 shifted = gl_Position;
 	

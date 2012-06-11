@@ -99,7 +99,7 @@ namespace OpenTkProject.Drawables.Models
         {
             if (isVisible)
             {
-                Shader mShader = activateMaterial(materials[0]);
+                Shader mShader = activateMaterial(ref materials[0]);
 
                 //GL.DepthMask(false);
 

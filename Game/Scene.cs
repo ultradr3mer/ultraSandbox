@@ -233,8 +233,6 @@ namespace OpenTkProject
         private GroundPlane mGroundPlane;
         public Shader dofpreShader;
         public Shader dofShader;
-        public Shader normalShader;
-        public Shader selectionShader;
         public Shader ssaoBlendShader;
         public int[] backdropTextures;
         public Shader copycatShader;
@@ -250,6 +248,8 @@ namespace OpenTkProject
         public List<ParticleAffector> particleAffectors = new List<ParticleAffector> { };
         public int ClippingTexture;
         public Shader bloomCurveShader;
+        public Shader selectionShaderAni;
+        public Shader ssNormalShaderAni;
 
         public override void update()
         {
@@ -386,10 +386,10 @@ namespace OpenTkProject
 
                     GL.Disable(EnableCap.Blend);
                     curFramebuffers.aoBlurFramebuffer.enable(false);
-                    mFilter2d.draw(ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, noiseTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture});
+                    mFilter2d.draw(ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture});
 
                     curFramebuffers.aoBlurFramebuffer2.enable(false);
-                    mFilter2d.draw(ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture, noiseTexture });
+                    mFilter2d.draw(ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture});
                 }
                 
                 curFramebuffers.sceeneFramebuffer.enable(false);
@@ -399,11 +399,6 @@ namespace OpenTkProject
                 drawSceene(Scene.NULLPASS, curView);
 
                 GL.Enable(EnableCap.Blend);
-
-                if (renderOptions.ssAmbientOccluison)
-                {
-                    mFilter2d.draw(ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture });
-                }
 
                 // copy scene to transparent fb -- we can do lookups
                 curFramebuffers.sceeneFramebufferTrans.enable(true);
@@ -415,6 +410,11 @@ namespace OpenTkProject
                 backdropTextures = new int[] { 
                     curFramebuffers.sceeneFramebufferTrans.ColorTexture, 
                     curFramebuffers.sceeneFramebufferTrans.DepthTexture };
+
+                if (renderOptions.ssAmbientOccluison)
+                {
+                    mFilter2d.draw(ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture, curFramebuffers.sceeneFramebufferTrans.ColorTexture });
+                }
 
                 drawSceene(Scene.TRANSPARENTPASS, curView);
 

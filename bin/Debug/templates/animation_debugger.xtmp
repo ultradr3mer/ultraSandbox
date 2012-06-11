@@ -1,0 +1,6 @@
+<template type="animated">
+	<material source="animation_debugger.xmf"/>
+	<mesh source="untitled_2.dae"/>
+	<pmesh source="rock_small_pbox.dae"/>
+	<position offset="1"/>
+</template>

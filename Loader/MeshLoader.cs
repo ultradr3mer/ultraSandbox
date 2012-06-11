@@ -45,27 +45,20 @@ namespace OpenTkProject
         public int textureVboHandle;
         public int tangentVboHandle;
         public int eboHandle;
+
+        public int[] boneWeightVboHandles;
+        public int[] boneIdVboHandles;
+
+
         public bool containsVbo;
 
         public float boundingSphere;
-
-
-        /*
-        public Mesh(Vector3[] positionVboData, Vector3[] normalVboData, Vector3[] tangentVboData, Vector2[] textureVboData, int[] indicesVboData)
-        {
-            this.positionVboData = positionVboData;
-            this.normalVboData = normalVboData;
-            this.tangentVboData = tangentVboData;
-            this.textureVboData = textureVboData;
-            this.indicesVboData = indicesVboData;
-        }
-
-        public Mesh(int type, string pointer)
-        {
-            this.type = type;
-            this.pointer = pointer;
-        }
-         * */
+        public int affectingBonesCount;
+        public float[][] boneWeightList;
+        public int[][] boneIdList;
+        public int[][] boneIdVboData;
+        public float[][] boneWeightVboData;
+        public AnimationData animationData;
     }
 
     public class MeshLoader : GameObject
@@ -201,6 +194,17 @@ namespace OpenTkProject
 
         public void generateVBO(ref Mesh target)
         {
+            int affectingBonesCount = 0;
+
+            if (target.boneWeightVboData != null)
+            {
+                affectingBonesCount = target.boneWeightVboData.Length;
+
+                target.affectingBonesCount = affectingBonesCount;
+                target.boneWeightVboHandles = new int[affectingBonesCount];
+                target.boneIdVboHandles = new int[affectingBonesCount];
+            }
+
             if (!target.containsVbo)
             {
                 GL.GenBuffers(1, out target.normalVboHandle);
@@ -208,6 +212,12 @@ namespace OpenTkProject
                 GL.GenBuffers(1, out target.textureVboHandle);
                 GL.GenBuffers(1, out target.tangentVboHandle);
                 GL.GenBuffers(1, out target.eboHandle);
+
+                if (affectingBonesCount > 0)
+                {
+                    GL.GenBuffers(affectingBonesCount, target.boneWeightVboHandles);
+                    GL.GenBuffers(affectingBonesCount, target.boneIdVboHandles);
+                }
             }
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, target.normalVboHandle);
@@ -239,13 +249,27 @@ namespace OpenTkProject
 
             gameWindow.checkGlError("Create tangentBuffer");
 
+            for (int i = 0; i < affectingBonesCount; i++)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, target.boneWeightVboHandles[i]);
+                GL.BufferData<float>(BufferTarget.ArrayBuffer,
+                    new IntPtr(target.boneWeightVboData[i].Length * sizeof(float)),
+                    target.boneWeightVboData[i], BufferUsageHint.StaticDraw);
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, target.boneIdVboHandles[i]);
+                GL.BufferData<int>(BufferTarget.ArrayBuffer,
+                    new IntPtr(target.boneIdVboData[i].Length * sizeof(int)),
+                    target.boneIdVboData[i], BufferUsageHint.StaticDraw);
+
+                gameWindow.checkGlError("Create vertexGroup Buffer " + i);
+            }
+
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, target.eboHandle);
             GL.BufferData(BufferTarget.ElementArrayBuffer,
                 new IntPtr(sizeof(uint) * target.indicesVboData.Length),
                 target.indicesVboData, BufferUsageHint.StaticDraw);
 
             gameWindow.checkGlError("Create indice Buffer");
-
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             // --- causes crash ---
@@ -340,6 +364,16 @@ namespace OpenTkProject
             List<Vector3> positionVboDataList = target.positionVboDataList;
             List<Vector3> normalVboDataList = target.normalVboDataList;
             List<Vector2> textureVboDataList = target.textureVboDataList;
+
+            float[][] boneWeightList = target.boneWeightList;
+            int[][] boneIdList = target.boneIdList;
+
+            int affBones = 0;
+            if (boneWeightList != null)
+            {
+                affBones = boneWeightList.Length;
+            }
+
             List<Face> FaceList = target.FaceList;
 
             removeTemp(ref FaceList);
@@ -349,6 +383,17 @@ namespace OpenTkProject
             Vector3[] normalVboData = new Vector3[FaceList.Count * 3];
             Vector3[] tangentVboData = new Vector3[FaceList.Count * 3];
             Vector2[] textureVboData = new Vector2[FaceList.Count * 3];
+
+            int[][] boneIdVboData = new int[affBones][];
+            float[][] boneWeightVboData = new float[affBones][];
+
+            for (int i = 0; i < affBones; i++)
+            {
+                boneIdVboData[i] = new int[FaceList.Count * 3];
+                boneWeightVboData[i] = new float[FaceList.Count * 3];
+            }
+
+
             int[] indicesVboData = new int[FaceList.Count * 3];
 
             Vector3[] tmpnormalVboData = new Vector3[normalVboDataList.Count];
@@ -465,6 +510,11 @@ namespace OpenTkProject
                             normalVboData[id] = Vector3.Normalize(tmpnormalVboData[FaceList[i].Vertice[j].Ni]); //-dont use calculated normal
                         tangentVboData[id] = Vector3.Normalize(tmptangentVboData[FaceList[i].Vertice[j].Ni]);
                     }
+                    for (int k = 0; k < affBones; k++)
+                    {
+                        boneWeightVboData[k][id] = boneWeightList[k][FaceList[i].Vertice[j].Vi];
+                        boneIdVboData[k][id] = boneIdList[k][FaceList[i].Vertice[j].Vi];
+                    }
                     textureVboData[id] = textureVboDataList[FaceList[i].Vertice[j].Ti];
                     indicesVboData[id] = id;
                 }
@@ -485,6 +535,15 @@ namespace OpenTkProject
             target.tangentVboData = tangentVboData;
             target.textureVboData = textureVboData;
             target.indicesVboData = indicesVboData;
+
+            target.boneIdVboData = new int[affBones][];
+            target.boneWeightVboData = new float[affBones][];
+            for (int i = 0; i < affBones; i++)
+            {
+                target.boneIdVboData[i] = boneIdVboData[i];
+                target.boneWeightVboData[i] = boneWeightVboData[i];
+            }
+
             target.boundingSphere = sphere;
         }
 
@@ -509,8 +568,8 @@ namespace OpenTkProject
                 Face curFace = FaceList[i];
                 if (curFace.Vertice.Length > 3)
                 {
-                    FaceList[i] = new Face(curFace.Vertice[2], curFace.Vertice[1], curFace.Vertice[0]);
-                    FaceList.Add(new Face(curFace.Vertice[1], curFace.Vertice[2], curFace.Vertice[3]));
+                    FaceList[i] = new Face(curFace.Vertice[0], curFace.Vertice[1], curFace.Vertice[2]);
+                    FaceList.Add(new Face(curFace.Vertice[2], curFace.Vertice[3], curFace.Vertice[0]));
                 }
             }
         }

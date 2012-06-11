@@ -51,9 +51,9 @@ namespace OpenTkProject.Drawables.Models
             //Matrix4.Mult(ref orientation, ref modelMatrix, out modelMatrix);
         }
 
-        protected override void setupMatrices(ViewInfo curView, Shader curShader)
+        protected override void setupMatrices(ref ViewInfo curView, ref Shader curShader, ref Mesh curMesh)
         {
-            base.setupMatrices( curView,  curShader);
+            base.setupMatrices(ref curView, ref curShader, ref curMesh);
 
             GL.UniformMatrix4(curShader.rotationMatrixLocation2, false, ref orientation2);
             GL.UniformMatrix4(curShader.modelMatrixLocation2, false, ref modelMatrix2);

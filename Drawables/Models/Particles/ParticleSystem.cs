@@ -99,7 +99,9 @@ namespace OpenTkProject.Drawables.Models.Paticles
                     {
                         //Console.WriteLine("drawing: " + mMesh[i].name);
 
-                        Shader curShader = activateMaterial(materials[i]);
+                        Material curMat = materials[i];
+                        Shader curShader = activateMaterial(ref curMat);
+                        Mesh curMesh = meshes[i];
 
                         if (curShader.loaded)
                         {
@@ -114,10 +116,10 @@ namespace OpenTkProject.Drawables.Models.Paticles
 
                             if (Scene != null)
                             {
-                                setupMatrices(curView, curShader);
+                                setupMatrices(ref curView, ref curShader, ref curMesh);
                             }
 
-                            setSpecialUniforms(curShader);
+                            setSpecialUniforms(ref curShader,ref curMesh);
 
                             GL.BindVertexArray(vaoHandle[i]);
 
@@ -128,12 +130,12 @@ namespace OpenTkProject.Drawables.Models.Paticles
                                 {
                                     GL.Uniform3(curShader.particlePos, ref curPat.position);
                                     GL.Uniform1(curShader.particleSize, 1, ref curPat.size);
-                                    GL.DrawElements(BeginMode.Triangles, meshes[i].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                                    GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                                 }
                             }
-                            
 
-                            gameWindow.checkGlError("--Drawing ERROR--" + meshes[i].name);
+
+                            gameWindow.checkGlError("--Drawing ERROR--" + curMesh.name);
                         }
                     }
                 }
