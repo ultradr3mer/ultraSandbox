@@ -2,7 +2,6 @@
 obj/
 bin/Debug/settings.xml
 bin/Debug/*.txt
-bin/Debug/*.pdb
-bin/Debug/*.exe
-bin/Debug/*.png
-
+*.pdb
+*.exe
+*.png
