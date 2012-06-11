@@ -10,8 +10,6 @@ namespace OpenTkProject.Loader
 {
     public class ColladaScene
     {
-        enum Mode { scene, animation };
-
         public List<Vector3> positionVboDataList;
         public List<Vector3> normalVboDataList;
         public List<Vector2> textureVboDataList;
@@ -29,15 +27,14 @@ namespace OpenTkProject.Loader
 
         private List<ColladaObject> colladaObjects = new List<ColladaObject> { };
         private List<ColladaNode> nodes = new List<ColladaNode> { };
-        private List<ColladaAnimation> animations = new List<ColladaAnimation> { };
         private List<ColladaLibraryAnimation> animationLibs = new List<ColladaLibraryAnimation> { };
 
         private Collada collada;
         public string armatureName;
         public float stepSize;
-        private AnimationDataGenerator colladaAnimationData;
-        public AnimationData animationData;
-        private Mode mode;
+        private AnimationDataGenerator colladaAnimationDataGenerator;
+
+        public List<AnimationData> animationData = new List<AnimationData> { };
 
         class ColladaObject
         {
@@ -164,7 +161,7 @@ namespace OpenTkProject.Loader
                     ColladaObject newObj = new ColladaLibraryAnimation(ref reader, this, scene);
                 }
                 
-                if (reader.Name == "library_animations" && reader.NodeType != XmlNodeType.EndElement)
+                if (reader.Name == "animation" && reader.NodeType != XmlNodeType.EndElement)
                 {
                     ColladaObject newObj = new ColladaAnimation(ref reader, this, scene);
                 }
@@ -206,13 +203,11 @@ namespace OpenTkProject.Loader
 
         class ColladaLibraryAnimation : ColladaObject
         {
+            public List<ColladaAnimation> animations = new List<ColladaAnimation> { };
             public ColladaLibraryAnimation(ref XmlTextReader reader, ColladaObject parent, ColladaScene scene)
                 : base(ref reader, parent, scene, "library_animations")
             {
-                if (scene.mode == Mode.animation)
-                {
-                    scene.animationLibs.Add(this);
-                }
+
             }
         }
 
@@ -227,15 +222,17 @@ namespace OpenTkProject.Loader
         */
         class ColladaNode : ColladaObject
         {
-            public TranslationData translationData;
-            public RotationData rotationData;
-            public TransformationData transformationData;
+            public TranslationData translationData = new TranslationData();
+            public RotationData rotationData = new RotationData();
+            public TransformationData transformationData = new TransformationData();
             public string referenceName;
             private string treeName;
             public bool rootNode;
             public List<Matrix4> boneAnimationMatrices;
             public Matrix4 boneBaseMatrix = Matrix4.Identity;
             public Matrix4 invBaseMatrix;
+
+            List<ColladaNode> childnodes = new List<ColladaNode> { };
 
             public struct TransformationData
             {
@@ -244,11 +241,13 @@ namespace OpenTkProject.Loader
                 public List<Matrix4> transformationMatrices;
                 public List<Matrix4> animationMatrices;
 
+                public void flush()
+                {
+                    transformationMatrices = null;
+                }
+
                 public List<Matrix4> generateMatrices(int frameCount)
                 {
-                    if (baseMatrix == null || baseMatrix == GenericMethods.Matrix4Zero)
-                        baseMatrix = Matrix4.Identity;
-
                     animationMatrices = new List<Matrix4> { };
 
                     if (transformationMatrices == null)
@@ -295,6 +294,11 @@ namespace OpenTkProject.Loader
                     }
                 }
 
+                public void flush()
+                {
+                    animationTranslation = null;
+                }
+
                 public List<Matrix4> generateMatrices(int frameCount)
                 {
                     animationMatrices = new List<Matrix4> { };
@@ -326,9 +330,7 @@ namespace OpenTkProject.Loader
 
             public struct RotationData
             {
-                private float baseRotationX;
-                private float baseRotationY;
-                private float baseRotationZ;
+                private Vector3 baseRotation;
                 public List<float> animationRotationX;
                 public List<float> animationRotationY;
                 public List<float> animationRotationZ;
@@ -337,41 +339,21 @@ namespace OpenTkProject.Loader
 
                 public Matrix4 baseMatrix;
 
-                public float BaseRotationX
+                public Vector3 BaseRotation
                 {
-                    get { return baseRotationX; }
+                    get { return baseRotation; }
                     set
                     {
-                        baseRotationX = value;
-                        buildBaseMat();
-                    }
-                }
-
-                public float BaseRotationY
-                {
-                    get { return baseRotationY; }
-                    set
-                    {
-                        baseRotationY = value;
-                        buildBaseMat();
-                    }
-                }
-
-                public float BaseRotationZ
-                {
-                    get { return baseRotationZ; }
-                    set
-                    {
-                        baseRotationZ = value;
+                        baseRotation = value;
                         buildBaseMat();
                     }
                 }
 
                 private void buildBaseMat()
                 {
-                    float rotX = MathHelper.DegreesToRadians(baseRotationX);
-                    float rotY = MathHelper.DegreesToRadians(baseRotationY);
-                    float rotZ = MathHelper.DegreesToRadians(baseRotationZ);
+                    float rotX = MathHelper.DegreesToRadians(baseRotation.X);
+                    float rotY = MathHelper.DegreesToRadians(baseRotation.Y);
+                    float rotZ = MathHelper.DegreesToRadians(baseRotation.Z);
 
                     baseMatrix = Matrix4.Identity;
 
@@ -380,11 +362,18 @@ namespace OpenTkProject.Loader
                     baseMatrix *= Matrix4.CreateRotationZ(rotZ);
                 }
 
+                public void flush()
+                {
+                    animationRotationX = null;
+                    animationRotationY = null;
+                    animationRotationZ = null;
+                }
+
                 public List<Matrix4> generateMatrices(int frameCount)
                 {
-                    float rotX = MathHelper.DegreesToRadians(baseRotationX);
-                    float rotY = MathHelper.DegreesToRadians(baseRotationY);
-                    float rotZ = MathHelper.DegreesToRadians(baseRotationZ);
+                    float rotX = MathHelper.DegreesToRadians(baseRotation.X);
+                    float rotY = MathHelper.DegreesToRadians(baseRotation.Y);
+                    float rotZ = MathHelper.DegreesToRadians(baseRotation.Z);
 
                     animationMatrices = new List<Matrix4> { };
 
@@ -464,10 +453,6 @@ namespace OpenTkProject.Loader
             public ColladaNode(ref XmlTextReader reader, ColladaObject parent, ColladaScene scene)
                 : base(ref reader, parent, scene, "node")
             {
-                translationData.baseMatrix = Matrix4.Identity;
-                rotationData.baseMatrix = Matrix4.Identity;
-                transformationData.baseMatrix = Matrix4.Identity;
-
                 scene.nodes.Add(this);
 
                 TreeName = treeName;
@@ -489,7 +474,9 @@ namespace OpenTkProject.Loader
             {
                 if (reader.Name == "node" && reader.NodeType != XmlNodeType.EndElement)
                 {
-                    ColladaObject newObj = new ColladaJoint(ref reader, this, scene);
+                    ColladaNode newObj = new ColladaJoint(ref reader, this, scene);
+                    childnodes.Add(newObj);
+                    reader.Read();
                 }
 
                 if (reader.Name == "translate" && reader.NodeType != XmlNodeType.EndElement)
@@ -520,9 +507,7 @@ namespace OpenTkProject.Loader
                 pointer.Z = GenericMethods.FloatFromString(tmpAry[2]);
 
                 Vector3 rotation = pointer * GenericMethods.FloatFromString(tmpAry[3]);
-                rotationData.BaseRotationX += rotation.X;
-                rotationData.BaseRotationY += rotation.Y;
-                rotationData.BaseRotationZ += rotation.Z;
+                rotationData.BaseRotation += rotation;
             }
 
             private void setTranslation(ref XmlTextReader reader)
@@ -538,22 +523,35 @@ namespace OpenTkProject.Loader
 
             public void generateBase()
             {
-                boneBaseMatrix = transformationData.baseMatrix;
+                boneBaseMatrix = Matrix4.Identity;
+
+                if (transformationData.baseMatrix == GenericMethods.Matrix4Zero)
+                    transformationData.baseMatrix = Matrix4.Identity;
+
+                if (rotationData.baseMatrix == GenericMethods.Matrix4Zero)
+                    rotationData.baseMatrix = Matrix4.Identity;
+                    
+                if (translationData.baseMatrix == GenericMethods.Matrix4Zero)
+                    translationData.baseMatrix = Matrix4.Identity;
+
+                boneBaseMatrix *= transformationData.baseMatrix;
                 boneBaseMatrix *= rotationData.baseMatrix;
                 boneBaseMatrix *= translationData.baseMatrix;
                 boneBaseMatrix *= ParentBaseMatix;
 
                 invBaseMatrix = Matrix4.Invert(boneBaseMatrix);
 
+                Console.WriteLine(boneBaseMatrix);
+                Console.WriteLine("--------------");
+
                 generateBaseChilds();
             }
 
             private void generateBaseChilds()
             {
-                foreach (var child in childs)
+                foreach (var node in childnodes)
                 {
-                    ColladaNode nodeChild = (ColladaNode)child;
-                    nodeChild.generateBase();
+                    node.generateBase();
                 }
             }
 
@@ -565,19 +563,7 @@ namespace OpenTkProject.Loader
 
                 Matrix4 basePOffset = ParentBaseMatix;
                 List<Matrix4> parentOffset = ParentAnimationMatrices;
-                /*
-               boneBaseMatrix = basePOffset; 
-               boneBaseMatrix *= rotationData.baseMatrix;
-               boneBaseMatrix *= translationData.baseMatrix;
-               */
-                /*
-                boneBaseMatrix = transformationData.baseMatrix;
-                boneBaseMatrix *= rotationData.baseMatrix; 
-                boneBaseMatrix *= translationData.baseMatrix;
-                boneBaseMatrix *= basePOffset;
 
-                invBaseMatrix = Matrix4.Invert(boneBaseMatrix);
-                */
                 boneAnimationMatrices = new List<Matrix4>{};
                 int frameCount = scene.frameCount;
                 for (int i = 0; i < frameCount; i++)
@@ -591,11 +577,15 @@ namespace OpenTkProject.Loader
                 }
 
                 generateChilds();
+
+                translationData.flush();
+                rotationData.flush();
+                transformationData.flush();
             }
 
             public void generateChilds()
             {
-                foreach (var node in childs)
+                foreach (var node in childnodes)
                 {
                     node.generate();
                 }
@@ -775,7 +765,8 @@ namespace OpenTkProject.Loader
             public ColladaAnimation(ref XmlTextReader reader, ColladaObject parent, ColladaScene scene)
                 : base(ref reader, parent, scene, "animation")
             {
-                scene.animations.Add(this);
+                ColladaLibraryAnimation libPar = (ColladaLibraryAnimation)parent;
+                libPar.animations.Add(this);
             }
 
             protected override void specialAttributes(ref XmlTextReader reader)
@@ -1251,7 +1242,7 @@ namespace OpenTkProject.Loader
                 int readerPos = 0;
 
                 string[] boneNames = jointIn.NameAry;
-                scene.colladaAnimationData.boneNames = boneNames;
+                scene.colladaAnimationDataGenerator.boneNames = boneNames;
 
                 groupCount = boneNames.Length;
                 if (groupCount > maxAffBones)
@@ -1327,13 +1318,11 @@ namespace OpenTkProject.Loader
 
         public ColladaScene(string pointer)
         {
-            colladaAnimationData = new AnimationDataGenerator();
+            colladaAnimationDataGenerator = new AnimationDataGenerator();
 
             XmlTextReader reader = new XmlTextReader(pointer);
 
             stepSize = 1.0f / 25;
-
-            mode = Mode.scene;
 
             while (reader.Read())
             {
@@ -1341,11 +1330,6 @@ namespace OpenTkProject.Loader
                     collada = new Collada(ref reader, this);
             }
 
-            foreach (var node in nodes)
-            {
-                if (node.rootNode)
-                    node.generateBase();
-            }
             /*
             foreach (var animation in animations)
             {
@@ -1381,10 +1365,14 @@ namespace OpenTkProject.Loader
                 target.normalVboDataList = normalVboDataList;
                 target.textureVboDataList = textureVboDataList;
 
-                target.boneWeightList = boneWeights;
-                target.boneIdList = boneIds;
-                target.curAnimationData = animationData;
-                target.animated = true;
+                if (animationData.Count > 0)
+                {
+                    target.boneWeightList = boneWeights;
+                    target.boneIdList = boneIds;
+                    target.curAnimationData = animationData[0];
+                    target.animationData = animationData;
+                    target.animated = true;
+                }
             }
             else
             {
@@ -1397,7 +1385,7 @@ namespace OpenTkProject.Loader
             public string[] boneNames;
             public ColladaNode[] referingNodes;
 
-            internal void generate(List<ColladaNode> nodes,ref AnimationData animationData)
+            internal void generate(List<ColladaNode> nodes, ref AnimationData animationData)
             {
                 int boneCount = boneNames.Length;
                 int frameCount = animationData.Matrices.Length;
@@ -1435,9 +1423,47 @@ namespace OpenTkProject.Loader
 
         internal void appendAnimations(List<AnimationData> list)
         {
-            mode = Mode.animation;
+            foreach (var node in nodes)
+            {
+                if (node.rootNode)
+                    node.generateBase();
+            }
 
+            string pointer = list[0].pointer;
+            XmlTextReader reader = new XmlTextReader(pointer);
 
+            frameCount = 0;
+
+            while (reader.Read())
+            {
+                if (reader.Name == "library_animations" && reader.NodeType == XmlNodeType.Element)
+                {
+                    ColladaLibraryAnimation aniLib = new ColladaLibraryAnimation(ref reader, collada, this);
+
+                    foreach (var animation in aniLib.animations)
+                    {
+                        animation.generate();
+                    }
+
+                    if (nodes.Count > 0 && colladaAnimationDataGenerator.boneNames != null)
+                    {
+                        foreach (var node in nodes)
+                        {
+                            if (node.rootNode)
+                                node.generate();
+                        }
+                        AnimationData curAnimationData = new AnimationData();
+
+                        curAnimationData.Matrices = new Matrix4[frameCount][];
+                        curAnimationData.stepSize = stepSize;
+                        curAnimationData.lastFrame = lastFrame;
+
+                        colladaAnimationDataGenerator.generate(nodes, ref curAnimationData);
+
+                        animationData.Add(curAnimationData);
+                    }
+                }
+            }
         }
     }
 

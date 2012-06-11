@@ -158,11 +158,9 @@ namespace OpenTkProject
                         {
                             if (reader.Name == "source")
                             {
-                                string aniname = pointer.Replace(gameWindow.modelFolder, "");
-
                                 AnimationData tmpAni = new AnimationData();
-                                tmpAni.pointer = reader.Value;
-                                tmpAni.name = aniname;
+                                tmpAni.pointer = gameWindow.modelFolder +  reader.Value;
+                                tmpAni.name = reader.Value;
                                 curMesh.animationData.Add(tmpAni);
                             }
                         }
@@ -386,7 +384,6 @@ namespace OpenTkProject
                     float Y = float.Parse(sline[2], nfi);
                     float Z = float.Parse(sline[3], nfi);
                     positionVboDataList.Add(new Vector3(X, Y, Z));
-
                 }
 
                 if (sline[0] == "vn")
