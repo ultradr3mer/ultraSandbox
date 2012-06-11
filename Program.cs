@@ -85,7 +85,7 @@ namespace OpenTkProject
         float loadingPercentage = 0;
 
         public OpenTkProjectWindow(int pWidth, int pHeight, bool fullScr)
-            : base(pWidth, pHeight, new GraphicsMode(), "ultraSandbox", fullScr ? GameWindowFlags.Fullscreen : GameWindowFlags.Default , DisplayDevice.Default, 3, 0, 
+            : base(pWidth, pHeight, new GraphicsMode(), "ultraSandbox", fullScr ? GameWindowFlags.Fullscreen : GameWindowFlags.Default, DisplayDevice.Default, 3, 0,
             GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug)
         {
 
@@ -409,22 +409,22 @@ namespace OpenTkProject
         [STAThread]
         public static void Main()
         {
-			if (!File.Exists("settings.xml"))
-			{
-				// settings is not existing, lets save default ones
-				Settings.Instance.SaveSettings("settings.xml");
+            if (!File.Exists("settings.xml"))
+            {
+                // settings is not existing, lets save default ones
+                Settings.Instance.SaveSettings("settings.xml");
 
-				// we can create gui at this point when it is implemented
-			}
+                // we can create gui at this point when it is implemented
+            }
 
-			Settings.Instance.LoadSettings("settings.xml");
-			
+            Settings.Instance.LoadSettings("settings.xml");
 
-			int scrWidth = Settings.Instance.video.screenWidth;
-			int scrHeight = Settings.Instance.video.screenHeight;
-			bool fullScr = Settings.Instance.video.fullScreen;
 
-            using (OpenTkProjectWindow game = new OpenTkProjectWindow(scrWidth,scrHeight,fullScr))
+            int scrWidth = Settings.Instance.video.screenWidth;
+            int scrHeight = Settings.Instance.video.screenHeight;
+            bool fullScr = Settings.Instance.video.fullScreen;
+
+            using (OpenTkProjectWindow game = new OpenTkProjectWindow(scrWidth, scrHeight, fullScr))
             {
                 game.Run(60);
             }

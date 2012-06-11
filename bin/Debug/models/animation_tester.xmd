@@ -1,2 +1,4 @@
-<mesh source="animation_tester.dae"/>
-<animation source="animation_tester_move.dae"/>
+<model>
+	<mesh source="animation_tester.dae"/>
+	<animation source="animation_tester_move.dae"/>
+</model>

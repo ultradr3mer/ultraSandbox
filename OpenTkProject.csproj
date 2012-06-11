@@ -58,7 +58,6 @@
     <Compile Include="Drawables\Models\Particles\ParticleSystem.cs" />
     <Compile Include="Game\Lights\LightSpot.cs" />
     <Compile Include="Game\Lights\LightSun.cs" />
-    <Compile Include="Game\Settings.cs" />
     <Compile Include="Game\Tools\GameMenu.cs" />
     <Compile Include="Game\Tools\Grabber.cs" />
     <Compile Include="Game\Tools\Remover.cs" />
@@ -100,6 +99,7 @@
     <Compile Include="Loader\TextureLoader.cs" />
     <Compile Include="Game\Scene.cs" />
     <Compile Include="Game\ViewPorts\ViewInfo.cs" />
+    <Compile Include="Game\Settings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

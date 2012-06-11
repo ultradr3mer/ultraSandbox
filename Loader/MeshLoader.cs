@@ -23,7 +23,7 @@ namespace OpenTkProject
 
         public int identifier;
 
-        public enum Type { obj, voxel, collada, empty }
+        public enum Type { obj, voxel, collada, empty, colladaManaged }
 
         public Type type;
         public string pointer;
@@ -55,7 +55,14 @@ namespace OpenTkProject
         public int[][] boneIdList;
         public int[][] boneIdVboData;
         public float[][] boneWeightVboData;
-        public AnimationData animationData;
+        public AnimationData curAnimationData;
+        public List<AnimationData> animationData;
+        public bool animated;
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 
     public class MeshLoader : GameObject
@@ -121,6 +128,58 @@ namespace OpenTkProject
             }
         }
 
+        internal Mesh fromXml(string pointer)
+        {
+            string name = pointer.Replace(gameWindow.modelFolder, "");
+
+            if (!MeshesNames.ContainsKey(name))
+            {
+
+                Mesh curMesh = new Mesh();
+
+                curMesh.type = Mesh.Type.colladaManaged;
+                //curMesh.pointer = pointer;
+                curMesh.identifier = Meshes.Count;
+                curMesh.name = name;
+                curMesh.animationData = new List<AnimationData> { };
+
+                XmlTextReader reader = new XmlTextReader(pointer);
+                while (reader.Read())
+                {
+                    if (reader.Name == "mesh")
+                        while (reader.MoveToNextAttribute())
+                        {
+                            if (reader.Name == "source")
+                                curMesh.pointer = reader.Value;
+                        }
+
+                    if (reader.Name == "animation")
+                        while (reader.MoveToNextAttribute())
+                        {
+                            if (reader.Name == "source")
+                            {
+                                string aniname = pointer.Replace(gameWindow.modelFolder, "");
+
+                                AnimationData tmpAni = new AnimationData();
+                                tmpAni.pointer = reader.Value;
+                                tmpAni.name = aniname;
+                                curMesh.animationData.Add(tmpAni);
+                            }
+                        }
+                }
+
+                MeshesNames.Add(curMesh.name, curMesh.identifier);
+
+                Meshes.Add(curMesh);
+
+                return curMesh;
+            }
+            else
+            {
+                return getMesh(name);
+            }
+        }
+
         public Mesh getMesh(string name)
         {
             int id = (int)MeshesNames[name];
@@ -165,8 +224,34 @@ namespace OpenTkProject
                 case Mesh.Type.collada:
                     loadDae(curMesh);
                     break;
+                case Mesh.Type.colladaManaged:
+                    loadManagedCollada(curMesh);
+                    break;
                 default:
                     break;
+            }
+        }
+
+        private void loadManagedCollada(Mesh target)
+        {
+            gameWindow.log("load Managed Collada: " + target.pointer);
+
+            ColladaScene colladaScene = new ColladaScene(gameWindow.modelFolder + target.pointer);
+            colladaScene.appendAnimations(target.animationData);
+            colladaScene.saveTo(ref target);
+
+            target.loaded = true;
+
+            if (target.type != Mesh.Type.empty)
+            {
+                parseFaceList(ref target, false);
+
+                generateVBO(ref target);
+            }
+
+            if (target.identifier != -1)
+            {
+                Meshes[target.identifier] = target;
             }
         }
 

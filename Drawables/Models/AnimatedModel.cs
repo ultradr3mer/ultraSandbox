@@ -20,7 +20,7 @@ namespace OpenTkProject.Drawables.Models
         protected override void setupMatrices(ref ViewInfo curView,ref  Shader curShader,ref Mesh curMesh)
         {
             base.setupMatrices(ref curView, ref curShader, ref curMesh);
-            AnimationData animationData = curMesh.animationData;
+            AnimationData animationData = curMesh.curAnimationData;
             int curframe = (int)(animationData.animationPos / animationData.stepSize);
             Console.WriteLine(curframe);
 
@@ -44,12 +44,12 @@ namespace OpenTkProject.Drawables.Models
             base.update();
             for (int i = 0; i < vaoHandle.Length; i++)
 			{
-                AnimationData animationData = meshes[i].animationData;
+                AnimationData animationData = meshes[i].curAnimationData;
                 animationData.animationPos += gameWindow.lastFrameDuration;
                 if (animationData.animationPos > animationData.lastFrame)
                     animationData.animationPos -= animationData.lastFrame;
 
-                meshes[i].animationData = animationData;
+                meshes[i].curAnimationData = animationData;
             }
         }
 

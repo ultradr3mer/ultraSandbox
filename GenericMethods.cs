@@ -20,15 +20,14 @@ namespace OpenTkProject
     {
         static string splitter = "|";
 
+        public static XmlWriter CoolXMLWriter(Stream output)
+        {
+            XmlWriterSettings xws = new XmlWriterSettings();
+            xws.Indent = true;
+            xws.IndentChars = "\t";
 
-		public static XmlWriter CoolXMLWriter(Stream output)
-		{
-			XmlWriterSettings xws = new XmlWriterSettings();
-			xws.Indent = true;
-			xws.IndentChars = "\t";
-
-			return XmlWriter.Create(output, xws);
-		}
+            return XmlWriter.Create(output, xws);
+        }
 
         public static Matrix4 Matrix4Zero = new Matrix4(
             0, 0, 0, 0,

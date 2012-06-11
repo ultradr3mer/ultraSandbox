@@ -102,6 +102,7 @@ found material file: materials\particles\particle_a.xmf
 found image file: materials\particles\particle_b.png
 found material file: materials\particles\particle_b.xmf
 found object file: models\animation_tester.dae
+found object definition file: models\animation_tester.xmd
 found object file: models\anim_tester_move.dae
 found object file: models\catwalk.obj
 found object file: models\catwalk_pbox.obj
@@ -245,6 +246,7 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 load Collada: models\animation_tester.dae
+load Managed Collada: animation_tester.dae
 load Collada: models\anim_tester_move.dae
 load Wavefront: models\catwalk.obj
 load Wavefront: models\catwalk_pbox.obj
@@ -729,32 +731,32 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
-generated Chunk:00:00:00.0199083
-generated Chunk:00:00:00.0256549
-generated Chunk:00:00:00.0292914
-generated Chunk:00:00:00.0354978
-generated Chunk:00:00:00.0418944
-generated Chunk:00:00:00.0488458
-generated Chunk:00:00:00.0527080
-generated Chunk:00:00:00.0597084
-generated Chunk:00:00:00.0645551
-generated Chunk:00:00:00.0735755
-generated Chunk:00:00:00.0767469
-generated Chunk:00:00:00.0807060
-generated Chunk:00:00:00.0834038
-generated Chunk:00:00:00.0887654
-generated Chunk:00:00:00.0965952
-generated Chunk:00:00:00.1030404
-generated Chunk:00:00:00.1175696
-generated Chunk:00:00:00.1261498
-generated Chunk:00:00:00.1289976
-generated Chunk:00:00:00.1325693
-generated Chunk:00:00:00.1359122
-generated Chunk:00:00:00.1383413
-generated Chunk:00:00:00.1415179
-generated Chunk:00:00:00.1439733
-generated Chunk:00:00:00.1539684
-generated Chunk:00:00:00.1605854
-generated Chunk:00:00:00.1666633
-generated Chunk:00:00:00.1728068
-generated Chunk:00:00:00.1758033
+generated Chunk:00:00:00.0145546
+generated Chunk:00:00:00.0208453
+generated Chunk:00:00:00.0245698
+generated Chunk:00:00:00.0307120
+generated Chunk:00:00:00.0371647
+generated Chunk:00:00:00.0432669
+generated Chunk:00:00:00.0468880
+generated Chunk:00:00:00.0539931
+generated Chunk:00:00:00.0585376
+generated Chunk:00:00:00.0687520
+generated Chunk:00:00:00.0719937
+generated Chunk:00:00:00.0756674
+generated Chunk:00:00:00.0783418
+generated Chunk:00:00:00.0835620
+generated Chunk:00:00:00.0879438
+generated Chunk:00:00:00.0933967
+generated Chunk:00:00:00.1008566
+generated Chunk:00:00:00.1093384
+generated Chunk:00:00:00.1205088
+generated Chunk:00:00:00.1242574
+generated Chunk:00:00:00.1287554
+generated Chunk:00:00:00.1313412
+generated Chunk:00:00:00.1347503
+generated Chunk:00:00:00.1374007
+generated Chunk:00:00:00.1419970
+generated Chunk:00:00:00.1480210
+generated Chunk:00:00:00.1543372
+generated Chunk:00:00:00.1602091
+generated Chunk:00:00:00.1666200

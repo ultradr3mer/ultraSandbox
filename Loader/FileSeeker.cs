@@ -31,6 +31,10 @@ namespace OpenTkProject
                         mGameWindow.log("found object file: " + relativePath);
                         mGameWindow.meshLoader.fromCollada(relativePath);
                         break;
+                    case ".xmd":
+                        mGameWindow.log("found object definition file: " + relativePath);
+                        mGameWindow.meshLoader.fromXml(relativePath);
+                        break;
                     case ".png":
                         mGameWindow.log("found image file: " + relativePath);
                         mGameWindow.textureLoader.fromFile(relativePath, true);
