@@ -12,12 +12,23 @@ using System.IO;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
 
 namespace OpenTkProject
 {
     public sealed class GenericMethods
     {
         static string splitter = "|";
+
+
+		public static XmlWriter CoolXMLWriter(Stream output)
+		{
+			XmlWriterSettings xws = new XmlWriterSettings();
+			xws.Indent = true;
+			xws.IndentChars = "\t";
+
+			return XmlWriter.Create(output, xws);
+		}
 
         public static Matrix4 Matrix4Zero = new Matrix4(
             0, 0, 0, 0,

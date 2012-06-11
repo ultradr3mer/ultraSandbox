@@ -258,9 +258,16 @@ namespace OpenTkProject.Game
 
 		public void SaveSettings(string path)
 		{
-			FileStream fs = File.Create(path);
-			SaveSettings(fs);
-			fs.Close();
+			try
+			{
+				FileStream fs = File.Create(path);
+				SaveSettings(fs);
+				fs.Close();
+			}
+			catch (System.Exception ex)
+			{
+				Console.WriteLine("Error occured while saving settings: {0}", ex.Message);
+			}
 		}
 
 		public void SaveSettings(Stream output)
@@ -273,9 +280,17 @@ namespace OpenTkProject.Game
 
 		public void LoadSettings(string path)
 		{
-			FileStream fs = File.OpenRead(path);
-			LoadSettings(fs);
-			fs.Close();
+			try
+			{
+				FileStream fs = File.OpenRead(path);
+				LoadSettings(fs);
+				fs.Close();
+			}
+			catch (System.Exception ex)
+			{
+				Console.WriteLine("Error occured while loading settings: {0}", ex.Message);	
+			}
+			
 		}
 
 		public void LoadSettings(Stream input)
