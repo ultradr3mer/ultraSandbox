@@ -19,6 +19,12 @@ namespace OpenTkProject
     {
         static string splitter = "|";
 
+        public static Matrix4 Matrix4Zero = new Matrix4(
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0);
+
         public static NumberFormatInfo getNfi()
         {
             NumberFormatInfo nfi = new NumberFormatInfo();
@@ -116,6 +122,32 @@ namespace OpenTkProject
 
             return mMat;
         }
+        
+        public static Matrix4 Matrix4FromArray(float [] ary){
+            Matrix4 tmpMat = new Matrix4();
+            tmpMat.M11 = ary[0];
+            tmpMat.M12 = ary[1];
+            tmpMat.M13 = ary[2];
+            tmpMat.M14 = ary[3];
+
+            tmpMat.M21 = ary[4];
+            tmpMat.M22 = ary[5];
+            tmpMat.M23 = ary[6];
+            tmpMat.M24 = ary[7];
+
+            tmpMat.M31 = ary[8];
+            tmpMat.M32 = ary[9];
+            tmpMat.M33 = ary[10];
+            tmpMat.M34 = ary[11];
+
+            tmpMat.M41 = ary[12];
+            tmpMat.M42 = ary[13];
+            tmpMat.M43 = ary[14];
+            tmpMat.M44 = ary[15];
+
+            return tmpMat;
+        }
+
 
         public static string StringFromVector3(Vector3 mVec)
         {
@@ -338,7 +370,18 @@ namespace OpenTkProject
 
             return value;
         }
-    }
+    
+internal static float[] FloatAryFromStringAry(string[] tmpAry)
+{
+ 	                    int tmpLenth = tmpAry.Length;
+                    float[] floatAry = new float[tmpLenth];
+
+                    for (int i = 0; i < tmpLenth; i++)
+                    {
+                        floatAry[i] = GenericMethods.FloatFromString(tmpAry[i]);
+                    }
+    return floatAry;
+}}
 
     
 

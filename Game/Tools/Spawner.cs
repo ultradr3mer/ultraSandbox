@@ -118,7 +118,7 @@ namespace OpenTkProject.Game.Tools
 
         private void ensureTempType()
         {
-            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != Template.UseType.Model)
+            while ((template = gameWindow.templateLoader.getTemplate(tempId)).useType != Template.UseType.Animated)
                 stepTemplateId();
         }
 

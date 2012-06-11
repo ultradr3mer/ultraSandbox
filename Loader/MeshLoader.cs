@@ -21,14 +21,11 @@ namespace OpenTkProject
         public List<Face> FaceList;
         public List<Vertice> FpIndiceList;
 
-
-
         public int identifier;
-        public const int TYPE_OBJ = 1;
-        public const int TYPE_VOX = 2;
-        public const int TYPE_DAE = 3;
 
-        public int type;
+        public enum Type { obj, voxel, collada, empty }
+
+        public Type type;
         public string pointer;
 
         public string name;
@@ -80,7 +77,7 @@ namespace OpenTkProject
  
                 Mesh curMesh = new Mesh();
 
-                curMesh.type = Mesh.TYPE_OBJ;
+                curMesh.type = Mesh.Type.obj;
                 curMesh.pointer = pointer;
                 curMesh.identifier = Meshes.Count;
                 curMesh.name = name;
@@ -107,7 +104,7 @@ namespace OpenTkProject
 
                 Mesh curMesh = new Mesh();
 
-                curMesh.type = Mesh.TYPE_DAE;
+                curMesh.type = Mesh.Type.collada;
                 curMesh.pointer = pointer;
                 curMesh.identifier = Meshes.Count;
                 curMesh.name = name;
@@ -162,10 +159,10 @@ namespace OpenTkProject
         {
             switch (curMesh.type)
             {
-                case Mesh.TYPE_OBJ:
+                case Mesh.Type.obj:
                     loadObj(curMesh);
                     break;
-                case Mesh.TYPE_DAE:
+                case Mesh.Type.collada:
                     loadDae(curMesh);
                     break;
                 default:
@@ -180,11 +177,14 @@ namespace OpenTkProject
             ColladaScene colladaScene = new ColladaScene(target.pointer);
             colladaScene.saveTo(ref target);
 
-            parseFaceList(ref target, false);
-
             target.loaded = true;
 
-            generateVBO(ref target);
+            if (target.type != Mesh.Type.empty)
+            {
+                parseFaceList(ref target, false);
+
+                generateVBO(ref target);
+            }
 
             if (target.identifier != -1)
             {

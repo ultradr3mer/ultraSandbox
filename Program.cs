@@ -84,7 +84,7 @@ namespace OpenTkProject
         float loadingPercentage = 0;
 
         public OpenTkProjectWindow()
-            : base(1920, 1080, new GraphicsMode(), "ultraSandbox", GameWindowFlags.Fullscreen , DisplayDevice.Default, 3, 0, 
+            : base(1280, 720, new GraphicsMode(), "ultraSandbox", 0 , DisplayDevice.Default, 3, 0, 
             GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug)
         {
 

@@ -16,7 +16,7 @@
 		<isstatic/>
 	</pmodel>
 	<pmodel name='GameObject5'>
-		<position>2.801945|6.83222|6.681746</position>
+		<position>2.802083|6.838273|6.683322</position>
 		<rotation>0.9986693|0.02184259|-0.04671981|-0.04285075|0.8555235|-0.5159883|0.0286994|0.5173034|0.8553208</rotation>
 		<materials>catwalk.xmf</materials>
 		<meshes>catwalk.obj</meshes>
@@ -190,7 +190,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-953729.9|5.577117</position>
+		<position>-6.693132|-996254.7|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -247,23 +247,24 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject0'>
-		<position>-8.129108|4.343421|-17.66593</position>
-		<rotation>-0.1558731|-0.9579011|0.2411017|0.8291142|-0.2595525|-0.4951809|0.5369129|0.1227155|0.8346668</rotation>
+		<position>-8.708091|3.079031|-14.61726</position>
+		<rotation>0.07496275|-0.9802414|0.1830537|-0.03434527|-0.1859994|-0.9819505|0.9965965|0.06732272|-0.04760956</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name='GameObject1'>
-			<position>-8.129108|4.343421|-17.66593</position>
-			<direction>0.8291142|-0.2595525|-0.4951809</direction>
+			<position>-8.708091|3.079031|-14.61726</position>
+			<direction>-0.03434527|-0.1859994|-0.9819505</direction>
 			<color>0.5|0.7|1</color>
 		</lamp>
 	</pmodel>
 	<pmodel name='GameObject1'>
-		<position>-2.972205|1.292807|-9.622889</position>
-		<rotation>0.4165919|-0.05543181|0.9074021|0.8527132|0.3698657|-0.3688897|-0.3151688|0.9274303|0.2013505</rotation>
+		<position>-16.67126|1.298131|8.392566</position>
+		<rotation>0.05571735|-0.6664116|0.7434994|0.9326232|-0.2311645|-0.277087|0.3565246|0.7088433|0.6086308</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
 		<pboxes>sphere_pbox.obj</pboxes>
+		<isstatic/>
 	</pmodel>
 </scene>

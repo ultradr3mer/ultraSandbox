@@ -20,40 +20,39 @@ namespace OpenTkProject
             {
                 string relativePath = file.Substring(root.Length + 1);
                 string extention = System.IO.Path.GetExtension(file);
-                if (extention == ".obj")
+
+                switch (extention)
                 {
-                    mGameWindow.log("found object file: " + relativePath);
-                    mGameWindow.meshLoader.fromObj(relativePath);
-                }
-                if (extention == ".dae")
-                {
-                    mGameWindow.log("found object file: " + relativePath);
-                    mGameWindow.meshLoader.fromCollada(relativePath);
-                }
-                if (extention == ".png")
-                {
-                    mGameWindow.log("found image file: " + relativePath);
-                    mGameWindow.textureLoader.fromFile(relativePath,true);
-                }
-                if (extention == ".xmf")
-                {
-                    mGameWindow.log("found material file: " + relativePath);
-                    mGameWindow.materialLoader.fromXmlFile(relativePath);
-                }
-                if (extention == ".xsp")
-                {
-                    mGameWindow.log("found shaderpair file: " + relativePath);
-                    mGameWindow.shaderLoader.fromXmlFile(relativePath);
-                }
-                if (extention == ".snip")
-                {
-                    mGameWindow.log("found shader snipet: " + relativePath);
-                    mGameWindow.shaderLoader.loadSnippet(relativePath);
-                }
-                if (extention == ".xtmp")
-                {
-                    mGameWindow.log("found template file: " + relativePath);
-                    mGameWindow.templateLoader.fromXmlFile(relativePath);
+                    case ".obj":
+                        mGameWindow.log("found object file: " + relativePath);
+                        mGameWindow.meshLoader.fromObj(relativePath);
+                        break;
+                    case ".dae":
+                        mGameWindow.log("found object file: " + relativePath);
+                        mGameWindow.meshLoader.fromCollada(relativePath);
+                        break;
+                    case ".png":
+                        mGameWindow.log("found image file: " + relativePath);
+                        mGameWindow.textureLoader.fromFile(relativePath, true);
+                        break;
+                    case ".xmf":
+                        mGameWindow.log("found material file: " + relativePath);
+                        mGameWindow.materialLoader.fromXmlFile(relativePath);
+                        break;
+                    case ".xsp":
+                        mGameWindow.log("found shaderpair file: " + relativePath);
+                        mGameWindow.shaderLoader.fromXmlFile(relativePath);
+                        break;
+                    case ".snip":
+                        mGameWindow.log("found shader snipet: " + relativePath);
+                        mGameWindow.shaderLoader.loadSnippet(relativePath);
+                        break;
+                    case ".xtmp":
+                        mGameWindow.log("found template file: " + relativePath);
+                        mGameWindow.templateLoader.fromXmlFile(relativePath);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
