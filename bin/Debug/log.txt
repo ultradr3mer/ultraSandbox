@@ -17,6 +17,7 @@ Fragment shader was successfully compiled to run on hardware.
  
 parsing material: composite.xmf
 shader: composite.xsp
+found image file: screenshot0.png
 found material file: materials\animation_debugger.xmf
 found image file: materials\catwalk.png
 found material file: materials\catwalk.xmf
@@ -138,6 +139,7 @@ found object file: models\untitled.dae
 found object file: models\untitled.obj
 found object file: models\untitled_2.dae
 found object file: models\water_plane.obj
+found image file: models\Visual Studio 2010\Projects\OpenTkProject\OpenTkProject\bin\Debug\materials\rock_face.png
 found shaderpair file: shaders\ao_blur.xsp
 found shaderpair file: shaders\ao_blur_a.xsp
 found shaderpair file: shaders\backdrop.xsp
@@ -170,6 +172,7 @@ found shaderpair file: shaders\ssao_blend.xsp
 found shaderpair file: shaders\ssnormals.xsp
 found shaderpair file: shaders\ssnormals_animated.xsp
 found shaderpair file: shaders\ssnormals_notex.xsp
+found shaderpair file: shaders\ssnormals_notex_static.xsp
 found shaderpair file: shaders\unlitGeneric.xsp
 found shader snipet: shaders\vAnimation.snip
 found shader snipet: shaders\vBase.snip
@@ -203,6 +206,7 @@ found template file: templates\metaModel2.xtmp
 found template file: templates\metroid.xtmp
 found template file: templates\pillar.xtmp
 found template file: templates\plate.xtmp
+found template file: templates\rock.xtmp
 found template file: templates\sphere.xtmp
 found template file: templates\toolgun.xtmp
 found image file: weapons\electric_arc.png
@@ -487,6 +491,13 @@ Vertex shader was successfully compiled to run on hardware.
 Shaderlog (shaders\ssnormals_notex.fs):
 Fragment shader was successfully compiled to run on hardware.
  
+parsing shader pair: ssnormals_notex_static.xsp
+Shaderlog (shaders\ssnormals_static.vs):
+Vertex shader was successfully compiled to run on hardware.
+ 
+Shaderlog (shaders\ssnormals_notex.fs):
+Fragment shader was successfully compiled to run on hardware.
+ 
 parsing shader pair: unlitGeneric.xsp
 Shaderlog (shaders\unlitGeneric.vs):
 Vertex shader was successfully compiled to run on hardware.
@@ -503,163 +514,163 @@ Fragment shader was successfully compiled to run on hardware.
  
 parsing material: animation_debugger.xmf
 shader: defaultgeo_animated.xsp
-base: 91
-normal: 70
+base: 92
+normal: 71
 parsing material: catwalk.xmf
 shader: defaultgeo.xsp
-base: 52
-normal: 53
+base: 53
+normal: 54
 parsing material: crosshair.xmf
 shader: hud.xsp
-base: 54
+base: 55
 normal: 0
 parsing material: dissolve.xmf
 shader: dissolve.xsp
-base: 55
-normal: 65
+base: 56
+normal: 66
 parsing material: floor.xmf
 shader: mirror_floor.xsp
-base: 57
-normal: 75
+base: 58
+normal: 76
 parsing material: floor_module.xmf
 shader: defaultgeo.xsp
-base: 58
-normal: 59
+base: 59
+normal: 60
 parsing material: grid - Kopie.xmf
 shader: unlitGeneric.xsp
-base: 83
+base: 84
 normal: 0
 parsing material: grid.xmf
 shader: unlitGeneric.xsp
-base: 83
+base: 84
 normal: 0
 parsing material: handrail.xmf
 shader: defaultgeo.xsp
-base: 62
-normal: 63
+base: 63
+normal: 64
 parsing material: marker.xmf
 shader: sprite.xsp
-base: 54
+base: 55
 normal: 0
 parsing material: metroid.xmf
 shader: defaultgeo.xsp
-base: 67
-normal: 71
+base: 68
+normal: 72
 parsing material: metroid_cap.xmf
 shader: defaultgeo.xsp
-base: 68
-normal: 70
+base: 69
+normal: 71
 parsing material: number.xmf
 shader: hudnumber.xsp
-base: 80
+base: 81
 normal: 0
 parsing material: rock_face.xmf
 shader: defaultgeo.xsp
-base: 78
-normal: 79
+base: 79
+normal: 80
 parsing material: sphere.xmf
 shader: defaultgeo.xsp
-base: 60
-normal: 65
+base: 61
+normal: 66
 parsing material: spotlight.xmf
 shader: defaultgeo.xsp
-base: 84
-normal: 86
+base: 85
+normal: 87
 parsing material: temple_pillar.xmf
 shader: defaultgeo.xsp
-base: 87
-normal: 88
+base: 88
+normal: 89
 parsing material: voxel_debug.xmf
 shader: normaldebug.xsp
-base: 91
-normal: 75
-parsing material: hud\background.xmf
-shader: hud.xsp
 base: 92
-normal: 0
-parsing material: hud\blank_icon.xmf
+normal: 76
+parsing material: hud\background.xmf
 shader: hud.xsp
 base: 93
 normal: 0
-parsing material: hud\cursor.xmf
+parsing material: hud\blank_icon.xmf
 shader: hud.xsp
 base: 94
 normal: 0
-parsing material: hud\exit_button.xmf
+parsing material: hud\cursor.xmf
 shader: hud.xsp
 base: 95
 normal: 0
-parsing material: hud\grabber_icon.xmf
+parsing material: hud\exit_button.xmf
 shader: hud.xsp
 base: 96
 normal: 0
-parsing material: hud\remover_icon.xmf
+parsing material: hud\grabber_icon.xmf
 shader: hud.xsp
 base: 97
 normal: 0
-parsing material: hud\resume_button.xmf
+parsing material: hud\remover_icon.xmf
 shader: hud.xsp
 base: 98
 normal: 0
-parsing material: hud\spawner_icon.xmf
+parsing material: hud\resume_button.xmf
 shader: hud.xsp
 base: 99
 normal: 0
-parsing material: hud\terrain_icon.xmf
+parsing material: hud\spawner_icon.xmf
 shader: hud.xsp
 base: 100
 normal: 0
-parsing material: particles\particle_a.xmf
-shader: sprite.xsp
+parsing material: hud\terrain_icon.xmf
+shader: hud.xsp
 base: 101
 normal: 0
-parsing material: particles\particle_b.xmf
+parsing material: particles\particle_a.xmf
 shader: sprite.xsp
 base: 102
 normal: 0
-parsing material: skybox\sky1.xmf
-shader: skybox\sky.xsp
+parsing material: particles\particle_b.xmf
+shader: sprite.xsp
 base: 103
 normal: 0
-parsing material: skybox\sky2.xmf
-shader: skybox\sky.xsp
-base: 104
-normal: 0
-parsing material: skybox\sky3.xmf
+parsing material: skybox\sky1.xmf
 shader: skybox\sky.xsp
 base: 105
 normal: 0
-parsing material: skybox\sky4.xmf
+parsing material: skybox\sky2.xmf
 shader: skybox\sky.xsp
 base: 106
 normal: 0
-parsing material: skybox\sky5.xmf
+parsing material: skybox\sky3.xmf
 shader: skybox\sky.xsp
 base: 107
 normal: 0
-parsing material: skybox\sky6.xmf
+parsing material: skybox\sky4.xmf
 shader: skybox\sky.xsp
 base: 108
 normal: 0
+parsing material: skybox\sky5.xmf
+shader: skybox\sky.xsp
+base: 109
+normal: 0
+parsing material: skybox\sky6.xmf
+shader: skybox\sky.xsp
+base: 110
+normal: 0
 parsing material: weapons\grabber_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 111
+base: 113
 normal: 0
 parsing material: weapons\toolgun.xmf
 shader: defaultgeo.xsp
-base: 115
-normal: 118
+base: 117
+normal: 120
 parsing material: weapons\toolgun_arc.xmf
 shader: electricArc.xsp
-base: 109
+base: 111
 normal: 0
 parsing material: weapons\toolgun_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 111
+base: 113
 normal: 0
 parsing template: animation_debugger.xtmp
 material: animation_debugger.xmf
-mesh: animation_tester.dae
+mesh: animation_tester.xmd
 phys mesh: rock_small_pbox.dae
 offset: 1
 parsing template: catwalk.xtmp
@@ -709,6 +720,11 @@ material: floor_module.xmf
 mesh: floor_module.obj
 phys mesh: floor_module_pbox.obj
 offset: 1
+parsing template: rock.xtmp
+material: rock_face.xmf
+mesh: rock_small.dae
+phys mesh: rock_small_pbox.dae
+offset: 1
 parsing template: sphere.xtmp
 material: sphere.xmf
 mesh: sphere.obj
@@ -731,32 +747,32 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
-generated Chunk:00:00:00.0145546
-generated Chunk:00:00:00.0208453
-generated Chunk:00:00:00.0245698
-generated Chunk:00:00:00.0307120
-generated Chunk:00:00:00.0371647
-generated Chunk:00:00:00.0432669
-generated Chunk:00:00:00.0468880
-generated Chunk:00:00:00.0539931
-generated Chunk:00:00:00.0585376
-generated Chunk:00:00:00.0687520
-generated Chunk:00:00:00.0719937
-generated Chunk:00:00:00.0756674
-generated Chunk:00:00:00.0783418
-generated Chunk:00:00:00.0835620
-generated Chunk:00:00:00.0879438
-generated Chunk:00:00:00.0933967
-generated Chunk:00:00:00.1008566
-generated Chunk:00:00:00.1093384
-generated Chunk:00:00:00.1205088
-generated Chunk:00:00:00.1242574
-generated Chunk:00:00:00.1287554
-generated Chunk:00:00:00.1313412
-generated Chunk:00:00:00.1347503
-generated Chunk:00:00:00.1374007
-generated Chunk:00:00:00.1419970
-generated Chunk:00:00:00.1480210
-generated Chunk:00:00:00.1543372
-generated Chunk:00:00:00.1602091
-generated Chunk:00:00:00.1666200
+generated Chunk:00:00:00.0129927
+generated Chunk:00:00:00.0189817
+generated Chunk:00:00:00.0227347
+generated Chunk:00:00:00.0283203
+generated Chunk:00:00:00.0344300
+generated Chunk:00:00:00.0405261
+generated Chunk:00:00:00.0437854
+generated Chunk:00:00:00.0508938
+generated Chunk:00:00:00.0607431
+generated Chunk:00:00:00.0639282
+generated Chunk:00:00:00.0676803
+generated Chunk:00:00:00.0711892
+generated Chunk:00:00:00.0735604
+generated Chunk:00:00:00.0790212
+generated Chunk:00:00:00.0833002
+generated Chunk:00:00:00.0888227
+generated Chunk:00:00:00.0955713
+generated Chunk:00:00:00.1138060
+generated Chunk:00:00:00.1167553
+generated Chunk:00:00:00.1207985
+generated Chunk:00:00:00.1245409
+generated Chunk:00:00:00.1271862
+generated Chunk:00:00:00.1302525
+generated Chunk:00:00:00.1328621
+generated Chunk:00:00:00.1368101
+generated Chunk:00:00:00.1434464
+generated Chunk:00:00:00.1492404
+generated Chunk:00:00:00.1576870
+generated Chunk:00:00:00.1603281
