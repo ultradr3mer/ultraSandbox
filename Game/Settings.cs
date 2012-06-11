@@ -7,6 +7,7 @@ using System.Reflection;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using OpenTK;
 
 namespace OpenTkProject.Game
 {
@@ -219,15 +220,16 @@ namespace OpenTkProject.Game
         High,
     }
 
-    public class VideoSettings
+	public class VideoSettings
     {
         public int screenWidth = 1280;
         public int screenHeight = 720;
         public bool fullScreen = false;
 
-        public bool postProcessing = false;
-        public bool ambientOcclusion = false;
+		public bool postProcessing = false;
+		public bool ssAmbientOccluison = false;
         public bool bloom = false;
+		public bool depthOfField = false;
 
         public QualityLevel shadow = QualityLevel.Low;
         public QualityLevel shader = QualityLevel.Low;
@@ -237,6 +239,30 @@ namespace OpenTkProject.Game
         /// Added to just showing it can be done :P
         /// </summary>
         public float gamma;
+
+
+		public Vector2 CreateSizeVector()
+		{
+			return new Vector2(screenWidth, screenHeight);
+		}
+
+		/// <summary>
+		/// TODO: we can derive this class from RenderOptions, so we can directly use this instead creating one?
+		/// </summary>
+		/// <returns></returns>
+		public RenderOptions CreateRenderOptions()
+		{
+			RenderOptions result = new RenderOptions(CreateSizeVector());
+
+			result.postProcessing = postProcessing;
+			result.ssAmbientOccluison = ssAmbientOccluison;
+			result.bloom = bloom;
+			result.depthOfField = depthOfField;
+
+			result.quality = 0.5f;
+
+			return result;
+		}
     }
 
     public class SoundSettings
@@ -309,3 +335,4 @@ namespace OpenTkProject.Game
         }
     }
 }
+

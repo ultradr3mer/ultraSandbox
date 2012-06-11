@@ -98,7 +98,7 @@ namespace OpenTkProject
             sw = new Stopwatch();
 
             //set size of the render
-            virtual_size = new Vector2(1920, 1080);
+			virtual_size = Settings.Instance.video.CreateSizeVector();
 
             state = new GameState();
 
@@ -295,8 +295,7 @@ namespace OpenTkProject
                 //create framebufferset for waterreflections
                 waterFramebuffer = framebufferCreator.createFrameBuffer("waterFramebuffer", (int)(virtual_size.X * 0.5), (int)(virtual_size.Y * 0.5));
 
-                RenderOptions mOptionsWater = new RenderOptions(virtual_size);
-                mOptionsWater.postProcessing = true;
+				RenderOptions mOptionsWater = Settings.Instance.video.CreateRenderOptions();
                 mOptionsWater.ssAmbientOccluison = false;
                 mOptionsWater.bloom = false;
                 mOptionsWater.depthOfField = false;
@@ -307,11 +306,7 @@ namespace OpenTkProject
                 shadowFramebuffer = framebufferCreator.createFrameBuffer("shadowFramebuffer", mScene.ShadowRes, mScene.ShadowRes, PixelInternalFormat.Rgba16f, false);
 
                 //create main framebufferset
-                RenderOptions mOptions = new RenderOptions(virtual_size);
-                mOptions.postProcessing = true;
-                mOptions.ssAmbientOccluison = true;
-                mOptions.bloom = true;
-                //mOptions.depthOfField = true;
+				RenderOptions mOptions = Settings.Instance.video.CreateRenderOptions();
 
                 mainFramebufferSet = new FramebufferSet(framebufferCreator, framebufferCreator.defaultFb, mOptions);
 
