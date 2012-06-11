@@ -221,13 +221,17 @@ namespace OpenTkProject.Game
 
 	public class VideoSettings
 	{
-		public bool postProcessing;
-		public bool ambientOcclusion;
-		public bool bloom;
+		public int screenWidth = 1280;
+		public int screenHeight = 720;
+		public bool fullScreen = false;
 
-		public QualityLevel shadow;
-		public QualityLevel shader;
-		public QualityLevel lighting;
+		public bool postProcessing = false;
+		public bool ambientOcclusion = false;
+		public bool bloom = false;
+
+		public QualityLevel shadow = QualityLevel.Low;
+		public QualityLevel shader = QualityLevel.Low;
+		public QualityLevel lighting = QualityLevel.Low;
 
 		/// <summary>
 		/// Added to just showing it can be done :P
@@ -245,7 +249,7 @@ namespace OpenTkProject.Game
 
 	public class GameSettings
 	{
-
+		public bool dontShowSettings;
 	}
 
 	public class Settings

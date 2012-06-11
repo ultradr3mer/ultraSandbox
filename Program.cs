@@ -44,6 +44,7 @@ using Jitter.Dynamics.Constraints;
 using System.Windows.Forms;
 using System.Drawing;
 using OpenTkProject.Drawables;
+using OpenTkProject.Game;
 
 namespace OpenTkProject
 {
@@ -83,8 +84,8 @@ namespace OpenTkProject
 
         float loadingPercentage = 0;
 
-        public OpenTkProjectWindow()
-            : base(1280, 720, new GraphicsMode(), "ultraSandbox", 0 , DisplayDevice.Default, 3, 0, 
+        public OpenTkProjectWindow(int pWidth, int pHeight, bool fullScr)
+            : base(pWidth, pHeight, new GraphicsMode(), "ultraSandbox", fullScr ? GameWindowFlags.Fullscreen : GameWindowFlags.Default , DisplayDevice.Default, 3, 0, 
             GraphicsContextFlags.ForwardCompatible | GraphicsContextFlags.Debug)
         {
 
@@ -408,7 +409,22 @@ namespace OpenTkProject
         [STAThread]
         public static void Main()
         {
-            using (OpenTkProjectWindow game = new OpenTkProjectWindow())
+			if (!File.Exists("settings.xml"))
+			{
+				// settings is not existing, lets save default ones
+				Settings.Instance.SaveSettings("settings.xml");
+
+				// we can create gui at this point when it is implemented
+			}
+
+			Settings.Instance.LoadSettings("settings.xml");
+			
+
+			int scrWidth = Settings.Instance.video.screenWidth;
+			int scrHeight = Settings.Instance.video.screenHeight;
+			bool fullScr = Settings.Instance.video.fullScreen;
+
+            using (OpenTkProjectWindow game = new OpenTkProjectWindow(scrWidth,scrHeight,fullScr))
             {
                 game.Run(60);
             }
