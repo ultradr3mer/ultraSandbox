@@ -22,7 +22,6 @@ namespace OpenTkProject.Drawables.Models
             base.setupMatrices(ref curView, ref curShader, ref curMesh);
             AnimationData animationData = curMesh.curAnimationData;
             int curframe = (int)(animationData.animationPos / animationData.stepSize);
-            Console.WriteLine(curframe);
 
             int framecount = animationData.Matrices.Length;
             if (curframe > framecount - 1)

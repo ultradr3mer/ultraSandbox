@@ -197,7 +197,7 @@ namespace OpenTkProject.Game
         {
             managerType = SettingTypes.ST_Video;
             Preset low = CreateQualityLevel(QualityLevel.Low);
-            low.SetValue("postProcessing", false);
+            low.SetValue("postProcessing", true);
             low.SetValue("ambientOcclusion", false);
             low.SetValue("bloom", false);
 
@@ -222,13 +222,20 @@ namespace OpenTkProject.Game
 
 	public class VideoSettings
     {
-        public int screenWidth = 1280;
-        public int screenHeight = 720;
+        public int windowWidth = 1280;
+        public int windowHeight = 720;
+
+        public int virtualScreenWidth = 1920;
+        public int virtualScreenHeight = 1080;
+
+        public int waterScreenWidth = 1280;
+        public int waterScreenHeight = 720;
+
         public bool fullScreen = false;
 
-		public bool postProcessing = false;
-		public bool ssAmbientOccluison = false;
-        public bool bloom = false;
+		public bool postProcessing = true;
+		public bool ssAmbientOccluison = true;
+        public bool bloom = true;
 		public bool depthOfField = false;
 
         public QualityLevel shadow = QualityLevel.Low;
@@ -240,24 +247,59 @@ namespace OpenTkProject.Game
         /// </summary>
         public float gamma;
 
+        public enum Target { main, water, window };
 
-		public Vector2 CreateSizeVector()
+
+        public Vector2 CreateSizeVector(Target target)
 		{
-			return new Vector2(screenWidth, screenHeight);
+            switch (target)
+            {
+                case Target.main:
+                    return new Vector2(virtualScreenWidth, virtualScreenHeight);
+                    break;
+                case Target.water:
+                    return new Vector2(waterScreenWidth, waterScreenHeight);
+                    break;
+                case Target.window:
+                    return new Vector2(windowWidth, windowHeight);
+                    break;
+                default:
+                    return Vector2.Zero;
+                    break;
+            }
 		}
 
 		/// <summary>
-		/// TODO: we can derive this class from RenderOptions, so we can directly use this instead creating one?
+		/// creates a RenderOptions instance for the chosen target.
 		/// </summary>
 		/// <returns></returns>
-		public RenderOptions CreateRenderOptions()
+		public RenderOptions CreateRenderOptions(Target target)
 		{
-			RenderOptions result = new RenderOptions(CreateSizeVector());
+            RenderOptions result = new RenderOptions(CreateSizeVector(target));
 
-			result.postProcessing = postProcessing;
-			result.ssAmbientOccluison = ssAmbientOccluison;
-			result.bloom = bloom;
-			result.depthOfField = depthOfField;
+            switch (target)
+            {
+                case Target.main:
+			        result.postProcessing = postProcessing;
+			        result.ssAmbientOccluison = ssAmbientOccluison;
+			        result.bloom = bloom;
+			        result.depthOfField = depthOfField;
+
+                    break;
+                case Target.water:
+			        result.postProcessing = postProcessing;
+                    /*
+			        result.ssAmbientOccluison = ssAmbientOccluison;
+			        result.bloom = bloom;
+			        result.depthOfField = depthOfField;
+                     */
+
+                    break;
+                default:
+                    break;
+            }
+			
+
 
 			result.quality = 0.5f;
 

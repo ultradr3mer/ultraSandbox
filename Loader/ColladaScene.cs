@@ -541,9 +541,6 @@ namespace OpenTkProject.Loader
 
                 invBaseMatrix = Matrix4.Invert(boneBaseMatrix);
 
-                Console.WriteLine(boneBaseMatrix);
-                Console.WriteLine("--------------");
-
                 generateBaseChilds();
             }
 

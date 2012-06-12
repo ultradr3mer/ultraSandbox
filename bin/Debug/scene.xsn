@@ -190,7 +190,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-1010225|5.577117</position>
+		<position>-6.693132|-1012025|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -247,14 +247,14 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject0'>
-		<position>-8.708091|3.079031|-14.61726</position>
+		<position>-8.007766|3.474121|-15.27975</position>
 		<rotation>0.07496275|-0.9802414|0.1830537|-0.03434527|-0.1859994|-0.9819505|0.9965965|0.06732272|-0.04760956</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name='GameObject1'>
-			<position>-8.708091|3.079031|-14.61726</position>
+			<position>-8.007766|3.474121|-15.27975</position>
 			<direction>-0.03434527|-0.1859994|-0.9819505</direction>
 			<color>0.5|0.7|1</color>
 		</lamp>

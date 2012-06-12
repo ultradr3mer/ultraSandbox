@@ -98,7 +98,7 @@ namespace OpenTkProject
             sw = new Stopwatch();
 
             //set size of the render
-			virtual_size = Settings.Instance.video.CreateSizeVector();
+			virtual_size = Settings.Instance.video.CreateSizeVector(VideoSettings.Target.main);
 
             state = new GameState();
 
@@ -295,10 +295,7 @@ namespace OpenTkProject
                 //create framebufferset for waterreflections
                 waterFramebuffer = framebufferCreator.createFrameBuffer("waterFramebuffer", (int)(virtual_size.X * 0.5), (int)(virtual_size.Y * 0.5));
 
-				RenderOptions mOptionsWater = Settings.Instance.video.CreateRenderOptions();
-                mOptionsWater.ssAmbientOccluison = false;
-                mOptionsWater.bloom = false;
-                mOptionsWater.depthOfField = false;
+				RenderOptions mOptionsWater = Settings.Instance.video.CreateRenderOptions(VideoSettings.Target.water);
 
                 waterFramebufferSet = new FramebufferSet(framebufferCreator, waterFramebuffer, mOptionsWater);
 
@@ -306,7 +303,7 @@ namespace OpenTkProject
                 shadowFramebuffer = framebufferCreator.createFrameBuffer("shadowFramebuffer", mScene.ShadowRes, mScene.ShadowRes, PixelInternalFormat.Rgba16f, false);
 
                 //create main framebufferset
-				RenderOptions mOptions = Settings.Instance.video.CreateRenderOptions();
+                RenderOptions mOptions = Settings.Instance.video.CreateRenderOptions(VideoSettings.Target.main);
 
                 mainFramebufferSet = new FramebufferSet(framebufferCreator, framebufferCreator.defaultFb, mOptions);
 
@@ -415,8 +412,8 @@ namespace OpenTkProject
             Settings.Instance.LoadSettings("settings.xml");
 
 
-            int scrWidth = Settings.Instance.video.screenWidth;
-            int scrHeight = Settings.Instance.video.screenHeight;
+            int scrWidth = Settings.Instance.video.windowWidth;
+            int scrHeight = Settings.Instance.video.windowHeight;
             bool fullScr = Settings.Instance.video.fullScreen;
 
             using (OpenTkProjectWindow game = new OpenTkProjectWindow(scrWidth, scrHeight, fullScr))
