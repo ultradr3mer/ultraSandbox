@@ -46,7 +46,7 @@ namespace OpenTkProject.Game.Tools
             slot = getSlot();
 
             icon = new GuiElement(this.parent.hud);
-            icon.setSizePix(new Vector2(256, 128));
+            icon.setSizeRel(new Vector2(256, 128));
 
             iconPos = new Vector2(-0.8f, 0.8f - slot * iconDist);
             smoothIconPos = iconPos;

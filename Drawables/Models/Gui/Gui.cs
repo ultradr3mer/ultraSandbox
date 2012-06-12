@@ -120,10 +120,16 @@ namespace OpenTkProject.Drawables.Models
                 drawChilds();
             }
         }
-
+        
         public void setSizePix(Vector2 newSize)
         {
             Size = Vector2.Divide(newSize, gameWindow.virtual_size);
+        }
+
+        static Vector2 virtualScreenSize = new Vector2(1920, 1080);
+        public void setSizeRel(Vector2 newSize)
+        {
+            Size = Vector2.Divide(newSize, virtualScreenSize);
         }
 
         public new virtual Vector2 Size { get { return screenSize; } set { screenSize = value; } }

@@ -190,7 +190,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-1012025|5.577117</position>
+		<position>-6.693132|-1015242|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -268,7 +268,7 @@
 		<isstatic/>
 	</pmodel>
 	<animodel name='GameObject'>
-		<position>-1.759364|1.892191|-10.16421</position>
+		<position>2.112273|1.892901|-9.589136</position>
 		<rotation>0.4680393|-0.07936956|-0.8801372|-0.8632913|0.1717963|-0.4745727|0.1888708|0.9819319|0.01188758</rotation>
 		<materials>animation_debugger.xmf</materials>
 		<meshes>animation_tester.xmd</meshes>

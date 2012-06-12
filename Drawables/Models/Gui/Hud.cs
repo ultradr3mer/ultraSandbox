@@ -16,12 +16,12 @@ namespace OpenTkProject.Drawables.Models
             : base(parent)
         {
             crossHair = new GuiElement(this);
-            crossHair.setSizePix(new Vector2(100, 100));
+            crossHair.setSizeRel(new Vector2(100, 100));
             crossHair.setMaterial("crosshair.xmf");
 
             fpsCounter = new HudNumber(this);
             fpsCounter.Position = new Vector2(0, -0.8f);
-            fpsCounter.setSizePix(new Vector2(80, 160));
+            fpsCounter.setSizeRel(new Vector2(80, 160));
             fpsCounter.digits = 3;
         }
     }

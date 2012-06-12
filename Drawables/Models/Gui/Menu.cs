@@ -21,34 +21,34 @@ namespace OpenTkProject.Drawables.Models
             backGround.setMaterial("hud\\background.xmf");
 
             cursor = new GuiElement(this);
-            cursor.setSizePix(new Vector2(100, 100));
+            cursor.setSizeRel(new Vector2(100, 100));
             cursor.setMaterial("hud\\cursor.xmf");
 
             ButtonList bList = new ButtonList(backGround);
-            bList.setSizePix(new Vector2(200, 700));
+            bList.setSizeRel(new Vector2(200, 700));
             bList.Position = new Vector2(-0.85f, 0f);
 
             Button button = new Button(bList);
-            button.setSizePix(new Vector2(200, 100));
+            button.setSizeRel(new Vector2(200, 100));
             button.setMaterial("hud\\resume_button.xmf");
             button.HandlerClick = Resume;
 
             Button button2 = new Button(bList);
-            button2.setSizePix(new Vector2(200, 100));
+            button2.setSizeRel(new Vector2(200, 100));
             button2.setMaterial("hud\\exit_button.xmf");
             button2.HandlerClick = Exit;
 
             
             Button button3 = new Button(bList);
-            button3.setSizePix(new Vector2(200, 100));
+            button3.setSizeRel(new Vector2(200, 100));
             //button3.setMaterial("hud\\resume_button.xmf");
 
             Button button4 = new Button(bList);
-            button4.setSizePix(new Vector2(200, 100));
+            button4.setSizeRel(new Vector2(200, 100));
             //button4.setMaterial("hud\\resume_button.xmf");
 
             Button button5 = new Button(bList);
-            button5.setSizePix(new Vector2(200, 100));
+            button5.setSizeRel(new Vector2(200, 100));
             //button5.setMaterial("hud\\resume_button.xmf");
         }
 
