@@ -17,7 +17,6 @@ Fragment shader was successfully compiled to run on hardware.
  
 parsing material: composite.xmf
 shader: composite.xsp
-found image file: screenshot0.png
 found material file: materials\animation_debugger.xmf
 found image file: materials\catwalk.png
 found material file: materials\catwalk.xmf
@@ -514,159 +513,159 @@ Fragment shader was successfully compiled to run on hardware.
  
 parsing material: animation_debugger.xmf
 shader: defaultgeo_animated.xsp
-base: 92
-normal: 71
+base: 91
+normal: 70
 parsing material: catwalk.xmf
 shader: defaultgeo.xsp
-base: 53
-normal: 54
+base: 52
+normal: 53
 parsing material: crosshair.xmf
 shader: hud.xsp
-base: 55
+base: 54
 normal: 0
 parsing material: dissolve.xmf
 shader: dissolve.xsp
-base: 56
-normal: 66
+base: 55
+normal: 65
 parsing material: floor.xmf
 shader: mirror_floor.xsp
-base: 58
-normal: 76
+base: 57
+normal: 75
 parsing material: floor_module.xmf
 shader: defaultgeo.xsp
-base: 59
-normal: 60
+base: 58
+normal: 59
 parsing material: grid - Kopie.xmf
 shader: unlitGeneric.xsp
-base: 84
+base: 83
 normal: 0
 parsing material: grid.xmf
 shader: unlitGeneric.xsp
-base: 84
+base: 83
 normal: 0
 parsing material: handrail.xmf
 shader: defaultgeo.xsp
-base: 63
-normal: 64
+base: 62
+normal: 63
 parsing material: marker.xmf
 shader: sprite.xsp
-base: 55
+base: 54
 normal: 0
 parsing material: metroid.xmf
 shader: defaultgeo.xsp
-base: 68
-normal: 72
+base: 67
+normal: 71
 parsing material: metroid_cap.xmf
 shader: defaultgeo.xsp
-base: 69
-normal: 71
+base: 68
+normal: 70
 parsing material: number.xmf
 shader: hudnumber.xsp
-base: 81
+base: 80
 normal: 0
 parsing material: rock_face.xmf
 shader: defaultgeo.xsp
-base: 79
-normal: 80
+base: 78
+normal: 79
 parsing material: sphere.xmf
 shader: defaultgeo.xsp
-base: 61
-normal: 66
+base: 60
+normal: 65
 parsing material: spotlight.xmf
 shader: defaultgeo.xsp
-base: 85
-normal: 87
+base: 84
+normal: 86
 parsing material: temple_pillar.xmf
 shader: defaultgeo.xsp
-base: 88
-normal: 89
+base: 87
+normal: 88
 parsing material: voxel_debug.xmf
 shader: normaldebug.xsp
-base: 92
-normal: 76
+base: 91
+normal: 75
 parsing material: hud\background.xmf
 shader: hud.xsp
-base: 93
+base: 92
 normal: 0
 parsing material: hud\blank_icon.xmf
 shader: hud.xsp
-base: 94
+base: 93
 normal: 0
 parsing material: hud\cursor.xmf
 shader: hud.xsp
-base: 95
+base: 94
 normal: 0
 parsing material: hud\exit_button.xmf
 shader: hud.xsp
-base: 96
+base: 95
 normal: 0
 parsing material: hud\grabber_icon.xmf
 shader: hud.xsp
-base: 97
+base: 96
 normal: 0
 parsing material: hud\remover_icon.xmf
 shader: hud.xsp
-base: 98
+base: 97
 normal: 0
 parsing material: hud\resume_button.xmf
 shader: hud.xsp
-base: 99
+base: 98
 normal: 0
 parsing material: hud\spawner_icon.xmf
 shader: hud.xsp
-base: 100
+base: 99
 normal: 0
 parsing material: hud\terrain_icon.xmf
 shader: hud.xsp
-base: 101
+base: 100
 normal: 0
 parsing material: particles\particle_a.xmf
 shader: sprite.xsp
-base: 102
+base: 101
 normal: 0
 parsing material: particles\particle_b.xmf
 shader: sprite.xsp
-base: 103
+base: 102
 normal: 0
 parsing material: skybox\sky1.xmf
 shader: skybox\sky.xsp
-base: 105
+base: 104
 normal: 0
 parsing material: skybox\sky2.xmf
 shader: skybox\sky.xsp
-base: 106
+base: 105
 normal: 0
 parsing material: skybox\sky3.xmf
 shader: skybox\sky.xsp
-base: 107
+base: 106
 normal: 0
 parsing material: skybox\sky4.xmf
 shader: skybox\sky.xsp
-base: 108
+base: 107
 normal: 0
 parsing material: skybox\sky5.xmf
 shader: skybox\sky.xsp
-base: 109
+base: 108
 normal: 0
 parsing material: skybox\sky6.xmf
 shader: skybox\sky.xsp
-base: 110
+base: 109
 normal: 0
 parsing material: weapons\grabber_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 113
+base: 112
 normal: 0
 parsing material: weapons\toolgun.xmf
 shader: defaultgeo.xsp
-base: 117
-normal: 120
+base: 116
+normal: 119
 parsing material: weapons\toolgun_arc.xmf
 shader: electricArc.xsp
-base: 111
+base: 110
 normal: 0
 parsing material: weapons\toolgun_muzzle.xmf
 shader: muzzleFlash.xsp
-base: 113
+base: 112
 normal: 0
 parsing template: animation_debugger.xtmp
 material: animation_debugger.xmf
@@ -747,32 +746,32 @@ FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
 FBO: The framebuffer is complete and valid for rendering.
-generated Chunk:00:00:00.0129927
-generated Chunk:00:00:00.0189817
-generated Chunk:00:00:00.0227347
-generated Chunk:00:00:00.0283203
-generated Chunk:00:00:00.0344300
-generated Chunk:00:00:00.0405261
-generated Chunk:00:00:00.0437854
-generated Chunk:00:00:00.0508938
-generated Chunk:00:00:00.0607431
-generated Chunk:00:00:00.0639282
-generated Chunk:00:00:00.0676803
-generated Chunk:00:00:00.0711892
-generated Chunk:00:00:00.0735604
-generated Chunk:00:00:00.0790212
-generated Chunk:00:00:00.0833002
-generated Chunk:00:00:00.0888227
-generated Chunk:00:00:00.0955713
-generated Chunk:00:00:00.1138060
-generated Chunk:00:00:00.1167553
-generated Chunk:00:00:00.1207985
-generated Chunk:00:00:00.1245409
-generated Chunk:00:00:00.1271862
-generated Chunk:00:00:00.1302525
-generated Chunk:00:00:00.1328621
-generated Chunk:00:00:00.1368101
-generated Chunk:00:00:00.1434464
-generated Chunk:00:00:00.1492404
-generated Chunk:00:00:00.1576870
-generated Chunk:00:00:00.1603281
+generated Chunk:00:00:00.0125468
+generated Chunk:00:00:00.0172770
+generated Chunk:00:00:00.0232646
+generated Chunk:00:00:00.0285332
+generated Chunk:00:00:00.0370778
+generated Chunk:00:00:00.0420441
+generated Chunk:00:00:00.0454149
+generated Chunk:00:00:00.0514272
+generated Chunk:00:00:00.0549248
+generated Chunk:00:00:00.0577595
+generated Chunk:00:00:00.0604981
+generated Chunk:00:00:00.0639754
+generated Chunk:00:00:00.0719996
+generated Chunk:00:00:00.0768684
+generated Chunk:00:00:00.0807376
+generated Chunk:00:00:00.0855483
+generated Chunk:00:00:00.0905953
+generated Chunk:00:00:00.0983999
+generated Chunk:00:00:00.1007502
+generated Chunk:00:00:00.1039595
+generated Chunk:00:00:00.1162522
+generated Chunk:00:00:00.1189064
+generated Chunk:00:00:00.1215707
+generated Chunk:00:00:00.1240691
+generated Chunk:00:00:00.1282336
+generated Chunk:00:00:00.1338466
+generated Chunk:00:00:00.1388182
+generated Chunk:00:00:00.1443384
+generated Chunk:00:00:00.1466538
