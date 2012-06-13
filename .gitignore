@@ -1,9 +1,9 @@
 *.suo
-obj/
+obj/*
 bin/Debug/settings.xml
 bin/Debug/*.txt
 *.pdb
 *.exe
+bin/Debug/*.png
 *.xcf
 *.blend
-bin/Debug/*.png
