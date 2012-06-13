@@ -8,7 +8,7 @@ void main(void)
 {
   	#include vAnimation.snip
 
-	#include vBase.snip replace:in_position:ani_position
+	#include vBase.snip replace:in_position:ani_position replace:in_normal:ani_normal replace:in_tangent:ani_tangent
 	
 	if(use_alpha)
 	{

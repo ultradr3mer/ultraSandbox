@@ -301,7 +301,7 @@ namespace OpenTkProject.Game
 			
 
 
-			result.quality = 0.5f;
+			result.quality = 0.4f;
 
 			return result;
 		}
