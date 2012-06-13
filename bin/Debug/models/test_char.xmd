@@ -1,0 +1,4 @@
+<model>
+	<mesh source="test_char.dae"/>
+	<animation source="test_char_walk.dae"/>
+</model>

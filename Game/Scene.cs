@@ -475,7 +475,7 @@ namespace OpenTkProject
                 }
 
                 curFramebuffers.outputFb.enable(false);
-                //curFramebuffers.sceeneFramebuffer.Multisampeling = true;
+                curFramebuffers.sceeneFramebuffer.Multisampeling = true;
 
                 mFilter2d.draw(compositeShader, new int[] { 
                 curFramebuffers.sceeneFramebuffer.ColorTexture,

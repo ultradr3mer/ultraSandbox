@@ -5,6 +5,7 @@ using System.Text;
 using OpenTK;
 using System.Globalization;
 using System.Xml;
+using System.IO;
 
 namespace OpenTkProject.Loader
 {
@@ -54,7 +55,17 @@ namespace OpenTkProject.Loader
             public virtual List<Vector2> Vector2Data { get { return source.Vector2Data; } set { } }
 
             public virtual string[] NameAry { get { return source.NameAry; } set { } }
-            public virtual float[] FloatAry { get { return source.FloatAry; } set { } }
+            public virtual float[] FloatAry { get {
+                if (source != null)
+                {
+                    return source.FloatAry;
+                }
+                else
+                {
+                    return null;
+                }
+
+            } set { } }
             public virtual List<Matrix4> Matrices { get { return source.Matrices; } set { } }
 
             public ColladaObject (ref XmlTextReader reader,  ColladaObject parent, ColladaScene scene, string nodename)
@@ -220,6 +231,7 @@ namespace OpenTkProject.Loader
             }
         }
         */
+
         class ColladaNode : ColladaObject
         {
             public TranslationData translationData = new TranslationData();
@@ -787,7 +799,17 @@ namespace OpenTkProject.Loader
                 //get basic animation info
                 float resolution = scene.stepSize;
                 float[] timeSteps = input.FloatAry;
-                int frameCount = timeSteps.Length;
+
+                int frameCount;
+                if (timeSteps != null)
+                    frameCount = timeSteps.Length;
+                else
+                {
+                    Console.WriteLine("ERROR: reading animation data failed: " + this.id);
+                    return;
+                }
+
+
                 float endframe = timeSteps[timeSteps.Length - 1];
                 if (scene.lastFrame < endframe)
                     scene.lastFrame = endframe;
@@ -1000,7 +1022,7 @@ namespace OpenTkProject.Loader
 
                 scene.positionVboDataList = vertIn.Vector3Data;
                 scene.normalVboDataList = normalIn.Vector3Data;
-                scene.textureVboDataList = texIn.Vector2Data;
+                scene.textureVboDataList = GenericMethods.FlipY(texIn.Vector2Data);
 
                 int offset = vertIn.offset;
                 int normaloffset = normalIn.offset;
@@ -1061,6 +1083,11 @@ namespace OpenTkProject.Loader
             public ColladaInput(ref XmlTextReader reader,  ColladaObject parent, ColladaScene scene)
                 : base(ref reader, parent, scene)
             {
+            }
+
+            public override string ToString()
+            {
+                return semantic;
             }
 
             protected override void specialHeaderAttributes(ref XmlTextReader reader)
@@ -1222,6 +1249,23 @@ namespace OpenTkProject.Loader
 
             const int maxAffBones = 3;
 
+            private struct WeightJointPair
+            {
+                public int joint;
+                public float weight;
+
+                public WeightJointPair(int joint, float weight)
+                {
+                    this.joint = joint;
+                    this.weight = weight;
+                }
+            }
+
+            private static int CompareByWeight(WeightJointPair pairA, WeightJointPair pairB)
+            {
+                return pairB.weight.CompareTo(pairA.weight);
+            }
+
             public ColladaVertWeights(ref XmlTextReader reader,  ColladaObject parent, ColladaScene scene)
                 : base(ref reader, parent, scene, "vertex_weights")
             {
@@ -1257,23 +1301,33 @@ namespace OpenTkProject.Loader
                 for (int i = 0; i < vertexCount; i++)
                 {
                     int curGroups = vCounts[i];
-                    for (int j = 0; j < groupCount; j++)
+                    List<WeightJointPair> weightList = new List<WeightJointPair> { };
+
+                    for (int j = 0; j < curGroups; j++)
                     {
-                        if (j < curGroups)
-                        {
-                            int group = weightIndices[readerPos + groupOffset];
-                            int weightIndex = weightIndices[readerPos + weightOffset];
+                        int id = weightIndices[readerPos + groupOffset];
 
-                            tmpBoneWeights[j][i] = weights[weightIndex];
-                            tmpBoneIds[j][i] = group + 1;
+                        int weightIndex = weightIndices[readerPos + weightOffset];
+                        float weight = weights[weightIndex];
 
-                            readerPos += attributeCount;
-                        }
-                        else
-                        {
-                            tmpBoneWeights[j][i] = 0;
-                            tmpBoneIds[j][i] = 0;
-                        }
+
+                        weightList.Add(new WeightJointPair(id, weight));
+
+                        readerPos += attributeCount;
+                    }
+
+                    weightList.Sort(CompareByWeight);
+                    
+                    float totalWeight = 0;
+                    for (int j = 0; j < groupCount && j < curGroups; j++)
+                    {
+                        totalWeight += weightList[j].weight;
+                    }
+                    for (int j = 0; j < groupCount && j < curGroups; j++)
+                    {
+
+                            tmpBoneWeights[j][i] = weightList[j].weight / totalWeight;
+                            tmpBoneIds[j][i] = weightList[j].joint + 1;
                     }
                 }
 
@@ -1317,6 +1371,8 @@ namespace OpenTkProject.Loader
         {
             colladaAnimationDataGenerator = new AnimationDataGenerator();
 
+            prepareFile(pointer);
+
             XmlTextReader reader = new XmlTextReader(pointer);
 
             stepSize = 1.0f / 25;
@@ -1327,30 +1383,7 @@ namespace OpenTkProject.Loader
                     collada = new Collada(ref reader, this);
             }
 
-            /*
-            foreach (var animation in animations)
-            {
-                animation.generate();
-            }
-
-            if (nodes.Count > 0 && colladaAnimationData.boneNames != null)
-            {
-                foreach (var node in nodes)
-                {
-                    if (node.rootNode)
-                        node.generate();
-                }
-
-                animationData.Matrices = new Matrix4[frameCount][];
-                animationData.stepSize = stepSize;
-                animationData.lastFrame = lastFrame;
-                colladaAnimationData.generate(nodes,ref animationData);
-            }
-
-            if (pointer == "models\\untitled_2.dae")
-            {
-            }
-             */
+            reader.Close();
         }
 
         internal void saveTo(ref Mesh target)
@@ -1427,6 +1460,9 @@ namespace OpenTkProject.Loader
             }
 
             string pointer = list[0].pointer;
+
+            prepareFile(pointer);
+
             XmlTextReader reader = new XmlTextReader(pointer);
 
             frameCount = 0;
@@ -1460,6 +1496,37 @@ namespace OpenTkProject.Loader
                         animationData.Add(curAnimationData);
                     }
                 }
+            }
+
+            reader.Close();
+        }
+
+        string[] search = new string[] { "[\"", "\"]" };
+        string[] replace = new string[] { "['", "']" };
+        private void prepareFile(string filename)
+        {
+            StringBuilder result = new StringBuilder();
+
+            if (System.IO.File.Exists(filename))
+            {
+                using (StreamReader streamReader = new StreamReader(filename))
+                {
+                    String line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        string newLine = line.Replace(search[0], replace[0]);
+                        newLine = newLine.Replace(search[1], replace[1]);
+                        result.AppendLine(newLine);
+                    }
+                }
+            }
+
+            using (FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            {
+                StreamWriter streamWriter = new StreamWriter(fileStream);
+                streamWriter.Write(result);
+                streamWriter.Close();
+                fileStream.Close();
             }
         }
     }

@@ -50,6 +50,7 @@ namespace OpenTkProject.Drawables.Models
 
                 meshes[i].curAnimationData = animationData;
             }
+            wasUpdated = true;
         }
 
         public override void save(ref StringBuilder sb, int level)

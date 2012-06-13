@@ -15,6 +15,8 @@ uniform mat4 bone_matrix[no_bones];
 #functions
 vec3 boneWeights()
 {
+	int pos = 6;
+	
 	vec3 boneheat = vec3(0,0,0);
 	
 	int int_joint_0 = int(in_joint_0);
@@ -22,16 +24,16 @@ vec3 boneWeights()
 	int int_joint_2 = int(in_joint_2);
 
 	if(int_joint_0 != 0)
-		boneheat[int_joint_0-1] = in_weight_0;
+		boneheat[int_joint_0-1-pos] = in_weight_0;
 	if(int_joint_1 != 0)
-		boneheat[int_joint_1-1] = in_weight_1;
+		boneheat[int_joint_1-1-pos] = in_weight_1;
 	if(int_joint_2 != 0)
-		boneheat[int_joint_2-1] = in_weight_2;
+		boneheat[int_joint_2-1-pos] = in_weight_2;
 		
 	return boneheat;
 }
 #code
-	heat = boneWeights();
+	//heat = boneWeights();
 	vec3 ani_position = vec3(0,0,0);
 	
 	int int_joint_0 = int(in_joint_0);

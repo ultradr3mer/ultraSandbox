@@ -132,8 +132,9 @@ namespace OpenTkProject
 
             return mMat;
         }
-        
-        public static Matrix4 Matrix4FromArray(float [] ary){
+
+        public static Matrix4 Matrix4FromArray(float[] ary)
+        {
             Matrix4 tmpMat = new Matrix4();
             tmpMat.M11 = ary[0];
             tmpMat.M12 = ary[1];
@@ -380,18 +381,29 @@ namespace OpenTkProject
 
             return value;
         }
-    
-internal static float[] FloatAryFromStringAry(string[] tmpAry)
-{
- 	                    int tmpLenth = tmpAry.Length;
-                    float[] floatAry = new float[tmpLenth];
 
-                    for (int i = 0; i < tmpLenth; i++)
-                    {
-                        floatAry[i] = GenericMethods.FloatFromString(tmpAry[i]);
-                    }
-    return floatAry;
-}}
+        internal static float[] FloatAryFromStringAry(string[] tmpAry)
+        {
+            int tmpLenth = tmpAry.Length;
+            float[] floatAry = new float[tmpLenth];
+
+            for (int i = 0; i < tmpLenth; i++)
+            {
+                floatAry[i] = GenericMethods.FloatFromString(tmpAry[i]);
+            }
+            return floatAry;
+        }
+
+        internal static List<Vector2> FlipY(List<Vector2> list)
+        {
+            List<Vector2> outVec = new List<Vector2> { };
+            foreach (var vec in list)
+            {
+                outVec.Add(new Vector2(vec.X, 1.0f - vec.Y));
+            }
+            return outVec;
+        }
+    }
 
     
 
