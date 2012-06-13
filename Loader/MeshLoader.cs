@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Collections;
 using System.Xml;
 using OpenTkProject.Loader;
+using System.Text;
 
 namespace OpenTkProject
 {
@@ -418,6 +419,21 @@ namespace OpenTkProject
 
                         FaceList.Add(new Face(fp1, fp2, fp3));
                     }
+                    else if (segment.Length == 3)
+                    {
+                        Vertice fp1 = new Vertice(int.Parse(segment[0]) - 1, int.Parse(segment[1]) - 1, int.Parse(segment[2]) - 1);
+
+                        segment = sline[2].Split(new string[] { "/" }, 10, StringSplitOptions.None);
+                        Vertice fp2 = new Vertice(int.Parse(segment[0]) - 1, int.Parse(segment[1]) - 1, int.Parse(segment[2]) - 1);
+
+                        segment = sline[3].Split(new string[] { "/" }, 10, StringSplitOptions.None);
+                        Vertice fp3 = new Vertice(int.Parse(segment[0]) - 1, int.Parse(segment[1]) - 1, int.Parse(segment[2]) - 1);
+
+                        segment = sline[4].Split(new string[] { "/" }, 10, StringSplitOptions.None);
+                        Vertice fp4 = new Vertice(int.Parse(segment[0]) - 1, int.Parse(segment[1]) - 1, int.Parse(segment[2]) - 1);
+
+                        FaceList.Add(new Face(fp1, fp2, fp3, fp4));
+                    }
                 }
             }
 
@@ -456,27 +472,10 @@ namespace OpenTkProject
                 affBones = boneWeightList.Length;
             }
 
-            List<Face> FaceList = target.FaceList;
+            List<Face> faceList = target.FaceList;
 
-            removeTemp(ref FaceList);
-            convertToTri(ref FaceList);
-
-            Vector3[] positionVboData = new Vector3[FaceList.Count * 3];
-            Vector3[] normalVboData = new Vector3[FaceList.Count * 3];
-            Vector3[] tangentVboData = new Vector3[FaceList.Count * 3];
-            Vector2[] textureVboData = new Vector2[FaceList.Count * 3];
-
-            int[][] boneIdVboData = new int[affBones][];
-            float[][] boneWeightVboData = new float[affBones][];
-
-            for (int i = 0; i < affBones; i++)
-            {
-                boneIdVboData[i] = new int[FaceList.Count * 3];
-                boneWeightVboData[i] = new float[FaceList.Count * 3];
-            }
-
-
-            int[] indicesVboData = new int[FaceList.Count * 3];
+            removeTemp(ref faceList);
+            convertToTri(ref faceList);
 
             Vector3[] tmpnormalVboData = new Vector3[normalVboDataList.Count];
             Vector3[] tmptangentVboData = new Vector3[normalVboDataList.Count];
@@ -488,7 +487,7 @@ namespace OpenTkProject
             List<Vector2> normalUvHelperList = new List<Vector2> { };
             List<Vector3> positionHelperlist = new List<Vector3> { };
 
-            for (int i = 0; i < FaceList.Count; i++)
+            for (int i = 0; i < faceList.Count; i++)
             {
                 // get all the information from Lists into Facelist
                 Vector3[] vposition = new Vector3[3];
@@ -496,9 +495,9 @@ namespace OpenTkProject
                 Vector2[] vtexture = new Vector2[3];
                 for (int j = 0; j < 3; j++)
                 {
-                    vposition[j] = positionVboDataList[FaceList[i].Vertice[j].Vi];
-                    vnormal[j] = normalVboDataList[FaceList[i].Vertice[j].Ni];
-                    vtexture[j] = textureVboDataList[FaceList[i].Vertice[j].Ti];
+                    vposition[j] = positionVboDataList[faceList[i].Vertice[j].Vi];
+                    vnormal[j] = normalVboDataList[faceList[i].Vertice[j].Ni];
+                    vtexture[j] = textureVboDataList[faceList[i].Vertice[j].Ti];
 
                     int id = i * 3 + j;
 
@@ -528,21 +527,21 @@ namespace OpenTkProject
                 for (int j = 0; j < 3; j++)
                 {
                     // if Normal[Normalindice] has not been assigned a uv coordinate do so and set normal
-                    if (normalUvData[FaceList[i].Vertice[j].Ni] == Vector2.Zero)
+                    if (normalUvData[faceList[i].Vertice[j].Ni] == Vector2.Zero)
                     {
-                        normalUvData[FaceList[i].Vertice[j].Ni] = vtexture[j];
-                        normalPositionData[FaceList[i].Vertice[j].Ni] = vposition[j];
+                        normalUvData[faceList[i].Vertice[j].Ni] = vtexture[j];
+                        normalPositionData[faceList[i].Vertice[j].Ni] = vposition[j];
 
-                        tmpnormalVboData[FaceList[i].Vertice[j].Ni] = fnormal;
-                        tmptangentVboData[FaceList[i].Vertice[j].Ni] = tangent;
+                        tmpnormalVboData[faceList[i].Vertice[j].Ni] = fnormal;
+                        tmptangentVboData[faceList[i].Vertice[j].Ni] = tangent;
                     }
                     else
                     {
                         // if Normal[Normalindice] is of the same Uv and place simply add
-                        if (normalUvData[FaceList[i].Vertice[j].Ni] == vtexture[j] && normalPositionData[FaceList[i].Vertice[j].Ni] == vposition[j])
+                        if (normalUvData[faceList[i].Vertice[j].Ni] == vtexture[j] && normalPositionData[faceList[i].Vertice[j].Ni] == vposition[j])
                         {
-                            tmpnormalVboData[FaceList[i].Vertice[j].Ni] += fnormal;
-                            tmptangentVboData[FaceList[i].Vertice[j].Ni] += tangent;
+                            tmpnormalVboData[faceList[i].Vertice[j].Ni] += fnormal;
+                            tmptangentVboData[faceList[i].Vertice[j].Ni] += tangent;
                         }
                         else
                         {
@@ -554,52 +553,138 @@ namespace OpenTkProject
                                     tangentHelperList[k] += tangent;
                                     normalHelperList[k] += fnormal;
 
-                                    FaceList[i].Vertice[j].Normalihelper = k;
+                                    faceList[i].Vertice[j].Normalihelper = k;
                                 }
                             }
                             // if matching Normalhelper has not been found create new one
-                            if (FaceList[i].Vertice[j].Normalihelper == -1)
+                            if (faceList[i].Vertice[j].Normalihelper == -1)
                             {
                                 normalUvHelperList.Add(vtexture[j]);
 
                                 tangentHelperList.Add(tangent);
                                 normalHelperList.Add(fnormal);
                                 positionHelperlist.Add(vposition[j]);
-                                FaceList[i].Vertice[j].Normalihelper = normalUvHelperList.Count - 1;
+                                faceList[i].Vertice[j].Normalihelper = normalUvHelperList.Count - 1;
                             }
                         }
                     }
                 }
             }
 
-            // put Faces into Arrays
-            for (int i = 0; i < FaceList.Count; i++)
+            // put Faces into DataSets (so we can easyly compare them)
+            List<VerticeDataSet> vertList = new List<VerticeDataSet> { };
+            for (int i = 0; i < faceList.Count; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    int id = i * 3 + j;
-                    positionVboData[id] = positionVboDataList[FaceList[i].Vertice[j].Vi];
-                    normalVboData[id] = normalVboDataList[FaceList[i].Vertice[j].Ni];
-                    if (FaceList[i].Vertice[j].Normalihelper != -1)
+                    VerticeDataSet curVert = new VerticeDataSet();
+                    
+                    curVert.position = positionVboDataList[faceList[i].Vertice[j].Vi];
+                    curVert.normal = normalVboDataList[faceList[i].Vertice[j].Ni];
+                    if (faceList[i].Vertice[j].Normalihelper != -1)
                     {
                         if(genNormal)
-                            normalVboData[id] = Vector3.Normalize(normalHelperList[FaceList[i].Vertice[j].Normalihelper]); //-dont use calculated normal
-                        tangentVboData[id] = Vector3.Normalize(tangentHelperList[FaceList[i].Vertice[j].Normalihelper]);
+                            curVert.normal = Vector3.Normalize(normalHelperList[faceList[i].Vertice[j].Normalihelper]); //-dont use calculated normal
+
+                        curVert.tangent = Vector3.Normalize(tangentHelperList[faceList[i].Vertice[j].Normalihelper]);
                     }
                     else
                     {
-                        if (genNormal) 
-                            normalVboData[id] = Vector3.Normalize(tmpnormalVboData[FaceList[i].Vertice[j].Ni]); //-dont use calculated normal
-                        tangentVboData[id] = Vector3.Normalize(tmptangentVboData[FaceList[i].Vertice[j].Ni]);
+                        if (genNormal)
+                            curVert.normal = Vector3.Normalize(tmpnormalVboData[faceList[i].Vertice[j].Ni]); //-dont use calculated normal
+                        curVert.tangent = Vector3.Normalize(tmptangentVboData[faceList[i].Vertice[j].Ni]);
                     }
+                    if (affBones > 0)
+                    {
+                        curVert.boneWeight = new float[affBones];
+                        curVert.boneId = new int[affBones];
+                    }
+
                     for (int k = 0; k < affBones; k++)
                     {
-                        boneWeightVboData[k][id] = boneWeightList[k][FaceList[i].Vertice[j].Vi];
-                        boneIdVboData[k][id] = boneIdList[k][FaceList[i].Vertice[j].Vi];
+                        curVert.boneWeight[k] = boneWeightList[k][faceList[i].Vertice[j].Vi];
+                        curVert.boneId[k] = boneIdList[k][faceList[i].Vertice[j].Vi];
                     }
-                    textureVboData[id] = textureVboDataList[FaceList[i].Vertice[j].Ti];
-                    indicesVboData[id] = id;
+                    curVert.texture = textureVboDataList[faceList[i].Vertice[j].Ti];
+
+                    vertList.Add(curVert);
+                    //indicesVboData[id] = id;
                 }
+            }
+
+            //Remove unneded verts
+            int noVerts = vertList.Count;
+            List<VerticeDataSet> newVertList = new List<VerticeDataSet> {};
+            List<int> newIndiceList = new List<int> { };
+
+            for (int i = 0; i < noVerts; i++)
+            {
+                VerticeDataSet curVert = vertList[i];
+                int curNewVertCount = newVertList.Count;
+                int index = -1;
+
+                for (int j = curNewVertCount - 1; j >= 0; j--)
+                {
+                    if (newVertList[j].Equals(curVert))
+                    {
+                        index = j;
+                        /*
+                        Console.WriteLine(i);
+                        Console.WriteLine(curVert.ToString());
+                        Console.WriteLine(" Equals " + j);
+                        Console.WriteLine(newVertList[j].ToString());
+                         */
+                    }
+                }
+                if (index < 0)
+                {
+                    index = curNewVertCount;
+                    newVertList.Add(curVert);
+                }
+
+                newIndiceList.Add(index);
+            }
+
+            //put Faces into Arrays
+            int newIndiceCount = newIndiceList.Count;
+            int[] indicesVboData = new int[newIndiceCount];
+
+            int newVertCount = newVertList.Count;
+            Vector3[] positionVboData = new Vector3[newVertCount];
+            Vector3[] normalVboData = new Vector3[newVertCount];
+            Vector3[] tangentVboData = new Vector3[newVertCount];
+            Vector2[] textureVboData = new Vector2[newVertCount];
+
+            int[][] boneIdVboData = new int[affBones][];
+            float[][] boneWeightVboData = new float[affBones][];
+
+            gameWindow.log("removed Verts" + (noVerts - newVertCount));
+
+            for (int i = 0; i < affBones; i++)
+            {
+                boneIdVboData[i] = new int[newVertCount];
+                boneWeightVboData[i] = new float[newVertCount];
+            }
+
+            for (int i = 0; i < newVertCount; i++)
+            {
+                VerticeDataSet curVert = newVertList[i];
+
+                positionVboData[i] = curVert.position;
+                normalVboData[i] = curVert.normal;
+                tangentVboData[i] = curVert.tangent;
+                textureVboData[i] = curVert.texture;
+
+                for (int k = 0; k < affBones; k++)
+                {
+                    boneWeightVboData[k][i] = curVert.boneWeight[k];
+                    boneIdVboData[k][i] = curVert.boneId[k];
+                }
+            }
+
+            for (int i = 0; i < newIndiceCount; i++)
+            {
+                indicesVboData[i] = newIndiceList[i];
             }
 
             //calculate a bounding Sphere
@@ -659,6 +744,35 @@ namespace OpenTkProject
         public MeshLoader(OpenTkProjectWindow mGameWindow)
         {
             this.gameWindow = mGameWindow;
+        }
+    }
+
+    struct VerticeDataSet
+    {
+        public Vector3 position;
+        public Vector3 normal;
+        public Vector3 tangent;
+        public float[] boneWeight;
+        public int[] boneId;
+        public Vector2 texture;
+
+        public bool Equals(VerticeDataSet vert)
+        {
+            if ((this.position - vert.position).LengthFast < 0.0001f &&
+                (this.texture - vert.texture).LengthFast < 0.0001f &&
+                (this.normal - vert.normal).LengthFast < 0.001f)
+                return true;
+            else
+                return false;
+        }
+
+        public string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Position: " + position.ToString());
+            sb.AppendLine("Normal: " + normal.ToString());
+            sb.AppendLine("Texture: " + texture.ToString());
+            return sb.ToString();
         }
     }
 

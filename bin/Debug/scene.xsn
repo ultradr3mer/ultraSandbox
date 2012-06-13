@@ -1,14 +1,14 @@
 <scene>
 	<pmodel name='GameObject'>
-		<position>-8.749374|2.47225|-12.38159</position>
-		<rotation>0.1621654|0.8376654|0.521562|0.9864448|-0.1511933|-0.0638833|0.02534336|0.5248499|-0.8508239</rotation>
+		<position>-6.210132|2.372475|-10.59638</position>
+		<rotation>0.5427904|0.8269798|0.1465981|0.5123205|-0.1877061|-0.8380384|-0.6655195|0.5299822|-0.5255606</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name=''>
-			<position>-8.749374|2.47225|-12.38159</position>
-			<direction>0.9864448|-0.1511933|-0.0638833</direction>
+			<position>-6.210132|2.372475|-10.59638</position>
+			<direction>0.5123205|-0.1877061|-0.8380384</direction>
 			<color>0.5|0.7|1</color>
 		</lamp>
 	</pmodel>
@@ -161,7 +161,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-1140665|5.577117</position>
+		<position>-6.693132|-1192620|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -217,14 +217,6 @@
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<pmodel name='GameObject1'>
-		<position>0.8204761|1.283006|-15.98855</position>
-		<rotation>0.06657997|0.5649795|0.8224143|-0.9484839|0.2917148|-0.1236151|-0.3097504|-0.7718164|0.5552964</rotation>
-		<materials>sphere.xmf</materials>
-		<meshes>sphere.obj</meshes>
-		<pboxes>sphere_pbox.obj</pboxes>
-		<isstatic/>
-	</pmodel>
 	<metamodel name='GameObject'>
 		<position>1.687387|0.6318663|-3.120872</position>
 		<materials>rock_face.xmf</materials>
@@ -247,4 +239,45 @@
 		<pboxes>rock_small_pbox.dae</pboxes>
 		<isstatic/>
 	</animodel>
+	<metamodel name='GameObject'>
+		<position>19.61706|0.975477|-20.58859</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1_big.obj</meshes>
+		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
+		<vradius>6</vradius>
+	</metamodel>
+	<metamodel name='GameObject1'>
+		<position>12.4151|0.3165525|-24.66464</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1_big.obj</meshes>
+		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
+		<vradius>6</vradius>
+	</metamodel>
+	<pmodel name='GameObject'>
+		<position>-10.69961|3.063392|3.210621</position>
+		<rotation>0.1062784|0.9251439|-0.3644388|-0.7054315|-0.1881525|-0.6833519|-0.7007684|0.3297117|0.6326275</rotation>
+		<materials>spotlight.xmf</materials>
+		<meshes>spotlight.obj</meshes>
+		<pboxes>spotlight_pbox.obj</pboxes>
+		<isstatic/>
+		<lamp name='GameObject0'>
+			<position>-10.69961|3.063392|3.210621</position>
+			<direction>-0.7054315|-0.1881525|-0.6833519</direction>
+			<color>0.5|0.7|1</color>
+		</lamp>
+	</pmodel>
+	<metamodel name='GameObject'>
+		<position>-20.44018|0.3872758|3.946513</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1_big.obj</meshes>
+		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
+		<vradius>6</vradius>
+	</metamodel>
+	<metamodel name='GameObject0'>
+		<position>-17.13808|0.8950956|8.7491</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1_big.obj</meshes>
+		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
+		<vradius>6</vradius>
+	</metamodel>
 </scene>

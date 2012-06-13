@@ -216,6 +216,8 @@ namespace OpenTkProject
                 // draw loading screen
                 GL.Viewport(0, 0, Width, Height);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                GL.Disable(EnableCap.CullFace); 
+                
                 splashFilter2d.draw(shaderLoader.getShader("splash_shader.fs"), new int[] { textureLoader.getTexture("ultra_engine_back.png"), textureLoader.getTexture("ultra_engine_back_h.png") }, Vector2.One * (loadingPercentage));
 
                 SwapBuffers();

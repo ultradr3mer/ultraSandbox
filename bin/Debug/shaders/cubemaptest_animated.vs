@@ -12,8 +12,8 @@ void main(void)
 	
 	if(use_alpha)
 	{
-		v_ss_normal = normalize((modelview_matrix * rotation_matrix * vec4(in_normal, 0)).xyz);
-		v_ss_tangent = normalize((modelview_matrix * rotation_matrix * vec4(in_tangent, 0)).xyz);
+		v_ss_normal = normalize((modelview_matrix * rotation_matrix * vec4(ani_normal, 0)).xyz);
+		v_ss_tangent = normalize((modelview_matrix * rotation_matrix * vec4(ani_tangent, 0)).xyz);
 		v_ss_bnormal = normalize(cross(v_ss_normal, v_ss_tangent));
 	}
 	
