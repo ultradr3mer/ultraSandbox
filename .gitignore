@@ -4,4 +4,6 @@ bin/Debug/settings.xml
 bin/Debug/*.txt
 *.pdb
 *.exe
+*.xcf
+*.blend
 bin/Debug/*.png
