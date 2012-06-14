@@ -37,7 +37,7 @@ namespace OpenTkProject
         public Vector3[] normalVboData;
         public Vector3[] tangentVboData;
         public Vector2[] textureVboData;
-        public int[] indicesVboData;
+        public uint[] indicesVboData;
         public int normalVboHandle;
         public int positionVboHandle;
         public int textureVboHandle;
@@ -356,6 +356,7 @@ namespace OpenTkProject
             gameWindow.checkGlError("Create indice Buffer");
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
             // --- causes crash ---
             //GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
@@ -647,7 +648,7 @@ namespace OpenTkProject
 
             //put Faces into Arrays
             int newIndiceCount = newIndiceList.Count;
-            int[] indicesVboData = new int[newIndiceCount];
+            uint[] indicesVboData = new uint[newIndiceCount];
 
             int newVertCount = newVertList.Count;
             Vector3[] positionVboData = new Vector3[newVertCount];
@@ -684,7 +685,7 @@ namespace OpenTkProject
 
             for (int i = 0; i < newIndiceCount; i++)
             {
-                indicesVboData[i] = newIndiceList[i];
+                indicesVboData[i] = (uint)newIndiceList[i];
             }
 
             //calculate a bounding Sphere

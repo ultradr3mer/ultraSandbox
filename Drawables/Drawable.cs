@@ -664,7 +664,13 @@ namespace OpenTkProject.Drawables
         {
             gameWindow.checkGlError("uncaughtERROR");
 
-            vaoHandle = new int[meshes.Length];
+            int [] newHandle = new int[meshes.Length];
+            for (int i = 0; i < newHandle.Length && i < vaoHandle.Length; i++)
+            {
+                newHandle[i] = vaoHandle[i];
+            }
+            vaoHandle = newHandle;
+
             for (int i = 0; i < meshes.Length; i++)
             {
                 Shader curShader = materials[i].shader;
@@ -681,7 +687,11 @@ namespace OpenTkProject.Drawables
                 // every time we try to use a different vertex layout - these calls are
                 // stored in the VAO so we simply need to bind the correct VAO.
 
-                GL.GenVertexArrays(1, out vaoHandle[i]);
+                if (vaoHandle[i] == 0)
+                {
+                    GL.GenVertexArrays(1, out vaoHandle[i]);
+                }
+
                 GL.BindVertexArray(vaoHandle[i]);
 
                 int affectingBonesCount = curMesh.affectingBonesCount;
