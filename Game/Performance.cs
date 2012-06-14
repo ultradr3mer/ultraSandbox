@@ -13,12 +13,6 @@ namespace OpenTkProject.Game
 
 	public struct FrameStatistics
 	{
-
-		public static float GetSecond(TimeSpan sp)
-		{
-			return (float)((double)sp.Ticks / (double)TimeSpan.TicksPerSecond);
-		}
-
 		/// <summary>
 		/// How much seconds update took?
 		/// </summary>
@@ -121,26 +115,29 @@ namespace OpenTkProject.Game
 
 		public void BeginUpdate()
 		{
-			sw.Reset();
-			sw.Start();
+			sw.Restart();
+		}
+
+		public static float GetSecond(TimeSpan sp)
+		{
+			return (float)((double)sp.Ticks / (double)TimeSpan.TicksPerSecond);
 		}
 
 		public void EndUpdate()
 		{
 			sw.Stop();
-			samples[curFrame].Update = FrameStatistics.GetSecond(sw.Elapsed);
+			samples[curFrame].Update = GetSecond(sw.Elapsed);
 		}
 
 		public void BeginRender()
 		{
-			sw.Reset();
-			sw.Start();
+			sw.Restart();
 		}
 
 		public void EndRender()
 		{
 			sw.Stop();
-			samples[curFrame].Render = FrameStatistics.GetSecond(sw.Elapsed);
+			samples[curFrame].Render = GetSecond(sw.Elapsed);
 
 			AdvanceFrame();
 		}
@@ -191,8 +188,11 @@ namespace OpenTkProject.Game
 			renderIndices = new int[cacheAmount];
 
 			GL.GenBuffers(1, out positionVBO);
+			CheckError();
 			GL.GenBuffers(1, out updateIndexVBO);
+			CheckError();
 			GL.GenBuffers(1, out renderIndexVBO);
+			CheckError();
 
 			Size = new Vector2(1280, 720);
 			Position = new Vector2(0, 1280);
@@ -201,6 +201,43 @@ namespace OpenTkProject.Game
 			win = window;
 			shd = win.shaderLoader.getShader("perf.xsp");
 			perfColorPos = GL.GetUniformLocation(shd.handle, "in_perfcolor");
+			CheckError();
+			inposPos = GL.GetAttribLocation(shd.handle, "in_position");
+			CheckError();
+
+			GL.GenVertexArrays(1, out vao);
+			CheckError();
+			GL.BindVertexArray(vao);
+			CheckError();
+
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			CheckError();
+
+			GL.VertexAttribPointer(inposPos, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
+			CheckError();
+
+			GL.EnableVertexAttribArray(inposPos);
+			CheckError();
+			
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
+
+			GL.BindVertexArray(0);
+
+			GL.GenVertexArrays(1, out vao2);
+			GL.BindVertexArray(vao2);
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			GL.VertexAttribPointer(inposPos, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
+			GL.EnableVertexAttribArray(inposPos);
+			
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
+
+			GL.BindVertexArray(0);
+
+			CheckError();
 		}
 
 		private static void CheckError()
@@ -212,25 +249,25 @@ namespace OpenTkProject.Game
 			}
 		}
 
-		public void Render()
+		public void Update()
 		{
 			Vector2 curPos = new Vector2(Position);
 			curPos.X += Size.X;
 
 			drawn = 0;
-			foreach(FrameStatistics fs in Performance.Instance)
+			foreach (FrameStatistics fs in Performance.Instance.samples)
 			{
-				if (fs.Update == null)
+				/*if (fs.Update == null)
 				{
 					break;
-				}
+				}*/
 
 				float updateSize = fs.Update * Size.Y;
 				float renderSize = fs.Render * Size.Y;
-				
+
 				points[drawn++] = new Vector3(curPos);
-				points[drawn++] = new Vector3(curPos.X, curPos.Y + updateSize,0);
-				points[drawn++] = new Vector3(curPos.X, curPos.Y + updateSize + renderSize,0);
+				points[drawn++] = new Vector3(curPos.X, curPos.Y - updateSize, 0);
+				points[drawn++] = new Vector3(curPos.X, (curPos.Y - updateSize) - renderSize, 0);
 
 				curPos.X -= step;
 			}
@@ -244,62 +281,140 @@ namespace OpenTkProject.Game
 			///   |  |
 			///  3+--+0
 
-			int totalBars = (drawn / 3)-1;
+			int totalBars = (drawn / 3);
 			int updIndex = 0;
 			int rndIndex = 0;
 			int curBarPoint = 0;
-			for (int i=0;i<totalBars;i++)
+
+			/*updateIndices[updIndex++] = curBarPoint + 0; // eg. 0
+			updateIndices[updIndex++] = curBarPoint + 1; // eg. 1
+
+			renderIndices[rndIndex++] = curBarPoint + 1;
+			renderIndices[rndIndex++] = curBarPoint + 2;
+
+			curBarPoint += 3;*/
+
+			for (int i = 0; i < totalBars; i++)
 			{
 				// counter clock wise
-				updateIndices[updIndex++] = curBarPoint + 0; // eg. 0
-				updateIndices[updIndex++] = curBarPoint + 1; // eg. 1
-				updateIndices[updIndex++] = curBarPoint + 4; // eg. 3
-				updateIndices[updIndex++] = curBarPoint + 3; // eg. 4
+				
+				updateIndices[updIndex++] = curBarPoint + 0; // eg. 3
+				updateIndices[updIndex++] = curBarPoint + 1; // eg. 4
 
+				
 				renderIndices[rndIndex++] = curBarPoint + 1;
 				renderIndices[rndIndex++] = curBarPoint + 2;
-				renderIndices[rndIndex++] = curBarPoint + 5;
-				renderIndices[rndIndex++] = curBarPoint + 4;
 
 				curBarPoint += 3;
 			}
 
+			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			CheckError();
+			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
+			CheckError();
+			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			/*GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			
+			CheckError();*/
 
 			GL.UseProgram(shd.handle);
 			CheckError();
 
-			GL.EnableClientState(ArrayCap.IndexArray);
-			GL.EnableClientState(ArrayCap.VertexArray);
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
+			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
 			CheckError();
 
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.Uniform4(perfColorPos, 1.0f, 0, 0, 1.0f);
-			CheckError();
-			GL.DrawElements(BeginMode.Quads,updIndex / 4, DrawElementsType.UnsignedInt,0);
+			GL.BindVertexArray(vao);
+			GL.DrawElements(BeginMode.TriangleStrip, updIndex - 2 , DrawElementsType.UnsignedInt, 0);
 			CheckError();
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
-			
+			CheckError();
+			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			GL.BindVertexArray(vao2);
+			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);
+
+			/*GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
+			CheckError();
+			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
+			CheckError();
+
 			GL.Uniform4(perfColorPos, 0.0f, 1.0f, 0, 1.0f);
-			GL.DrawElements(BeginMode.Quads, rndIndex / 4, DrawElementsType.UnsignedInt, 0);
+			CheckError();
+			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);
+			CheckError();*/
+		}
 
-			GL.DisableClientState(ArrayCap.VertexArray);
-			GL.DisableClientState(ArrayCap.IndexArray);
+		public void Render()
+		{
+			int drawn = 0;
+
+			points[drawn++] = new Vector3(0, 0,0);
+			points[drawn++] = new Vector3(0.3f, 0, 0);
+			points[drawn++] = new Vector3(0.3f, 0.3f, 0);
+			points[drawn++] = new Vector3(0, 0.3f, 0);
+
+			int updIndex = 0;
+
+			updateIndices[updIndex++] = 3;
+			updateIndices[updIndex++] = 0;
+			updateIndices[updIndex++] = 2;
+			updateIndices[updIndex++] = 1;
+
+			GL.Disable(EnableCap.CullFace);
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			CheckError();
+			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
+			CheckError();
+
+			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			GL.BindVertexArray(vao);
+
+			GL.UseProgram(shd.handle);
+
+			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
 
 			
+			GL.DrawElements(BeginMode.TriangleStrip, 4, DrawElementsType.UnsignedInt, 0);
+
+			GL.Viewport()
+
+			//Update();
+
+			/*GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
+			
+			GL.UseProgram(shd.handle);
+			GL.Uniform4(perfColorPos, 1.0f, 0, 0, 1.0f);
+			GL.DrawElements(BeginMode.Quads, updIndex / 4, DrawElementsType.UnsignedInt, 0);
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
+			GL.Uniform4(perfColorPos, 0.0f, 1.0f, 0, 1.0f);
+			GL.DrawElements(BeginMode.Quads, rndIndex / 4, DrawElementsType.UnsignedInt, 0);*/
 		}
 
 		public int positionVBO;
 		public int updateIndexVBO;
 		public int renderIndexVBO;
 		public int perfColorPos;
+		public int inposPos;
+
+		public int vao;
+		public int vao2;
+
+		
 
 		Vector3[] points;
 		int[] updateIndices;
