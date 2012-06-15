@@ -296,11 +296,11 @@ namespace OpenTkProject.Game
 			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
 
 			GL.BindVertexArray(vaoUpdate);
-			GL.Uniform4(perfColorPos, new Vector4(1f, 0f, 0f, 1f));
+			GL.Uniform4(perfColorPos, new Vector4(1f, 0f, 0f, 1f)); // red color
 			GL.DrawElements(BeginMode.TriangleStrip, stripeCount, DrawElementsType.UnsignedInt, 0);
 
 			GL.BindVertexArray(vaoRender);
-			GL.Uniform4(perfColorPos, new Vector4(0f, 1f, 0f, 1f));
+			GL.Uniform4(perfColorPos, new Vector4(0f, 1f, 0f, 1f)); // green color
 			GL.DrawElements(BeginMode.TriangleStrip, stripeCount, DrawElementsType.UnsignedInt, 0);
 
 			GL.BindVertexArray(0);
