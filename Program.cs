@@ -183,6 +183,9 @@ namespace OpenTkProject
         {
             if (state == GameState.Playing || state == GameState.Menu)
             {
+				/// Starts performance counter for rendering
+				Performance.Instance.BeginRender();
+
                 double framerate = 1 / e.Time;
                 smoothframerate = framerate * (1 - framerate_smoothness) + smoothframerate * framerate_smoothness;
                 
@@ -217,9 +220,16 @@ namespace OpenTkProject
                 // draw Guis
                 mScene.drawGuis();
 
+
+				/// Render performance graph trololo
+				PerformanceVisualizer.Instance.Render();
+
                 SwapBuffers();
 
                 mScene.resetUpdateState();
+
+				/// Ends performance counter for rendering and advances to next frame
+				Performance.Instance.EndRender();
             }
             else
             {
@@ -262,6 +272,9 @@ namespace OpenTkProject
         {
             if (state == GameState.Playing || state == GameState.Menu)
             {
+				/// Begins performance counter
+				Performance.Instance.BeginUpdate();
+
                 // calculate mouse movement
                 //gameInput.calcDelta();
 
@@ -298,9 +311,13 @@ namespace OpenTkProject
 
                 // call scene tree to update
                 mScene.update();
+
+				/// Updates performance counter for current frame
+				Performance.Instance.EndUpdate();
             }
             else if (state == GameState.Started)
             {
+
                 //search for related files
                 FileSeeker mFileSeeker = new FileSeeker(this);
 
@@ -399,6 +416,10 @@ namespace OpenTkProject
 
                     // load objects saved in database
                     mScene.loadObjects();
+
+					/// Initialize performance profilers
+					Performance.Instance.Initialize(192);
+					PerformanceVisualizer.Instance.Initialize(this);
 
                     state = GameState.Playing;
                 }
