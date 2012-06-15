@@ -204,6 +204,8 @@ namespace OpenTkProject.Game
 			CheckError();
 			inposPos = GL.GetAttribLocation(shd.handle, "in_position");
 			CheckError();
+			projPos = GL.GetUniformLocation(shd.handle, "projection_matrix");
+			CheckError();
 
 			GL.GenVertexArrays(1, out vao);
 			CheckError();
@@ -355,17 +357,18 @@ namespace OpenTkProject.Game
 		{
 			int drawn = 0;
 
+			points[drawn++] = new Vector3(0, 250, 0);
 			points[drawn++] = new Vector3(0, 0,0);
-			points[drawn++] = new Vector3(0.3f, 0, 0);
-			points[drawn++] = new Vector3(0.3f, 0.3f, 0);
-			points[drawn++] = new Vector3(0, 0.3f, 0);
+			points[drawn++] = new Vector3(250, 250, 0);
+			points[drawn++] = new Vector3(250, 0, 0);
+
 
 			int updIndex = 0;
 
-			updateIndices[updIndex++] = 3;
 			updateIndices[updIndex++] = 0;
-			updateIndices[updIndex++] = 2;
 			updateIndices[updIndex++] = 1;
+			updateIndices[updIndex++] = 2;
+			updateIndices[updIndex++] = 3;
 
 			GL.Disable(EnableCap.CullFace);
 
@@ -386,10 +389,13 @@ namespace OpenTkProject.Game
 
 			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
 
+			ProjMatrix = Matrix4.CreateOrthographicOffCenter(0, win.screenSize.X, win.screenSize.Y, 0, 0, 1);
+
+			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
+
+
 			
 			GL.DrawElements(BeginMode.TriangleStrip, 4, DrawElementsType.UnsignedInt, 0);
-
-			GL.Viewport()
 
 			//Update();
 
@@ -410,12 +416,13 @@ namespace OpenTkProject.Game
 		public int renderIndexVBO;
 		public int perfColorPos;
 		public int inposPos;
+		public int projPos;
 
 		public int vao;
 		public int vao2;
 
-		
 
+		Matrix4 ProjMatrix;
 		Vector3[] points;
 		int[] updateIndices;
 		int[] renderIndices;
