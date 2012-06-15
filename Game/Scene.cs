@@ -18,6 +18,7 @@ using OpenTkProject.Game.Voxel;
 using OpenTkProject.Drawables.Models;
 using OpenTkProject.Drawables.Models.Paticles;
 using System.Xml;
+using OpenTkProject.Game;
 
 namespace OpenTkProject
 {
@@ -175,6 +176,8 @@ namespace OpenTkProject
 
             voxelManager = new VoxelManager(this);
 
+            compositeMod.X = Settings.Instance.video.gamma;
+
             particleAffectors.Add(new ParticleAffectorWind(new Vector3(1,-0.5f,0) * 0.01f));
             particleAffectors.Add(new ParticleAffectorFriction(0.1f));
             particleAffectors.Add(new ParticleAffectorFloorKiller(waterLevel));
@@ -250,6 +253,8 @@ namespace OpenTkProject
         public Shader bloomCurveShader;
         public Shader selectionShaderAni;
         public Shader ssNormalShaderAni;
+        private float gamma;
+        private Vector2 compositeMod = Vector2.Zero;
 
         public override void update()
         {
@@ -483,7 +488,8 @@ namespace OpenTkProject
                 curFramebuffers.selectionFb.ColorTexture,
                 curFramebuffers.selectionblurFb2.ColorTexture,
                 curFramebuffers.dofFramebuffer2.ColorTexture,
-                curFramebuffers.aoBlurFramebuffer2.ColorTexture});
+                curFramebuffers.aoBlurFramebuffer2.ColorTexture},
+                compositeMod);
 
                 gameWindow.checkGlError("--uncaught ERROR leaving Scene--");
             }

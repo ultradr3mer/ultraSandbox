@@ -9,14 +9,33 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Xml;
 using System.Text;
+using OpenTkProject.Game;
 
 namespace OpenTkProject
 {
     [Serializable]
     public struct Shader
     {
-        public string[] pointer;
+        //stuff to be saved
+        public string name;
+        public string vShader;
+        public string fShader;
 
+        //generic
+        public string[] pointer;
+        public Type type;
+        public int handle;
+        public int identifier;
+        public bool loaded;
+
+        public enum Type
+        {
+            fromFile,
+            fromXml,
+            fromCache
+        }
+
+        //light locations
         public int[] lightLocationsLocation;
         public int[] lightDirectionsLocation;
         public int[] lightColorsLocation;
@@ -26,50 +45,6 @@ namespace OpenTkProject
         public int[] lightTextureLocation;
 
         public int[] BoneMatixLocations;
-
-        public const int TYPE_FROMFILE = 1;
-        public const int TYPE_FROMXML = 2;
-
-        public int handle, type;
-
-        public string name;
-
-        public int identifier;
-
-        public bool loaded;
-
-        /*
-        public int hudElementColor;
-        public int hudElementValue;
-        public int emitColorLocation;
-        public int envMapAlphaBaseTexture;
-        public int envMapAlphaNormalTexture;
-        public int envTintLocation;
-        public int useEmitLocation;
-        public int emitMapAlphaBaseTexture;
-        public int emitMapAlphaNormalTexture;
-        public int useAlphaLocation;
-        public int refSizeLocation;
-        public int blurSizeLocation;
-        public int fresnelStrLocation;
-        public int useSpecLocation;
-        public int specMapAlphaBaseTexture;
-        public int specMapAlphaNormalTexture;
-        public int specColorLocation;
-        public int specExpLocation;
-        public int rotationMatrixLocation2;
-        public int modelMatrixLocation2;
-        public int colorLocation;
-        public int LightCountLocation;
-        public int modLocation;
-        public int lightSunLocation;
-        public int curLightLocation;
-        public int shadowQualityLocation;
-        public int particlePos;
-        public int particleSize;
-        public int modeLocation;
-        public int noBonesLocation;
-        */
 
         public int sunDirection;
         public int sunColor;
@@ -84,69 +59,7 @@ namespace OpenTkProject
 
             return tmpShader;
         }
-        /*
 
-                    target.projectionMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_matrix");
-            target.projectionRevMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_rev_matrix");
-            target.modelviewMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "modelview_matrix");
-            target.rotationMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix");
-            target.modelMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "model_matrix");
-            target.rotationMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix2");
-            target.modelMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "model_matrix2");
-
-            target.eyePosLocation = GL.GetUniformLocation(shaderProgramHandle, "in_eyepos");
-            target.timeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_time");
-            target.passLocation = GL.GetUniformLocation(shaderProgramHandle, "in_pass");
-            target.waterLevelLocation = GL.GetUniformLocation(shaderProgramHandle, "in_waterlevel");
-            target.vectorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_vector");
-            target.screenSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_screensize");
-            target.renderSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_rendersize");
-            target.lightAmbientLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightambient");
-            target.lightSunLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightsun");
-            target.shadowQualityLocation = GL.GetUniformLocation(shaderProgramHandle, "shadow_quality");
-
-            target.particlePos = GL.GetUniformLocation(shaderProgramHandle, "in_particlepos");
-            target.particleSize = GL.GetUniformLocation(shaderProgramHandle, "in_particlesize");
-
-            target.colorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_color");
-            target.modLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mod");
-
-            target.modeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mode");
-
-            target.useEmitLocation = GL.GetUniformLocation(shaderProgramHandle, "use_emit");
-            target.emitMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_base");
-            target.emitMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_normal");
-            target.emitColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_emitcolor");
-
-            target.useSpecLocation = GL.GetUniformLocation(shaderProgramHandle, "use_spec");
-            target.specMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_base");
-            target.specMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_normal");
-            target.specColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_speccolor");
-            target.specExpLocation = GL.GetUniformLocation(shaderProgramHandle, "in_specexp");
-
-            target.useEnvLocation = GL.GetUniformLocation(shaderProgramHandle, "use_env");
-            target.envMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_base");
-            target.envMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_normal");
-            target.envTintLocation = GL.GetUniformLocation(shaderProgramHandle, "env_tint");
-
-            target.useAlphaLocation = GL.GetUniformLocation(shaderProgramHandle, "use_alpha");
-            target.refSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "ref_size");
-            target.blurSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "blur_size");
-            target.fresnelStrLocation = GL.GetUniformLocation(shaderProgramHandle, "fresnel_str");
-
-            target.nearLocation = GL.GetUniformLocation(shaderProgramHandle, "in_near");
-            target.farLocation = GL.GetUniformLocation(shaderProgramHandle, "in_far");
-
-            target.hudElementSize = GL.GetUniformLocation(shaderProgramHandle, "in_hudsize");
-            target.hudElementPos = GL.GetUniformLocation(shaderProgramHandle, "in_hudpos");
-            target.hudElementColor = GL.GetUniformLocation(shaderProgramHandle, "in_hudcolor");
-            target.hudElementValue = GL.GetUniformLocation(shaderProgramHandle, "in_hudvalue");
-         
-            target.LightCountLocation = GL.GetUniformLocation(shaderProgramHandle, "in_no_lights");
-            target.curLightLocation = GL.GetUniformLocation(shaderProgramHandle, "curLight");
-            target.noBonesLocation = GL.GetUniformLocation(shaderProgramHandle, "uni_no_bones");
-
-        */
         public enum Uniform
         {
             projection_matrix,
@@ -257,8 +170,6 @@ namespace OpenTkProject
             string[] names = Enum.GetNames(typeof(Uniform));
             Array values = Enum.GetValues(typeof(Uniform));
 
-            int test = (int)Uniform.blur_size;
-
             int handlesCount = names.Length;
             locations = new int[handlesCount];
 
@@ -267,14 +178,38 @@ namespace OpenTkProject
                 locations[i] = GL.GetUniformLocation(handle, names[i]);
             }
         }
+
+        internal void cache(ref ShaderCacheObject cacheObject)
+        {
+            Shader tmpShader = new Shader();
+
+            tmpShader.name = name;
+            tmpShader.vShader = vShader;
+            tmpShader.fShader = fShader;
+
+            cacheObject.shaders.Add(tmpShader);
+        }
     }
 
+    [Serializable]
     public struct Snippet
     {
         public string name;
         public string text;
         public string variables;
         public string functions;
+
+        internal void cache(ref ShaderCacheObject cacheObject)
+        {
+            cacheObject.snippets.Add(this);
+        }
+    }
+
+    [Serializable]
+    public struct ShaderCacheObject
+    {
+        public List<Shader> shaders;
+        public List<Snippet> snippets;
     }
 
     public class ShaderLoader : GameObject
@@ -282,10 +217,10 @@ namespace OpenTkProject
         int vertexShaderHandle,
             fragmentShaderHandle;
 
-        public List<Shader> Shaders = new List<Shader> { };
-        public List<Snippet> Snippets = new List<Snippet> { };
+        public List<Shader> shaders = new List<Shader> { };
+        public List<Snippet> snippets = new List<Snippet> { };
 
-        public Hashtable ShaderNames = new Hashtable();
+        public Hashtable shaderNames = new Hashtable();
         public const int maxNoLights = 10;
 
         const string varMarker = "#variables";
@@ -294,19 +229,120 @@ namespace OpenTkProject
         const string functionsMarker = "#functions";
         private int maxNoBones = 64;
 
-        enum target { code, variable, function };
+        enum Target { code, variable, function };
+
+        internal void readCacheFile()
+        {
+
+            string filename = Settings.Instance.game.shaderCacheFile;
+            FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            ShaderCacheObject cacheObject;
+
+            using (fileStream)
+            {
+                // Read the source file into a byte array.
+                byte[] bytes = new byte[fileStream.Length];
+                int numBytesToRead = (int)fileStream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = fileStream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+
+                cacheObject = (ShaderCacheObject)GenericMethods.ByteArrayToObject(bytes);
+                fileStream.Close();
+            }
+
+            foreach (var shader in cacheObject.shaders)
+            {
+                Shader curShader = shader;
+
+                string name = shader.name;
+
+                if (!shaderNames.ContainsKey(shader.name))
+                {
+                    int identifier = shaders.Count;
+
+                    curShader.type = Shader.Type.fromCache;
+                    curShader.identifier = identifier;
+
+                    shaders.Add(curShader);
+                    shaderNames.Add(name, identifier);
+                }
+            }
+            foreach (var newSnippet in cacheObject.snippets)
+            {
+                loadSnippetFromCache(newSnippet);
+            }
+
+            gameWindow.log("loaded " + cacheObject.shaders.Count + " shaders from cache");
+            gameWindow.log("loaded " + cacheObject.snippets.Count + " shader-snippets from cache");
+
+        }
+
+        private void loadSnippetFromCache(Snippet newSnippet)
+        {
+            foreach (var snippet in snippets)
+            {
+                if (snippet.name == newSnippet.name)
+                    return;
+            } 
+
+            snippets.Add(newSnippet);
+        }
+
+        internal void writeCacheFile()
+        {
+            ShaderCacheObject cacheObject = new ShaderCacheObject();
+            cacheObject.shaders = new List<Shader> { };
+            cacheObject.snippets = new List<Snippet> { };
+
+            foreach (var shader in shaders)
+            {
+                shader.cache(ref cacheObject);
+            }
+            foreach (var snippet in snippets)
+            {
+                snippet.cache(ref cacheObject);
+            }
+
+            string filename = Settings.Instance.game.shaderCacheFile;
+
+            FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+
+            using (fileStream)
+            {
+                byte[] saveAry = GenericMethods.ObjectToByteArray(cacheObject);
+                fileStream.Write(saveAry, 0, saveAry.Length);
+                fileStream.Close();
+            }
+        }
 
         public void loadSnippet(string file)
         {
-            Snippet Snippet = new Snippet();
-            Snippet.name = file.Replace(gameWindow.shaderFolder, "");
+            Snippet newSnippet = new Snippet();
+            newSnippet.name = file.Replace(gameWindow.shaderFolder, "");
+
+            foreach (var snippet in snippets)
+            {
+                if (snippet.name == newSnippet.name)
+                    return;
+            }
 
             string line;
             StringBuilder codeSb = new StringBuilder();
             StringBuilder variableSb = new StringBuilder();
             StringBuilder functionSb = new StringBuilder();
 
-            target curtarget = target.code;
+            Target curtarget = Target.code;
 
             System.IO.StreamReader mFile =
                new System.IO.StreamReader(file);
@@ -314,23 +350,23 @@ namespace OpenTkProject
             {
                 if (line.Contains(varMarker))
                 {
-                    curtarget = target.variable;
+                    curtarget = Target.variable;
                 }
                 else if (line.Contains(codeMarker))
                 {
-                    curtarget = target.code;
+                    curtarget = Target.code;
                 }
                 else if (line.Contains(functionsMarker))
                 {
-                    curtarget = target.function;
+                    curtarget = Target.function;
                 }
                 else
                 {
-                    if (curtarget == target.code)
+                    if (curtarget == Target.code)
                         codeSb.AppendLine(line);
-                    else if (curtarget == target.variable)
+                    else if (curtarget == Target.variable)
                         variableSb.AppendLine(line);
-                    else if (curtarget == target.function)
+                    else if (curtarget == Target.function)
                         functionSb.AppendLine(line);
                 }
             }
@@ -339,24 +375,24 @@ namespace OpenTkProject
             functionSb.AppendLine(functionsMarker);
 
             //Console.WriteLine(wholeFile.ToString());
-            Snippet.text =  codeSb.ToString();
-            Snippet.variables = variableSb.ToString();
-            Snippet.functions = functionSb.ToString();
+            newSnippet.text =  codeSb.ToString();
+            newSnippet.variables = variableSb.ToString();
+            newSnippet.functions = functionSb.ToString();
 
-            Snippets.Add(Snippet);
+            snippets.Add(newSnippet);
         }
 
         public Shader fromTextFile(string vfile, string ffile)
         {
             string name = ffile.Replace(gameWindow.shaderFolder, "");
 
-            if (!ShaderNames.ContainsKey(ffile))
+            if (!shaderNames.ContainsKey(ffile))
             {
                 Shader curShader = new Shader();
 
-                int identifier = Shaders.Count;
+                int identifier = shaders.Count;
 
-                curShader.type = Shader.TYPE_FROMFILE;
+                curShader.type = Shader.Type.fromFile;
                 curShader.pointer = new string[] { vfile, ffile };
                 curShader.identifier = identifier;
                 curShader.name = name;
@@ -375,13 +411,13 @@ namespace OpenTkProject
         {
             string name = file.Replace(gameWindow.shaderFolder, "");
 
-            if (!ShaderNames.ContainsKey(name))
+            if (!shaderNames.ContainsKey(name))
             {
                 Shader curShader = new Shader();
 
-                int identifier = Shaders.Count;
+                int identifier = shaders.Count;
 
-                curShader.type = Shader.TYPE_FROMXML;
+                curShader.type = Shader.Type.fromXml;
                 curShader.pointer = new string[] { file };
                 curShader.identifier = identifier;
                 curShader.name = name;
@@ -399,30 +435,48 @@ namespace OpenTkProject
         private void registerShader(Shader newShader)
         {
 
-            ShaderNames.Add(newShader.name, newShader.identifier);
-            Shaders.Add(newShader);
+            shaderNames.Add(newShader.name, newShader.identifier);
+            shaders.Add(newShader);
 
         }
 
         public void loadShaders()
         {
-            for (int i = 0; i < Shaders.Count; i++)
+            for (int i = 0; i < shaders.Count; i++)
             {
-                loadShader(Shaders[i]);
+                loadShader(shaders[i]);
             }
         }
 
         public float loadSingleShaders()
         {
-            for (int i = 0; i < Shaders.Count; i++)
+            for (int i = 0; i < shaders.Count; i++)
             {
-                if (!Shaders[i].loaded)
+                if (!shaders[i].loaded)
                 {
-                    loadShader(Shaders[i]);
-                    return (float)i / (float)Shaders.Count;
+                    loadShader(shaders[i]);
+                    return (float)i / (float)shaders.Count;
                 }
             }
             return 1;
+        }
+
+        private void loadShader(Shader shader)
+        {
+            switch (shader.type)
+            {
+                case Shader.Type.fromFile:
+                    loadShaderFromFile(shader);
+                    break;
+                case Shader.Type.fromXml:
+                    loadShaderXml(shader);
+                    break;
+                case Shader.Type.fromCache:
+                    loadShaderFromCache(shader);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public Shader getShader(string name)
@@ -430,102 +484,104 @@ namespace OpenTkProject
             if (name == null)
                 return new Shader();
 
-            int id = (int)ShaderNames[name];
-            return Shaders[id];
+            int id = (int)shaderNames[name];
+            return shaders[id];
         }
 
-        public void loadShader(Shader target)
+        public void loadShaderXml(Shader target)
         {
-            if (target.type == Shader.TYPE_FROMXML)
+            XmlTextReader reader = new XmlTextReader(target.pointer[0]);
+
+            string path = Path.GetDirectoryName(target.pointer[0]) + "\\";
+
+            //target.envMapAlphaBaseTexture = false;
+
+            gameWindow.log("parsing shader pair: " + target.name);
+
+            target.pointer = new string[2];
+
+            while (reader.Read())
             {
-                XmlTextReader reader = new XmlTextReader(target.pointer[0]);
-
-                string path = Path.GetDirectoryName(target.pointer[0]) + "\\";
-
-                //target.envMapAlphaBaseTexture = false;
-
-                gameWindow.log("parsing shader pair: " + target.name);
-
-                target.pointer = new string[2];
-
-                while (reader.Read())
+                // parsing data in material tag
+                if (reader.Name == "shaderpair" && reader.HasAttributes)
                 {
-                    // parsing data in material tag
-                    if (reader.Name == "shaderpair" && reader.HasAttributes)
+                    while (reader.MoveToNextAttribute())
                     {
-                        while (reader.MoveToNextAttribute())
-                        {
-                            if (reader.Name == "vertex")
-                                target.pointer[0] = path + reader.Value;
+                        if (reader.Name == "vertex")
+                            target.pointer[0] = path + reader.Value;
 
-                            else if (reader.Name == "fragment")
-                                target.pointer[1] = path + reader.Value;
-                        }
-                        reader.MoveToElement();
+                        else if (reader.Name == "fragment")
+                            target.pointer[1] = path + reader.Value;
                     }
+                    reader.MoveToElement();
                 }
-
-                target.type = Shader.TYPE_FROMFILE;
-                loadShader(target);
             }
-            else if (target.type == Shader.TYPE_FROMFILE)
-            {
-                int shaderProgramHandle;
 
-                string vfile = target.pointer[0];
-                string ffile = target.pointer[1];
-
-                vertexShaderHandle = GL.CreateShader(ShaderType.VertexShader);
-                fragmentShaderHandle = GL.CreateShader(ShaderType.FragmentShader);
-
-                string vShader = readFile(vfile);
-                string fShader = readFile(ffile);
-
-                GL.ShaderSource(vertexShaderHandle, vShader);
-                GL.ShaderSource(fragmentShaderHandle, fShader);
-
-                string log;
-
-                GL.CompileShader(vertexShaderHandle);
-                GL.GetShaderInfoLog(vertexShaderHandle, out log);
-                parseLog(log, vfile, vShader);
-                gameWindow.checkGlError("loadShader (" + vfile + ")");
-
-                GL.CompileShader(fragmentShaderHandle);
-                GL.GetShaderInfoLog(fragmentShaderHandle, out log);
-                parseLog(log, ffile, fShader);
-                gameWindow.checkGlError("loadShader (" + ffile + ")");
-
-                Debug.WriteLine(GL.GetShaderInfoLog(vertexShaderHandle));
-                Debug.WriteLine(GL.GetShaderInfoLog(fragmentShaderHandle));
-
-                // Create program
-                shaderProgramHandle = GL.CreateProgram();
-
-                GL.AttachShader(shaderProgramHandle, vertexShaderHandle);
-                GL.AttachShader(shaderProgramHandle, fragmentShaderHandle);
-
-                GL.LinkProgram(shaderProgramHandle);
-
-                Debug.WriteLine(GL.GetProgramInfoLog(shaderProgramHandle));
-
-                //GL.UseProgram(shaderProgramHandle);
-
-                gameWindow.checkGlError("loadShader");
-
-                target.handle = shaderProgramHandle;
-
-                getHandles(ref target);
-
-                target.loaded = true;
-
-                Shaders[target.identifier] = target;
-            }
+            loadShaderFromFile(target);
         }
 
-        private void parseLog(string log, string vfile, string fullShader)
+        public void loadShaderFromFile(Shader target)
         {
-            gameWindow.log("Shaderlog (" + vfile + "):\n" + log);
+            string vfile = target.pointer[0];
+            string ffile = target.pointer[1];
+
+            target.vShader = readFile(vfile);
+            target.fShader = readFile(ffile);
+
+            loadShaderFromCache(target);
+        }
+
+        public void loadShaderFromCache(Shader target)
+        {
+            int shaderProgramHandle;
+
+            vertexShaderHandle = GL.CreateShader(ShaderType.VertexShader);
+            fragmentShaderHandle = GL.CreateShader(ShaderType.FragmentShader);
+
+            GL.ShaderSource(vertexShaderHandle, target.vShader);
+            GL.ShaderSource(fragmentShaderHandle, target.fShader);
+
+            string log;
+
+            GL.CompileShader(vertexShaderHandle);
+            GL.GetShaderInfoLog(vertexShaderHandle, out log);
+            parseLog(log,"vertexShader: " + name, target.vShader);
+            gameWindow.checkGlError("loadVertexShader (" + name + ")");
+
+            GL.CompileShader(fragmentShaderHandle);
+            GL.GetShaderInfoLog(fragmentShaderHandle, out log);
+            parseLog(log, "fragmentShader: " + name, target.fShader);
+            gameWindow.checkGlError("loadFragmentShader (" + name + ")");
+
+            Debug.WriteLine(GL.GetShaderInfoLog(vertexShaderHandle));
+            Debug.WriteLine(GL.GetShaderInfoLog(fragmentShaderHandle));
+
+            // Create program
+            shaderProgramHandle = GL.CreateProgram();
+
+            GL.AttachShader(shaderProgramHandle, vertexShaderHandle);
+            GL.AttachShader(shaderProgramHandle, fragmentShaderHandle);
+
+            GL.LinkProgram(shaderProgramHandle);
+
+            Debug.WriteLine(GL.GetProgramInfoLog(shaderProgramHandle));
+
+            //GL.UseProgram(shaderProgramHandle);
+
+            gameWindow.checkGlError("loadShader");
+
+            target.handle = shaderProgramHandle;
+
+            getHandles(ref target);
+
+            target.loaded = true;
+
+            shaders[target.identifier] = target;
+        }
+
+        private void parseLog(string log, string name, string fullShader)
+        {
+            gameWindow.log("Shaderlog " + name + ":\n" + log);
 
             StringBuilder fullSb = new StringBuilder();
             string newline;
@@ -631,7 +687,7 @@ namespace OpenTkProject
                 {
                     string snipName = arguments[i + 1];
 
-                    foreach (var snipet in Snippets)
+                    foreach (var snipet in snippets)
                     {
                         if (snipName == snipet.name)
                         {
@@ -659,16 +715,6 @@ namespace OpenTkProject
         public ShaderLoader(OpenTkProjectWindow mGameWindow)
         {
             this.gameWindow = mGameWindow;
-        }
-
-        internal void readCacheFile()
-        {
-
-        }
-
-        internal void writeCacheFile()
-        {
-
         }
     }
 }

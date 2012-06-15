@@ -37,7 +37,11 @@ namespace OpenTkProject
                         break;
                     case ".png":
                         mGameWindow.log("found image file: " + relativePath);
-                        mGameWindow.textureLoader.fromFile(relativePath, true);
+                        mGameWindow.textureLoader.fromPng(relativePath);
+                        break;
+                    case ".dds":
+                        mGameWindow.log("found image file: " + relativePath);
+                        mGameWindow.textureLoader.fromDds(relativePath);
                         break;
                     case ".xmf":
                         mGameWindow.log("found material file: " + relativePath);

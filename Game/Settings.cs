@@ -228,8 +228,7 @@ namespace OpenTkProject.Game
         public int virtualScreenWidth = 1920;
         public int virtualScreenHeight = 1080;
 
-        public int waterScreenWidth = 1280;
-        public int waterScreenHeight = 720;
+        public float waterScreenPercentage = 0.5f;
 
         public bool fullScreen = false;
 
@@ -245,7 +244,7 @@ namespace OpenTkProject.Game
         /// <summary>
         /// Added to just showing it can be done :P
         /// </summary>
-        public float gamma;
+        public float gamma = 1;
 
         public enum Target { main, water, window };
 
@@ -258,7 +257,7 @@ namespace OpenTkProject.Game
                     return new Vector2(virtualScreenWidth, virtualScreenHeight);
                     break;
                 case Target.water:
-                    return new Vector2(waterScreenWidth, waterScreenHeight);
+                    return new Vector2(virtualScreenWidth, virtualScreenHeight) * waterScreenPercentage;
                     break;
                 case Target.window:
                     return new Vector2(windowWidth, windowHeight);
@@ -319,7 +318,7 @@ namespace OpenTkProject.Game
     {
         public bool dontShowSettings;
 
-        public bool generateCache;
+        public bool generateCache = true;
         public bool useCache = true;
 
         public string modelCacheFile = "cacheModel.ucf";

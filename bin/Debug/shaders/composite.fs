@@ -6,6 +6,7 @@ uniform vec3 in_lightambient;
 uniform vec3 in_lightcolor;
 
 uniform vec2 in_screensize;
+uniform vec2 in_vector;
 
 in vec4 g_pos;
 in vec3 v_normal;
@@ -44,12 +45,12 @@ void main(void)
 	}
 	
   	out_frag_color = sceneTerm+texture(Texture2, v_texture)+selectionTerm;
-	//out_frag_color = ((texture(Texture1, v_texture)+texture(Texture2, v_texture)))+selection();
-	//out_frag_color = texture(Texture1, v_texture)+texture(Texture2, v_texture)+texture(Texture3, v_texture);
-	//out_frag_color =  vec4(1,1,1,1)*texture(Texture5, v_texture).a;
-	//out_frag_color +=  texture(Texture6,v_texture);
-	//out_frag_color = vec4(1,1,1,1)*texture(Texture6, v_texture).a;
-	//out_frag_color.a = 1;
+	if(in_vector.x != 1)
+	{
+		out_frag_color.r = pow(out_frag_color.r,in_vector.x);
+		out_frag_color.g = pow(out_frag_color.g,in_vector.x);
+		out_frag_color.b = pow(out_frag_color.b,in_vector.x);
+	}
 }
 
 

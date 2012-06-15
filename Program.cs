@@ -138,13 +138,13 @@ namespace OpenTkProject
 
             meshLoader.fromObj("models\\sprite_plane.obj");
 
-            textureLoader.fromFile("materials\\ultra_engine_back.png",true);
-            textureLoader.fromFile("materials\\ultra_engine_back_h.png",true);
+            textureLoader.fromPng("materials\\ultra_engine_back.png",true);
+            textureLoader.fromPng("materials\\ultra_engine_back_h.png",true);
 
             materialLoader.fromXmlFile("materials\\composite.xmf");
 
             //loading noise manualy so we can disable multisampling
-            textureLoader.fromFile("materials\\noise_pixel.png", false);
+            textureLoader.fromPng("materials\\noise_pixel.png", false);
 
             // load files for loading screen
             textureLoader.LoadTextures();

@@ -11,6 +11,8 @@ using System.Drawing.Imaging;
 using System.Collections;
 using System.IO;
 using OpenTkProject.Game;
+using OpenTK.Platform;
+using OpenTkProject;
 
 namespace OpenTkProject
 {
@@ -23,13 +25,14 @@ namespace OpenTkProject
         public string pointer;
 
         public Type type;
-        public enum Type {fromFile, fromFramebuffer, fromCache};
+        public enum Type {fromPng, fromFramebuffer, fromDds};
 
         public bool loaded;
         public int identifier;
 
         public bool multisampling;
 
+        public byte[] cacheBitmap;
         public Bitmap bitmap;
 
         internal Texture nameOnly()
@@ -48,10 +51,31 @@ namespace OpenTkProject
                 Texture tmpTex = new Texture();
 
                 tmpTex.name = name;
-                tmpTex.bitmap = bitmap;
+                tmpTex.cacheBitmap = cacheBitmap;
                 tmpTex.multisampling = multisampling;
 
                 mList.Add(tmpTex);
+            }
+        }
+
+        public Bitmap CacheBitmap
+        {
+            get
+            {
+                MemoryStream ms = new MemoryStream(cacheBitmap);
+                Image returnImage = Image.FromStream(ms);
+                return (Bitmap)returnImage;
+            }
+            set
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    // Convert Image to byte[]
+                    value.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                    //dpgraphic.image.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                    cacheBitmap = ms.ToArray();
+                }
             }
         }
     }
@@ -67,11 +91,51 @@ namespace OpenTkProject
             this.gameWindow = mGameWindow;
         }
 
-
-        /*
         internal void readCacheFile()
         {
+            string filename = Settings.Instance.game.textureCacheFile;
+            FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            List<Texture> tmpTextures;
 
+            using (fileStream)
+            {
+                // Read the source file into a byte array.
+                byte[] bytes = new byte[fileStream.Length];
+                int numBytesToRead = (int)fileStream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = fileStream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+
+                tmpTextures = (List<Texture>)GenericMethods.ByteArrayToObject(bytes);
+                fileStream.Close();
+            }
+
+            foreach (var Texture in tmpTextures)
+            {
+                Texture curTex = Texture;
+                string name = Texture.name;
+                if (!textureNames.ContainsKey(name))
+                {
+                    int identifier = textures.Count;
+
+                    curTex.type = Texture.Type.fromDds;
+                    curTex.identifier = identifier;
+                    curTex.bitmap = curTex.CacheBitmap;
+
+                    textures.Add(curTex);
+                    textureNames.Add(name, identifier);
+                }
+            }
         }
 
         internal void writeCacheFile()
@@ -93,7 +157,6 @@ namespace OpenTkProject
                 fileStream.Close();
             }
         }
-         */
 
         public Texture getTexture(string name)
         {
@@ -113,7 +176,12 @@ namespace OpenTkProject
             return textures[identifier].texture;
         }
 
-        public void fromFile(string file,bool sampling)
+        public void fromPng(string file)
+        {
+            fromPng(file, true);
+        }
+
+        public void fromPng(string file, bool sampling)
         {
             string name = file.Replace(gameWindow.materialFolder, "");
 
@@ -122,7 +190,7 @@ namespace OpenTkProject
                 Texture curTexture = new Texture();
 
                 curTexture.identifier = textures.Count;
-                curTexture.type = Texture.Type.fromFile;
+                curTexture.type = Texture.Type.fromPng;
                 curTexture.loaded = false;
                 curTexture.pointer = file;
                 curTexture.name = name;
@@ -130,6 +198,24 @@ namespace OpenTkProject
 
                 registerTexture(curTexture);
 
+            }
+        }
+
+        public void fromDds(string file)
+        {
+            string name = file.Replace(gameWindow.materialFolder, "");
+
+            if (!textureNames.ContainsKey(name))
+            {
+                Texture curTexture = new Texture();
+
+                curTexture.identifier = textures.Count;
+                curTexture.type = Texture.Type.fromDds;
+                curTexture.loaded = false;
+                curTexture.pointer = file;
+                curTexture.name = name;
+
+                registerTexture(curTexture);
             }
         }
 
@@ -181,16 +267,60 @@ namespace OpenTkProject
 
         public void loadTexture(Texture target)
         {
+            switch (target.type)
+            {
+                case Texture.Type.fromPng:
+                    loadTextureFromPng(target);
+                    break;
+                case Texture.Type.fromDds:
+                    loadTextureFromDds(target);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void loadTextureFromDds(Texture target)
+        {
+            GL.Enable(EnableCap.Texture2D);
+
+            TextureTarget ImageTextureTarget;
+            uint ImageTextureHandle;
+            ImageDDS.LoadFromDisk(target.pointer, out ImageTextureHandle, out ImageTextureTarget);
+
+                // load succeeded, Texture can be used.
+                GL.BindTexture(ImageTextureTarget, ImageTextureHandle);
+            GL.TexParameter(ImageTextureTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            int[] MipMapCount = new int[1];
+            GL.GetTexParameter(ImageTextureTarget, GetTextureParameter.TextureMaxLevel, out MipMapCount[0]);
+            if (MipMapCount[0] == 0) // if no MipMaps are present, use linear Filter
+                GL.TexParameter(ImageTextureTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            else // MipMaps are present, use trilinear Filter
+                GL.TexParameter(ImageTextureTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+
+            target.texture = (int)ImageTextureHandle;
+            target.loaded = true;
+
+            textures[target.identifier] = target;
+       }
+
+
+        public void loadTextureFromPng(Texture target)
+        {
             gameWindow.log("loading Texture: " + target.name);
 
             if (String.IsNullOrEmpty(target.pointer))
                 throw new ArgumentException(target.pointer);
 
+            Bitmap bmp = new Bitmap(target.pointer);
+            target.CacheBitmap = bmp;
+            target.bitmap = bmp;
+
             target.texture = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, target.texture);
 
-            Bitmap bmp = new Bitmap(target.pointer);
-            target.bitmap = bmp;
+            target.bitmap = null;
+
             BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0,
