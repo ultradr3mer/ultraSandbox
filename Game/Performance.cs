@@ -81,6 +81,7 @@ namespace OpenTkProject.Game
 
 	/// <summary>
 	/// Acts like a circular buffer of time samples to see performance impact real time
+	/// TODO: I will implement multiple samples, so there can be more samples other than Render and Update
 	/// </summary>
 	public class Performance: IEnumerable
 	{ 
@@ -164,10 +165,8 @@ namespace OpenTkProject.Game
 	/// </summary>
 	public class PerformanceVisualizer
 	{
-
 		Shader shd;
 		OpenTkProjectWindow win;
-
 
 		/// <summary>
 		/// This can be singleton too
@@ -179,21 +178,20 @@ namespace OpenTkProject.Game
 
 		float step; // horizontal pixel step for each sample
 		int cacheAmount;
-		int drawn;
+		int pointCount;
+
+		int stripeCount;
 
 		public void Initialize(OpenTkProjectWindow window)
 		{
-			cacheAmount = Performance.Instance.SampleCount * 8;
+			cacheAmount = Performance.Instance.SampleCount * 8; // this is totally random amount
 			points = new Vector3[ cacheAmount ];
 			updateIndices = new int[cacheAmount];
 			renderIndices = new int[cacheAmount];
 
 			GL.GenBuffers(1, out positionVBO);
-			CheckError();
 			GL.GenBuffers(1, out updateIndexVBO);
-			CheckError();
 			GL.GenBuffers(1, out renderIndexVBO);
-			CheckError();
 
 			Size = window.screenSize;
 			Position = new Vector2(0, 0);
@@ -202,40 +200,26 @@ namespace OpenTkProject.Game
 			win = window;
 			shd = win.shaderLoader.getShader("perf.xsp");
 			perfColorPos = GL.GetUniformLocation(shd.handle, "in_perfcolor");
-			CheckError();
 			inposPos = GL.GetAttribLocation(shd.handle, "in_position");
-			CheckError();
 			projPos = GL.GetUniformLocation(shd.handle, "projection_matrix");
-			CheckError();
 
-			GL.GenVertexArrays(1, out vao);
-			CheckError();
-			GL.BindVertexArray(vao);
-			CheckError();
-
+			/// create VAO for Update graph
+			GL.GenVertexArrays(1, out vaoUpdate);
+			GL.BindVertexArray(vaoUpdate);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			CheckError();
-
 			GL.VertexAttribPointer(inposPos, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
-			CheckError();
-
 			GL.EnableVertexAttribArray(inposPos);
-			CheckError();
-			
-
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
 
-			GL.BindVertexArray(0);
 
-			GL.GenVertexArrays(1, out vao2);
-			GL.BindVertexArray(vao2);
+			/// create VAO for Render graph
+			GL.GenVertexArrays(1, out vaoRender);
+			GL.BindVertexArray(vaoRender);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
 			GL.VertexAttribPointer(inposPos, 3, VertexAttribPointerType.Float, true, Vector3.SizeInBytes, 0);
 			GL.EnableVertexAttribArray(inposPos);
-			
-
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
 
 			GL.BindVertexArray(0);
@@ -260,174 +244,66 @@ namespace OpenTkProject.Game
 			curPos.Y = Size.Y;
 			curPos.X += Size.X;
 
-			drawn = 0;
+			pointCount = 0;
 			foreach (FrameStatistics fs in Performance.Instance)
 			{
-				/*if (fs.Update == null)
-				{
-					break;
-				}*/
-
 				float updateSize = fs.Update * Size.Y;
 				float renderSize = fs.Render * Size.Y;
 
-				points[drawn++] = new Vector3(curPos);
-				points[drawn++] = new Vector3(curPos.X, curPos.Y - updateSize, 0);
-				points[drawn++] = new Vector3(curPos.X, (curPos.Y - updateSize) - renderSize, 0);
+				points[pointCount++] = new Vector3(curPos);
+				points[pointCount++] = new Vector3(curPos.X, curPos.Y - updateSize, 0);
+				points[pointCount++] = new Vector3(curPos.X, (curPos.Y - updateSize) - renderSize, 0);
 
 				curPos.X -= step;
 			}
 
-
-			///  5+--+2
-			///   |  |
-			///   |  |
-			///  4+--+1
-			///   |  |
-			///   |  |
-			///  3+--+0
-
-			int totalBars = (drawn / 3);
+			int totalBars = (pointCount / 3);
 			int updIndex = 0;
 			int rndIndex = 0;
 			int curBarPoint = 0;
 
-			/*updateIndices[updIndex++] = curBarPoint + 0; // eg. 0
-			updateIndices[updIndex++] = curBarPoint + 1; // eg. 1
-
-			renderIndices[rndIndex++] = curBarPoint + 1;
-			renderIndices[rndIndex++] = curBarPoint + 2;
-
-			curBarPoint += 3;*/
-
 			for (int i = 0; i < totalBars; i++)
 			{
-				// counter clock wise
-				
 				updateIndices[updIndex++] = curBarPoint + 0; // eg. 3
 				updateIndices[updIndex++] = curBarPoint + 1; // eg. 4
 
-				
 				renderIndices[rndIndex++] = curBarPoint + 1;
 				renderIndices[rndIndex++] = curBarPoint + 2;
 
 				curBarPoint += 3;
 			}
 
-			GL.Disable(EnableCap.CullFace);
+			stripeCount = rndIndex;
+
+			/// UPDATE VBO DATA
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			CheckError();
 			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
-			CheckError();
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
-			CheckError();
-
 			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.BindVertexArray(vao);
-
-			GL.UseProgram(shd.handle);
-
-			GL.Uniform4(perfColorPos, new Vector4(1f, 0f, 0f, 1f));
-			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
-
-			GL.DrawElements(BeginMode.TriangleStrip, updIndex, DrawElementsType.UnsignedInt, 0);
-
-
-			GL.BindVertexArray(vao2);
-
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
-			CheckError();
-
 			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.Uniform4(perfColorPos, new Vector4(0f, 1f, 0f, 0f));
-
-			GL.DrawElements(BeginMode.TriangleStrip, rndIndex, DrawElementsType.UnsignedInt, 0);
-
-
-			/*GL.UseProgram(shd.handle);
-			CheckError();
-
-			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
-			CheckError();
-
-			GL.BindVertexArray(vao);
-			GL.DrawElements(BeginMode.TriangleStrip, updIndex - 2 , DrawElementsType.UnsignedInt, 0);
-			CheckError();
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
-			CheckError();
-			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.BindVertexArray(vao2);
-			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);*/
-
-			/*GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
-			CheckError();
-			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.Uniform4(perfColorPos, 0.0f, 1.0f, 0, 1.0f);
-			CheckError();
-			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);
-			CheckError();*/
-		}
-
-		public void RenderTest()
-		{
-			int drawn = 0;
-
-			points[drawn++] = new Vector3(0, 250, 0);
-			points[drawn++] = new Vector3(0, 0, 0);
-			points[drawn++] = new Vector3(250, 250, 0);
-			points[drawn++] = new Vector3(250, 0, 0);
-
-
-			int updIndex = 0;
-
-			updateIndices[updIndex++] = 0;
-			updateIndices[updIndex++] = 1;
-			updateIndices[updIndex++] = 2;
-			updateIndices[updIndex++] = 3;
-
-			GL.Disable(EnableCap.CullFace);
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			CheckError();
-			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
-			CheckError();
-
-			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
-			CheckError();
-
-			GL.BindVertexArray(vao);
-
-			GL.UseProgram(shd.handle);
-
-			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
-
-
-
-			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
-
-
-
-			GL.DrawElements(BeginMode.TriangleStrip, 4, DrawElementsType.UnsignedInt, 0);
 		}
 
 		public void Render()
 		{
+			/// Update data
 			Update();
+
+			GL.UseProgram(shd.handle);
+			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
+
+			GL.BindVertexArray(vaoUpdate);
+			GL.Uniform4(perfColorPos, new Vector4(1f, 0f, 0f, 1f));
+			GL.DrawElements(BeginMode.TriangleStrip, stripeCount, DrawElementsType.UnsignedInt, 0);
+
+			GL.BindVertexArray(vaoRender);
+			GL.Uniform4(perfColorPos, new Vector4(0f, 1f, 0f, 1f));
+			GL.DrawElements(BeginMode.TriangleStrip, stripeCount, DrawElementsType.UnsignedInt, 0);
+
+			GL.BindVertexArray(0);
 		}
 
 		public int positionVBO;
@@ -437,9 +313,8 @@ namespace OpenTkProject.Game
 		public int inposPos;
 		public int projPos;
 
-		public int vao;
-		public int vao2;
-
+		public int vaoUpdate;
+		public int vaoRender;
 
 		Matrix4 ProjMatrix;
 		Vector3[] points;
