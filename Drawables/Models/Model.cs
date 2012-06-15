@@ -52,29 +52,28 @@ namespace OpenTkProject.Drawables.Models
                     Material curMaterial = materials[i];
                     gameWindow.checkGlError("--uncaught ERROR drawing Model--" + curMesh.name);
 
-                    if (curMaterial.useAlpha == targetLayer)
+                    if (curMaterial.propertys.useAlpha == targetLayer)
                     {
                         //Console.WriteLine("drawing: " + mMesh[i].name);
 
-                        Shader curShader = activateMaterial(ref curMaterial);
+                        Shader shader = activateMaterial(ref curMaterial);
 
-                        if (curShader.loaded)
+                        if (shader.loaded)
                         {
-                            GL.Uniform2(curShader.screenSizeLocation, ref gameWindow.virtual_size);
-                            GL.Uniform2(curShader.renderSizeLocation, ref gameWindow.currentSize);
-                            GL.Uniform1(curShader.timeLocation, 1, ref gameWindow.frameTime);
-
-                            GL.Uniform4(curShader.colorLocation, ref color);
+                            shader.insertUniform(Shader.Uniform.in_screensize, ref gameWindow.virtual_size);
+                            shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
+                            shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
+                            shader.insertUniform(Shader.Uniform.in_color, ref color);
 
                             //GL.Uniform1(curShader.nearLocation, 1, ref mGameWindow.mPlayer.zNear);
                             //GL.Uniform1(curShader.farLocation, 1, ref mGameWindow.mPlayer.zFar);
 
                             if (Scene != null)
                             {
-                                setupMatrices(ref curView, ref curShader, ref curMesh);
+                                setupMatrices(ref curView, ref shader, ref curMesh);
                             }
 
-                            setSpecialUniforms(ref curShader, ref curMesh);
+                            setSpecialUniforms(ref shader, ref curMesh);
 
                             GL.BindVertexArray(vaoHandle[i]);
                             GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
@@ -146,17 +145,18 @@ namespace OpenTkProject.Drawables.Models
             {
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
-                    Shader curShader = activateMaterialShadow(materials[i]);
+                    Shader shader = activateMaterialShadow(materials[i]);
                     Mesh curMesh = meshes[i];
 
-                    if (curShader.loaded)
+                    if (shader.loaded)
                     {
                         if (Scene != null)
                         {
-                            setupMatrices(ref curView, ref curShader, ref curMesh);
+                            setupMatrices(ref curView, ref shader, ref curMesh);
                         }
 
-                        GL.Uniform2(curShader.renderSizeLocation, ref gameWindow.currentSize);
+                        shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
+
                         GL.BindVertexArray(vaoHandle[i]);
                         GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                     }

@@ -56,7 +56,9 @@ namespace OpenTkProject.Drawables
         {
             GL.Uniform3(shader.sunDirection, ref pointingDirection);
             GL.Uniform3(shader.sunColor, ref colorRgb);
-            GL.Uniform3(shader.lightAmbientLocation, ref lightAmbient);
+
+            shader.insertUniform(Shader.Uniform.in_lightambient, ref lightAmbient);
+
             GL.UniformMatrix4(shader.sunMatrix, false, ref shadowMatrix);
             GL.UniformMatrix4(shader.sunInnerMatrix, false, ref innerShadowMatrix);
         }

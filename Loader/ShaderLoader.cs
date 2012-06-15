@@ -12,47 +12,33 @@ using System.Text;
 
 namespace OpenTkProject
 {
+    [Serializable]
     public struct Shader
     {
-        public int
-            modelviewMatrixLocation,
-            projectionMatrixLocation,
-            projectionRevMatrixLocation,
-            modelMatrixLocation,
-            rotationMatrixLocation,
-            screenSizeLocation,
-            lightLocationLocation,
-            lightColorLocation,
-            lightAmbientLocation,
-            lightDirectionLocation,
-            eyePosLocation,
-            timeLocation,
-            passLocation,
-            waterLevelLocation,
-            vectorLocation,
-            nearLocation,
-            farLocation,
-            renderSizeLocation,
-            hudElementSize,
-            hudElementPos,
-            useEnvLocation;
+        public string[] pointer;
 
         public int[] lightLocationsLocation;
         public int[] lightDirectionsLocation;
         public int[] lightColorsLocation;
         public int[] lightViewMatrixLocation;
 
+        public int[] lightActiveLocation;
+        public int[] lightTextureLocation;
+
+        public int[] BoneMatixLocations;
+
         public const int TYPE_FROMFILE = 1;
         public const int TYPE_FROMXML = 2;
 
         public int handle, type;
-        public string[] pointer;
 
         public string name;
 
         public int identifier;
 
         public bool loaded;
+
+        /*
         public int hudElementColor;
         public int hudElementValue;
         public int emitColorLocation;
@@ -76,21 +62,211 @@ namespace OpenTkProject
         public int colorLocation;
         public int LightCountLocation;
         public int modLocation;
-        public int sunDirection;
-        public int sunColor;
-        public int sunMatrix;
         public int lightSunLocation;
         public int curLightLocation;
-        public int[] lightActiveLocation;
         public int shadowQualityLocation;
         public int particlePos;
         public int particleSize;
-        public int[] lightTextureLocation;
-        public int sunInnerMatrix;
         public int modeLocation;
-        public int[] BoneMatixLocations;
         public int noBonesLocation;
+        */
 
+        public int sunDirection;
+        public int sunColor;
+        public int sunMatrix;
+        public int sunInnerMatrix;
+
+        internal Shader nameOnly()
+        {
+            Shader tmpShader = new Shader();
+
+            tmpShader.name = name;
+
+            return tmpShader;
+        }
+        /*
+
+                    target.projectionMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_matrix");
+            target.projectionRevMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_rev_matrix");
+            target.modelviewMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "modelview_matrix");
+            target.rotationMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix");
+            target.modelMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "model_matrix");
+            target.rotationMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix2");
+            target.modelMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "model_matrix2");
+
+            target.eyePosLocation = GL.GetUniformLocation(shaderProgramHandle, "in_eyepos");
+            target.timeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_time");
+            target.passLocation = GL.GetUniformLocation(shaderProgramHandle, "in_pass");
+            target.waterLevelLocation = GL.GetUniformLocation(shaderProgramHandle, "in_waterlevel");
+            target.vectorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_vector");
+            target.screenSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_screensize");
+            target.renderSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_rendersize");
+            target.lightAmbientLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightambient");
+            target.lightSunLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightsun");
+            target.shadowQualityLocation = GL.GetUniformLocation(shaderProgramHandle, "shadow_quality");
+
+            target.particlePos = GL.GetUniformLocation(shaderProgramHandle, "in_particlepos");
+            target.particleSize = GL.GetUniformLocation(shaderProgramHandle, "in_particlesize");
+
+            target.colorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_color");
+            target.modLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mod");
+
+            target.modeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mode");
+
+            target.useEmitLocation = GL.GetUniformLocation(shaderProgramHandle, "use_emit");
+            target.emitMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_base");
+            target.emitMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_normal");
+            target.emitColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_emitcolor");
+
+            target.useSpecLocation = GL.GetUniformLocation(shaderProgramHandle, "use_spec");
+            target.specMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_base");
+            target.specMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_normal");
+            target.specColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_speccolor");
+            target.specExpLocation = GL.GetUniformLocation(shaderProgramHandle, "in_specexp");
+
+            target.useEnvLocation = GL.GetUniformLocation(shaderProgramHandle, "use_env");
+            target.envMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_base");
+            target.envMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_normal");
+            target.envTintLocation = GL.GetUniformLocation(shaderProgramHandle, "env_tint");
+
+            target.useAlphaLocation = GL.GetUniformLocation(shaderProgramHandle, "use_alpha");
+            target.refSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "ref_size");
+            target.blurSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "blur_size");
+            target.fresnelStrLocation = GL.GetUniformLocation(shaderProgramHandle, "fresnel_str");
+
+            target.nearLocation = GL.GetUniformLocation(shaderProgramHandle, "in_near");
+            target.farLocation = GL.GetUniformLocation(shaderProgramHandle, "in_far");
+
+            target.hudElementSize = GL.GetUniformLocation(shaderProgramHandle, "in_hudsize");
+            target.hudElementPos = GL.GetUniformLocation(shaderProgramHandle, "in_hudpos");
+            target.hudElementColor = GL.GetUniformLocation(shaderProgramHandle, "in_hudcolor");
+            target.hudElementValue = GL.GetUniformLocation(shaderProgramHandle, "in_hudvalue");
+         
+            target.LightCountLocation = GL.GetUniformLocation(shaderProgramHandle, "in_no_lights");
+            target.curLightLocation = GL.GetUniformLocation(shaderProgramHandle, "curLight");
+            target.noBonesLocation = GL.GetUniformLocation(shaderProgramHandle, "uni_no_bones");
+
+        */
+        public enum Uniform
+        {
+            projection_matrix,
+            projection_rev_matrix,
+            modelview_matrix,
+            rotation_matrix,
+            model_matrix,
+            rotation_matrix2,
+            model_matrix2,
+
+            in_eyepos,
+            in_time,
+            in_pass,
+            in_waterlevel,
+            in_vector,
+            in_screensize,
+            in_rendersize,
+            in_lightambient,
+            in_lightsun,
+            shadow_quality,
+
+            in_particlepos,
+            in_particlesize,
+
+            in_color,
+            in_mod,
+
+            use_emit,
+            emit_a_base,
+            emit_a_normal,
+            in_emitcolor,
+
+            use_spec,
+            spec_a_base,
+            spec_a_normal,
+            in_speccolor,
+            in_specexp,
+
+            use_env,
+            env_a_base,
+            env_a_normal,
+            env_tint,
+
+            use_alpha,
+            ref_size,
+            blur_size,
+            fresnel_str,
+
+            in_near,
+            in_far,
+
+            in_hudsize,
+            in_hudpos,
+            in_hudcolor,
+            in_hudvalue,
+
+            in_no_lights,
+            curLight,
+            uni_no_bones
+        }
+
+        int[] locations;
+
+        public void insertUniform(Uniform uni, ref float value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.Uniform1(location, 1, ref value);
+        }
+
+        internal void insertUniform(Uniform uni, ref int value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.Uniform1(location, 1, ref value);
+        }
+
+        internal void insertUniform(Uniform uni, ref Vector4 value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.Uniform4(location, ref value);
+        }
+
+        public void insertUniform(Uniform uni, ref Vector3 value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.Uniform3(location, ref value);
+        }
+
+        internal void insertUniform(Uniform uni, ref Vector2 value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.Uniform2(location, ref value);
+        }
+
+        public void insertUniform(Uniform uni, ref Matrix4 value)
+        {
+            int location = locations[(int)uni];
+            if (location != -1)
+                GL.UniformMatrix4(location, false, ref value);
+        }
+
+        public void generateLocations()
+        {
+            string[] names = Enum.GetNames(typeof(Uniform));
+            Array values = Enum.GetValues(typeof(Uniform));
+
+            int test = (int)Uniform.blur_size;
+
+            int handlesCount = names.Length;
+            locations = new int[handlesCount];
+
+            for (int i = 0; i < handlesCount; i++)
+            {
+                locations[i] = GL.GetUniformLocation(handle, names[i]);
+            }
+        }
     }
 
     public struct Snippet
@@ -251,6 +427,9 @@ namespace OpenTkProject
 
         public Shader getShader(string name)
         {
+            if (name == null)
+                return new Shader();
+
             int id = (int)ShaderNames[name];
             return Shaders[id];
         }
@@ -382,61 +561,12 @@ namespace OpenTkProject
             int shaderProgramHandle = target.handle;
 
             // Set uniforms
-            target.projectionMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_matrix");
-            target.projectionRevMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_rev_matrix");
-            target.modelviewMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "modelview_matrix");
-            target.rotationMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix");
-            target.modelMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "model_matrix");
-            target.rotationMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "rotation_matrix2");
-            target.modelMatrixLocation2 = GL.GetUniformLocation(shaderProgramHandle, "model_matrix2");
+            target.generateLocations();
 
-            target.eyePosLocation = GL.GetUniformLocation(shaderProgramHandle, "in_eyepos");
-            target.timeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_time");
-            target.passLocation = GL.GetUniformLocation(shaderProgramHandle, "in_pass");
-            target.waterLevelLocation = GL.GetUniformLocation(shaderProgramHandle, "in_waterlevel");
-            target.vectorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_vector");
-            target.screenSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_screensize");
-            target.renderSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_rendersize");
-            target.lightAmbientLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightambient");
-            target.lightSunLocation = GL.GetUniformLocation(shaderProgramHandle, "in_lightsun");
-            target.shadowQualityLocation = GL.GetUniformLocation(shaderProgramHandle, "shadow_quality");
-
-            target.particlePos = GL.GetUniformLocation(shaderProgramHandle, "in_particlepos");
-            target.particleSize = GL.GetUniformLocation(shaderProgramHandle, "in_particlesize");
-
-            target.colorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_color");
-            target.modLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mod");
-
-            target.modeLocation = GL.GetUniformLocation(shaderProgramHandle, "in_mode");
-
-            target.useEmitLocation = GL.GetUniformLocation(shaderProgramHandle, "use_emit");
-            target.emitMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_base");
-            target.emitMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "emit_a_normal");
-            target.emitColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_emitcolor");
-
-            target.useSpecLocation = GL.GetUniformLocation(shaderProgramHandle, "use_spec");
-            target.specMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_base");
-            target.specMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "spec_a_normal");
-            target.specColorLocation = GL.GetUniformLocation(shaderProgramHandle, "in_speccolor");
-            target.specExpLocation = GL.GetUniformLocation(shaderProgramHandle, "in_specexp");
-
-            target.useEnvLocation = GL.GetUniformLocation(shaderProgramHandle, "use_env");
-            target.envMapAlphaBaseTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_base");
-            target.envMapAlphaNormalTexture = GL.GetUniformLocation(shaderProgramHandle, "env_a_normal");
-            target.envTintLocation = GL.GetUniformLocation(shaderProgramHandle, "env_tint");
-
-            target.useAlphaLocation = GL.GetUniformLocation(shaderProgramHandle, "use_alpha");
-            target.refSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "ref_size");
-            target.blurSizeLocation = GL.GetUniformLocation(shaderProgramHandle, "blur_size");
-            target.fresnelStrLocation = GL.GetUniformLocation(shaderProgramHandle, "fresnel_str");
-
-            target.nearLocation = GL.GetUniformLocation(shaderProgramHandle, "in_near");
-            target.farLocation = GL.GetUniformLocation(shaderProgramHandle, "in_far");
-
-            target.hudElementSize = GL.GetUniformLocation(shaderProgramHandle, "in_hudsize");
-            target.hudElementPos = GL.GetUniformLocation(shaderProgramHandle, "in_hudpos");
-            target.hudElementColor = GL.GetUniformLocation(shaderProgramHandle, "in_hudcolor");
-            target.hudElementValue = GL.GetUniformLocation(shaderProgramHandle, "in_hudvalue");
+            target.sunDirection = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.direction");
+            target.sunColor = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.color");
+            target.sunMatrix = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.view_matrix");
+            target.sunInnerMatrix = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.inner_view_matrix");
 
             target.lightLocationsLocation = new int[maxNoLights];
             target.lightDirectionsLocation = new int[maxNoLights];
@@ -444,13 +574,6 @@ namespace OpenTkProject
             target.lightViewMatrixLocation = new int[maxNoLights];
             target.lightActiveLocation = new int[maxNoLights];
             target.lightTextureLocation = new int[maxNoLights];
-
-            target.LightCountLocation = GL.GetUniformLocation(shaderProgramHandle, "in_no_lights");
-            target.curLightLocation = GL.GetUniformLocation(shaderProgramHandle, "curLight");
-            target.sunDirection = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.direction");
-            target.sunColor = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.color");
-            target.sunMatrix = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.view_matrix");
-            target.sunInnerMatrix = GL.GetUniformLocation(shaderProgramHandle, "sunLightStruct.inner_view_matrix");
 
             for (int i = 0; i < maxNoLights; i++)
             {
@@ -464,8 +587,6 @@ namespace OpenTkProject
 
                 target.lightViewMatrixLocation[i] = GL.GetUniformLocation(shaderProgramHandle, "lightStructs[" + i + "].view_matrix");
             }
-
-            target.noBonesLocation = GL.GetUniformLocation(shaderProgramHandle, "uni_no_bones");
 
             target.BoneMatixLocations = new int[maxNoBones];
             for (int i = 0; i < maxNoBones; i++)
@@ -538,6 +659,16 @@ namespace OpenTkProject
         public ShaderLoader(OpenTkProjectWindow mGameWindow)
         {
             this.gameWindow = mGameWindow;
+        }
+
+        internal void readCacheFile()
+        {
+
+        }
+
+        internal void writeCacheFile()
+        {
+
         }
     }
 }

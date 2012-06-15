@@ -32,28 +32,28 @@ namespace OpenTkProject.Drawables
             draw(curShader, curtexture, Vector2.Zero);
         }
 
-        public void draw(Shader curShader, int[] curtexture, Vector2 shadingVec)
+        public void draw(Shader shader, int[] curtexture, Vector2 shadingVec)
         {
-            gameWindow.checkGlError("--uncaught ERROR drawing 2d Quad--" + curShader.name);
+            gameWindow.checkGlError("--uncaught ERROR drawing 2d Quad--" + shader.name);
 
-            GL.UseProgram(curShader.handle);
+            GL.UseProgram(shader.handle);
 
-            GL.Uniform2(curShader.vectorLocation, ref shadingVec);
-            GL.Uniform2(curShader.screenSizeLocation, ref gameWindow.virtual_size);
-            GL.Uniform2(curShader.renderSizeLocation, ref gameWindow.currentSize);
-            GL.Uniform1(curShader.timeLocation,1, ref gameWindow.frameTime);
+            shader.insertUniform(Shader.Uniform.in_vector, ref shadingVec);
+            shader.insertUniform(Shader.Uniform.in_screensize, ref gameWindow.virtual_size);
+            shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
+            shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
 
             if (Scene != null)
             {
-                GL.Uniform1(curShader.LightCountLocation, 1, ref Scene.lightCount);
-                GL.Uniform1(curShader.curLightLocation, 1, ref Scene.currentLight);
+                shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);
+                shader.insertUniform(Shader.Uniform.curLight, ref Scene.currentLight);
             }
 
-            initTextures(curtexture, curShader.handle, "Texture");
+            initTextures(curtexture, shader.handle, "Texture");
             GL.BindVertexArray(vaoHandle[0]);
             GL.DrawElements(BeginMode.Triangles, meshes[0].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-            gameWindow.checkGlError("--Drawing ERROR Quad--" + curShader.name);
+            gameWindow.checkGlError("--Drawing ERROR Quad--" + shader.name);
         }
     }
 }

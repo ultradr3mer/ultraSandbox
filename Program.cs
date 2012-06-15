@@ -152,6 +152,16 @@ namespace OpenTkProject
             shaderLoader.loadShaders();
             materialLoader.loadMaterials();
 
+            // load files from cache
+            if (Settings.Instance.game.useCache)
+            {
+                meshLoader.readCacheFile();
+                shaderLoader.readCacheFile();
+                //textureLoader.readCacheFile();
+                materialLoader.readCacheFile();
+                templateLoader.readCacheFile();
+            }
+
             // setup 2d filter (loading screen)
             splashFilter2d = new Quad2d(this);
 
@@ -216,9 +226,9 @@ namespace OpenTkProject
                 // draw loading screen
                 GL.Viewport(0, 0, Width, Height);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                GL.Disable(EnableCap.CullFace); 
-                
-                splashFilter2d.draw(shaderLoader.getShader("splash_shader.fs"), new int[] { textureLoader.getTexture("ultra_engine_back.png"), textureLoader.getTexture("ultra_engine_back_h.png") }, Vector2.One * (loadingPercentage));
+                GL.Disable(EnableCap.CullFace);
+
+                splashFilter2d.draw(shaderLoader.getShader("splash_shader.fs"), new int[] { textureLoader.getTextureId("ultra_engine_back.png"), textureLoader.getTextureId("ultra_engine_back_h.png") }, Vector2.One * (loadingPercentage));
 
                 SwapBuffers();
               
@@ -345,6 +355,16 @@ namespace OpenTkProject
 
                 if (loadingPercentage == 1)
                 {
+                    //cache results
+                    if (Settings.Instance.game.generateCache)
+                    {
+                        meshLoader.writeCacheFile();
+                        shaderLoader.writeCacheFile();
+                        //textureLoader.writeCacheFile();
+                        materialLoader.writeCacheFile();
+                        templateLoader.writeCacheFile();
+                    }
+
                     //create cubemap buffers
                     mCubemapBufferSets = new CubemapBufferSets(mScene, framebufferCreator, 128);
                     mScene.envTextures = mCubemapBufferSets.outTextures;
@@ -355,7 +375,7 @@ namespace OpenTkProject
                     waterViewInfo.updateProjectionMatrix();
 
                     //set noise texture
-                    mScene.noiseTexture = textureLoader.getTexture("noise_pixel.png");
+                    mScene.noiseTexture = textureLoader.getTextureId("noise_pixel.png");
 
                     //set shaders for postprocessing
                     mScene.ssaoShader = shaderLoader.getShader("ssao.xsp");

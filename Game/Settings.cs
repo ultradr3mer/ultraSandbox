@@ -318,6 +318,15 @@ namespace OpenTkProject.Game
     public class GameSettings
     {
         public bool dontShowSettings;
+
+        public bool generateCache;
+        public bool useCache = true;
+
+        public string modelCacheFile = "cacheModel.ucf";
+        public string materialCacheFile = "cacheMaterial.ucf";
+        public string shaderCacheFile = "cacheShader.ucf";
+        public string templateCacheFile = "cacheTemplate.ucf";
+        public string textureCacheFile = "cacheTexture.ucf";
     }
 
     public class Settings

@@ -11,33 +11,37 @@ using System.Collections;
 using System.Xml;
 using OpenTkProject.Loader;
 using System.Text;
+using OpenTkProject.Game;
+using System.Xml.Serialization;
 
 namespace OpenTkProject
 {
+    [Serializable]
     public struct Mesh
     {
+        //Lists for caching
         public List<Vector3> positionVboDataList;
         public List<Vector3> normalVboDataList;
         public List<Vector2> textureVboDataList;
         public List<Face> FaceList;
         public List<Vertice> FpIndiceList;
 
+        public int affectingBonesCount;
+        public float[][] boneWeightList;
+        public int[][] boneIdList;
+
+        //Meshlist id
         public int identifier;
 
-        public enum Type { obj, voxel, collada, empty, colladaManaged }
-
+        //type
+        public enum Type { obj, generated, collada, empty, colladaManaged, fromCache }
         public Type type;
-        public string pointer;
 
-        public string name;
-
+        //basic info
         public bool loaded;
+        public bool containsVbo;
 
-        public Vector3[] positionVboData;
-        public Vector3[] normalVboData;
-        public Vector3[] tangentVboData;
-        public Vector2[] textureVboData;
-        public uint[] indicesVboData;
+        //Vertex Buffer Object Handles
         public int normalVboHandle;
         public int positionVboHandle;
         public int textureVboHandle;
@@ -47,18 +51,74 @@ namespace OpenTkProject
         public int[] boneWeightVboHandles;
         public int[] boneIdVboHandles;
 
+        public AnimationData curAnimationData;
+        public bool animated;
 
-        public bool containsVbo;
+        //stuff to be saved
+        public string name;
 
-        public float boundingSphere;
-        public int affectingBonesCount;
-        public float[][] boneWeightList;
-        public int[][] boneIdList;
+        public Vector3[] positionVboData;
+        public Vector3[] normalVboData;
+        public Vector3[] tangentVboData;
+        public Vector2[] textureVboData;
+        public int[] indicesVboData;
+
         public int[][] boneIdVboData;
         public float[][] boneWeightVboData;
-        public AnimationData curAnimationData;
+
+        public string pointer;
+        public float boundingSphere;
+
         public List<AnimationData> animationData;
-        public bool animated;
+
+        public override string ToString()
+        {
+            return name;
+        }
+
+        internal void cacheMesh(ref List<Mesh> mList)
+        {
+            Mesh tmpMesh = new Mesh();
+
+            if (type == Type.generated || !loaded)
+                return;
+
+            tmpMesh.name = name;
+
+            if (type == Type.empty)
+            {
+                mList.Add(tmpMesh);
+            }
+
+            tmpMesh.positionVboData = positionVboData;
+            tmpMesh.normalVboData = normalVboData;
+            tmpMesh.tangentVboData = tangentVboData;
+            tmpMesh.textureVboData = textureVboData;
+            tmpMesh.indicesVboData = indicesVboData;
+
+            tmpMesh.boneIdVboData = boneIdVboData;
+            tmpMesh.boneWeightVboData = boneWeightVboData;
+
+            tmpMesh.boundingSphere = boundingSphere;
+
+            tmpMesh.animationData = animationData;
+
+            mList.Add(tmpMesh);
+        }
+    }
+
+    [Serializable]
+    public struct AnimationData
+    {
+        //public int BoneCount;
+        public float stepSize;
+        public float lastFrame;
+        public float animationPos;
+        public string name;
+
+        //the animation Matrices[frame][bone]
+        public Matrix4[][] Matrices;
+        public string pointer;
 
         public override string ToString()
         {
@@ -68,31 +128,109 @@ namespace OpenTkProject
 
     public class MeshLoader : GameObject
     {
-        public List<Mesh> Meshes = new List<Mesh> { };
+        public List<Mesh> meshes = new List<Mesh> { };
 
-        public List<Mesh> scheduledVboGenerations = new List<Mesh> { };
-
-        public Hashtable MeshesNames = new Hashtable();
+        public Hashtable meshesNames = new Hashtable();
 
         NumberFormatInfo nfi = GenericMethods.getNfi();
+
+        public void readCacheFile()
+        {
+            string filename = Settings.Instance.game.modelCacheFile;
+            FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            List<Mesh> tmpMeshes;
+
+            using (fileStream)
+            {
+                // Read the source file into a byte array.
+                byte[] bytes = new byte[fileStream.Length];
+                int numBytesToRead = (int)fileStream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = fileStream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+
+                tmpMeshes = (List<Mesh>)GenericMethods.ByteArrayToObject(bytes);
+                fileStream.Close();
+            }
+
+            int meshCount = tmpMeshes.Count;
+            for (int i = 0; i < meshCount; i++)
+            {
+                Mesh curMesh = tmpMeshes[i];
+                string name = curMesh.name;
+
+                if (!meshesNames.ContainsKey(name))
+                {
+                    if (curMesh.indicesVboData != null)
+                    {
+                        curMesh.type = Mesh.Type.fromCache;
+                    }
+                    else
+                    {
+                        curMesh.type = Mesh.Type.empty;
+                        curMesh.loaded = true;
+                    }
+
+                    int identifier = meshes.Count;
+                    curMesh.identifier = identifier;
+
+                    if (curMesh.animationData != null)
+                        curMesh.curAnimationData = curMesh.animationData[0];
+
+                    meshesNames.Add(name, identifier);
+                    meshes.Add(curMesh);
+                }
+            }
+
+            gameWindow.log("loaded "+meshCount+" meshes from cache");
+        }
+
+        public void writeCacheFile()
+        {
+            List<Mesh> SaveList = new List<Mesh> { };
+            foreach (var mesh in meshes)
+            {
+                mesh.cacheMesh(ref SaveList);
+            }
+
+            string filename = Settings.Instance.game.modelCacheFile;
+            FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+
+            using (fileStream)
+            {
+                byte[] saveAry = GenericMethods.ObjectToByteArray(SaveList);
+                fileStream.Write(saveAry, 0, saveAry.Length);
+                fileStream.Close();
+            }
+        }
 
         public Mesh fromObj(string pointer)
         {
             string name = pointer.Replace(gameWindow.modelFolder, "");
 
-            if (!MeshesNames.ContainsKey(name))
+            if (!meshesNames.ContainsKey(name))
             {
  
                 Mesh curMesh = new Mesh();
 
                 curMesh.type = Mesh.Type.obj;
                 curMesh.pointer = pointer;
-                curMesh.identifier = Meshes.Count;
+                curMesh.identifier = meshes.Count;
                 curMesh.name = name;
 
-                MeshesNames.Add(curMesh.name, curMesh.identifier);
+                meshesNames.Add(curMesh.name, curMesh.identifier);
 
-                Meshes.Add(curMesh);
+                meshes.Add(curMesh);
 
                 return curMesh;
             }
@@ -107,19 +245,19 @@ namespace OpenTkProject
         {
             string name = pointer.Replace(gameWindow.modelFolder, "");
 
-            if (!MeshesNames.ContainsKey(name))
+            if (!meshesNames.ContainsKey(name))
             {
 
                 Mesh curMesh = new Mesh();
 
                 curMesh.type = Mesh.Type.collada;
                 curMesh.pointer = pointer;
-                curMesh.identifier = Meshes.Count;
+                curMesh.identifier = meshes.Count;
                 curMesh.name = name;
 
-                MeshesNames.Add(curMesh.name, curMesh.identifier);
+                meshesNames.Add(curMesh.name, curMesh.identifier);
 
-                Meshes.Add(curMesh);
+                meshes.Add(curMesh);
 
                 return curMesh;
             }
@@ -133,14 +271,14 @@ namespace OpenTkProject
         {
             string name = pointer.Replace(gameWindow.modelFolder, "");
 
-            if (!MeshesNames.ContainsKey(name))
+            if (!meshesNames.ContainsKey(name))
             {
 
                 Mesh curMesh = new Mesh();
 
                 curMesh.type = Mesh.Type.colladaManaged;
                 //curMesh.pointer = pointer;
-                curMesh.identifier = Meshes.Count;
+                curMesh.identifier = meshes.Count;
                 curMesh.name = name;
                 curMesh.animationData = new List<AnimationData> { };
 
@@ -167,9 +305,9 @@ namespace OpenTkProject
                         }
                 }
 
-                MeshesNames.Add(curMesh.name, curMesh.identifier);
+                meshesNames.Add(curMesh.name, curMesh.identifier);
 
-                Meshes.Add(curMesh);
+                meshes.Add(curMesh);
 
                 return curMesh;
             }
@@ -181,16 +319,16 @@ namespace OpenTkProject
 
         public Mesh getMesh(string name)
         {
-            int id = (int)MeshesNames[name];
-            return Meshes[id];
+            int id = (int)meshesNames[name];
+            return meshes[id];
         }
 
         public void loadMeshes()
         {
             Mesh curMesh;
-            for (int i = 0; i < Meshes.Count; i++)
+            for (int i = 0; i < meshes.Count; i++)
             {
-                curMesh = Meshes[i];
+                curMesh = meshes[i];
                 if (!curMesh.loaded)
                 {
                     loadMesh(curMesh);
@@ -201,13 +339,13 @@ namespace OpenTkProject
         public float loadSingleMeshes()
         {
             Mesh curMesh;
-            for (int i = 0; i < Meshes.Count; i++)
+            for (int i = 0; i < meshes.Count; i++)
             {
-                curMesh = Meshes[i];
+                curMesh = meshes[i];
                 if (!curMesh.loaded)
                 {
                     loadMesh(curMesh);
-                    return (float)i / (float)Meshes.Count;
+                    return (float)i / (float)meshes.Count;
                 }
             }
             return 1;
@@ -223,12 +361,24 @@ namespace OpenTkProject
                 case Mesh.Type.collada:
                     loadDae(curMesh);
                     break;
+                case Mesh.Type.fromCache:
+                    loadCached(curMesh);
+                    break;
                 case Mesh.Type.colladaManaged:
                     loadManagedCollada(curMesh);
                     break;
                 default:
                     break;
             }
+        }
+
+        private void loadCached(Mesh target)
+        {
+            target.loaded = true;
+
+            generateVBO(ref target);
+
+            meshes[target.identifier] = target;
         }
 
         private void loadManagedCollada(Mesh target)
@@ -250,7 +400,7 @@ namespace OpenTkProject
 
             if (target.identifier != -1)
             {
-                Meshes[target.identifier] = target;
+                meshes[target.identifier] = target;
             }
         }
 
@@ -272,7 +422,7 @@ namespace OpenTkProject
 
             if (target.identifier != -1)
             {
-                Meshes[target.identifier] = target;
+                meshes[target.identifier] = target;
             }
         }
 
@@ -356,7 +506,6 @@ namespace OpenTkProject
             gameWindow.checkGlError("Create indice Buffer");
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
             // --- causes crash ---
             //GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
 
@@ -376,6 +525,7 @@ namespace OpenTkProject
             string line;
             System.IO.StreamReader file =
                new System.IO.StreamReader(target.pointer);
+
             while ((line = file.ReadLine()) != null)
             {
                 string[] sline = line.Split(new string[]{" "},10,StringSplitOptions.None);
@@ -454,7 +604,7 @@ namespace OpenTkProject
 
             if (target.identifier != -1)
             {
-                Meshes[target.identifier] = target;
+                meshes[target.identifier] = target;
             }
         }
 
@@ -488,7 +638,9 @@ namespace OpenTkProject
             List<Vector2> normalUvHelperList = new List<Vector2> { };
             List<Vector3> positionHelperlist = new List<Vector3> { };
 
-            for (int i = 0; i < faceList.Count; i++)
+            int faceCount = faceList.Count;
+
+            for (int i = 0; i < faceCount; i++)
             {
                 // get all the information from Lists into Facelist
                 Vector3[] vposition = new Vector3[3];
@@ -524,29 +676,34 @@ namespace OpenTkProject
                     gameWindow.log("tangent generation ERROR");
                 }
 
+                Face curFace = faceList[i];
+
                 // finding out if normal/tangent can be smoothed
                 for (int j = 0; j < 3; j++)
                 {
-                    // if Normal[Normalindice] has not been assigned a uv coordinate do so and set normal
-                    if (normalUvData[faceList[i].Vertice[j].Ni] == Vector2.Zero)
-                    {
-                        normalUvData[faceList[i].Vertice[j].Ni] = vtexture[j];
-                        normalPositionData[faceList[i].Vertice[j].Ni] = vposition[j];
+                    Vertice curVert = curFace.Vertice[j];
 
-                        tmpnormalVboData[faceList[i].Vertice[j].Ni] = fnormal;
-                        tmptangentVboData[faceList[i].Vertice[j].Ni] = tangent;
+                    // if Normal[Normalindice] has not been assigned a uv coordinate do so and set normal
+                    if (normalUvData[curVert.Ni] == Vector2.Zero)
+                    {
+                        normalUvData[curVert.Ni] = vtexture[j];
+                        normalPositionData[curVert.Ni] = vposition[j];
+
+                        tmpnormalVboData[curVert.Ni] = fnormal;
+                        tmptangentVboData[curVert.Ni] = tangent;
                     }
                     else
                     {
                         // if Normal[Normalindice] is of the same Uv and place simply add
-                        if (normalUvData[faceList[i].Vertice[j].Ni] == vtexture[j] && normalPositionData[faceList[i].Vertice[j].Ni] == vposition[j])
+                        if (normalUvData[curVert.Ni] == vtexture[j] && normalPositionData[curVert.Ni] == vposition[j])
                         {
-                            tmpnormalVboData[faceList[i].Vertice[j].Ni] += fnormal;
-                            tmptangentVboData[faceList[i].Vertice[j].Ni] += tangent;
+                            tmpnormalVboData[curVert.Ni] += fnormal;
+                            tmptangentVboData[curVert.Ni] += tangent;
                         }
                         else
                         {
-                            for (int k = 0; k < normalUvHelperList.Count; k++)
+                            int helperCount = normalUvHelperList.Count;
+                            for (int k = 0; k < helperCount; k++)
                             {
                                 // if Normalhelper[Normalindice] is of the same Uv and position simply add
                                 if (normalUvHelperList[k] == vtexture[j] && positionHelperlist[k] == vposition[j])
@@ -554,7 +711,7 @@ namespace OpenTkProject
                                     tangentHelperList[k] += tangent;
                                     normalHelperList[k] += fnormal;
 
-                                    faceList[i].Vertice[j].Normalihelper = k;
+                                    curVert.Normalihelper = k;
                                 }
                             }
                             // if matching Normalhelper has not been found create new one
@@ -565,7 +722,7 @@ namespace OpenTkProject
                                 tangentHelperList.Add(tangent);
                                 normalHelperList.Add(fnormal);
                                 positionHelperlist.Add(vposition[j]);
-                                faceList[i].Vertice[j].Normalihelper = normalUvHelperList.Count - 1;
+                                curVert.Normalihelper = normalUvHelperList.Count - 1;
                             }
                         }
                     }
@@ -574,26 +731,30 @@ namespace OpenTkProject
 
             // put Faces into DataSets (so we can easyly compare them)
             List<VerticeDataSet> vertList = new List<VerticeDataSet> { };
-            for (int i = 0; i < faceList.Count; i++)
+
+            for (int i = 0; i < faceCount; i++)
             {
+                Face curFace = faceList[i];
                 for (int j = 0; j < 3; j++)
                 {
+                    Vertice oldVert = curFace.Vertice[j];
+
                     VerticeDataSet curVert = new VerticeDataSet();
-                    
-                    curVert.position = positionVboDataList[faceList[i].Vertice[j].Vi];
-                    curVert.normal = normalVboDataList[faceList[i].Vertice[j].Ni];
-                    if (faceList[i].Vertice[j].Normalihelper != -1)
+
+                    curVert.position = positionVboDataList[oldVert.Vi];
+                    curVert.normal = normalVboDataList[oldVert.Ni];
+                    if (oldVert.Normalihelper != -1)
                     {
                         if(genNormal)
-                            curVert.normal = Vector3.Normalize(normalHelperList[faceList[i].Vertice[j].Normalihelper]); //-dont use calculated normal
+                            curVert.normal = Vector3.Normalize(normalHelperList[oldVert.Normalihelper]); //-dont use calculated normal
 
-                        curVert.tangent = Vector3.Normalize(tangentHelperList[faceList[i].Vertice[j].Normalihelper]);
+                        curVert.tangent = Vector3.Normalize(tangentHelperList[oldVert.Normalihelper]);
                     }
                     else
                     {
                         if (genNormal)
-                            curVert.normal = Vector3.Normalize(tmpnormalVboData[faceList[i].Vertice[j].Ni]); //-dont use calculated normal
-                        curVert.tangent = Vector3.Normalize(tmptangentVboData[faceList[i].Vertice[j].Ni]);
+                            curVert.normal = Vector3.Normalize(tmpnormalVboData[oldVert.Ni]); //-dont use calculated normal
+                        curVert.tangent = Vector3.Normalize(tmptangentVboData[oldVert.Ni]);
                     }
                     if (affBones > 0)
                     {
@@ -603,13 +764,12 @@ namespace OpenTkProject
 
                     for (int k = 0; k < affBones; k++)
                     {
-                        curVert.boneWeight[k] = boneWeightList[k][faceList[i].Vertice[j].Vi];
-                        curVert.boneId[k] = boneIdList[k][faceList[i].Vertice[j].Vi];
+                        curVert.boneWeight[k] = boneWeightList[k][oldVert.Vi];
+                        curVert.boneId[k] = boneIdList[k][oldVert.Vi];
                     }
-                    curVert.texture = textureVboDataList[faceList[i].Vertice[j].Ti];
+                    curVert.texture = textureVboDataList[oldVert.Ti];
 
                     vertList.Add(curVert);
-                    //indicesVboData[id] = id;
                 }
             }
 
@@ -629,12 +789,6 @@ namespace OpenTkProject
                     if (newVertList[j].Equals(curVert))
                     {
                         index = j;
-                        /*
-                        Console.WriteLine(i);
-                        Console.WriteLine(curVert.ToString());
-                        Console.WriteLine(" Equals " + j);
-                        Console.WriteLine(newVertList[j].ToString());
-                         */
                     }
                 }
                 if (index < 0)
@@ -648,7 +802,7 @@ namespace OpenTkProject
 
             //put Faces into Arrays
             int newIndiceCount = newIndiceList.Count;
-            uint[] indicesVboData = new uint[newIndiceCount];
+            int[] indicesVboData = new int[newIndiceCount];
 
             int newVertCount = newVertList.Count;
             Vector3[] positionVboData = new Vector3[newVertCount];
@@ -685,7 +839,7 @@ namespace OpenTkProject
 
             for (int i = 0; i < newIndiceCount; i++)
             {
-                indicesVboData[i] = (uint)newIndiceList[i];
+                indicesVboData[i] = newIndiceList[i];
             }
 
             //calculate a bounding Sphere
@@ -696,6 +850,15 @@ namespace OpenTkProject
                 if (length > sphere)
                     sphere = length;
             }
+
+            //deleting unneded
+            target.positionVboDataList = null;
+            target.normalVboDataList = null;
+            target.tangentVboData = null;
+            target.indicesVboData = null;
+
+            target.boneWeightList = null;
+            target.boneIdList = null;
 
             //returning mesh info ... DONE :D
             target.positionVboData = positionVboData;
@@ -759,9 +922,9 @@ namespace OpenTkProject
 
         public bool Equals(VerticeDataSet vert)
         {
-            if ((this.position - vert.position).LengthFast < 0.0001f &&
-                (this.texture - vert.texture).LengthFast < 0.0001f &&
-                (this.normal - vert.normal).LengthFast < 0.001f)
+            if (GenericMethods.estSize(this.position - vert.position) < 0.0001f &&
+                GenericMethods.estSize(this.texture - vert.texture) < 0.0001f &&
+                GenericMethods.estSize(this.normal - vert.normal) < 0.001f)
                 return true;
             else
                 return false;

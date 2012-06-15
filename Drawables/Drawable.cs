@@ -53,12 +53,12 @@ namespace OpenTkProject.Drawables
         }
 
         #region matices/position
-        protected virtual void setupMatrices(ref ViewInfo curView,ref Shader curShader, ref Mesh curMesh)
+        protected virtual void setupMatrices(ref ViewInfo curView,ref Shader shader, ref Mesh curMesh)
         {
-            GL.UniformMatrix4(curShader.projectionMatrixLocation, false, ref curView.projectionMatrix);
-            GL.UniformMatrix4(curShader.modelviewMatrixLocation, false, ref curView.modelviewMatrix);
-            GL.UniformMatrix4(curShader.rotationMatrixLocation, false, ref orientation);
-            GL.UniformMatrix4(curShader.modelMatrixLocation, false, ref modelMatrix);
+            shader.insertUniform(Shader.Uniform.projection_matrix, ref curView.projectionMatrix);
+            shader.insertUniform(Shader.Uniform.modelview_matrix, ref curView.modelviewMatrix);
+            shader.insertUniform(Shader.Uniform.rotation_matrix, ref orientation);
+            shader.insertUniform(Shader.Uniform.model_matrix, ref modelMatrix);
         }
 
         public override Matrix4 Orientation
@@ -220,6 +220,7 @@ namespace OpenTkProject.Drawables
             int texunit = 0;
             Shader shader = curMat.shader;
             int handle = shader.handle;
+            Material.Propertys propertys = curMat.propertys;
 
 
             if (!shader.loaded)
@@ -227,73 +228,31 @@ namespace OpenTkProject.Drawables
 
             GL.UseProgram(handle);
 
-            if (curMat.baseTexture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.baseTexture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "baseTexture"), texunit);
-                texunit++;
-            }
+            activateTexture(Material.TexType.baseTexture,ref curMat, ref texunit, handle);
+            activateTexture(Material.TexType.base2Texture, ref curMat, ref texunit, handle);
+            activateTexture(Material.TexType.base3Texture, ref curMat, ref texunit, handle);
 
-            if (curMat.base2Texture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.base2Texture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "base2Texture"), texunit);
-                texunit++;
-            }
-
-            if (curMat.base3Texture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.base3Texture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "base3Texture"), texunit);
-                texunit++;
-            }
-
-            if (curMat.normalTexture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.normalTexture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "normalTexture"), texunit);
-                texunit++;
-            }
-
-            if (curMat.mirrorTexture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.mirrorTexture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "reflectionTexture"), texunit);
-                texunit++;
-            }
-
-            if (curMat.emitTexture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.emitTexture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "emitTexture"), texunit);
-                texunit++;
-            }
+            activateTexture(Material.TexType.normalTexture, ref curMat, ref texunit, handle);
+            activateTexture(Material.TexType.reflectionTexture, ref curMat, ref texunit, handle);
+            activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
 
             int env = 0;
-            if (curMat.useEnv)
+            if (propertys.useEnv)
             {
                 texunit = initEnvTextures(texunit, handle);
                 env = 1;
 
                 int envBasealpha = 0;
-                if (curMat.envMapAlphaBaseTexture)
+                if (propertys.envMapAlphaBaseTexture)
                     envBasealpha = 1;
 
-                GL.Uniform1(shader.envMapAlphaBaseTexture, 1, ref envBasealpha);
-
                 int envNormalalpha = 0;
-                if (curMat.envMapAlphaNormalTexture)
+                if (propertys.envMapAlphaNormalTexture)
                     envNormalalpha = 1;
 
-                GL.Uniform1(shader.envMapAlphaBaseTexture, 1, ref envNormalalpha);
-
-                GL.Uniform3(shader.envTintLocation, ref curMat.envMapTint);
+                shader.insertUniform(Shader.Uniform.env_a_base, ref envBasealpha);
+                shader.insertUniform(Shader.Uniform.env_a_normal, ref envNormalalpha);
+                shader.insertUniform(Shader.Uniform.env_tint, ref propertys.envMapTint);
 
                 /*
                 if (curMat.envMapTexture != 0)
@@ -305,26 +264,24 @@ namespace OpenTkProject.Drawables
                 }
                  * */
             }
-            GL.Uniform1(shader.useEnvLocation, 1, ref env);
+            shader.insertUniform(Shader.Uniform.use_env, ref env);
 
             int emit = 0;
-            if (curMat.useEmit)
+            if (propertys.useEmit)
             {
                 emit = 1;
 
                 int emitBasealpha = 0;
-                if (curMat.emitMapAlphaBaseTexture)
+                if (propertys.emitMapAlphaBaseTexture)
                     emitBasealpha = 1;
 
-                GL.Uniform1(shader.emitMapAlphaBaseTexture, 1, ref emitBasealpha);
-
                 int emitNormalalpha = 0;
-                if (curMat.emitMapAlphaNormalTexture)
+                if (propertys.emitMapAlphaNormalTexture)
                     emitNormalalpha = 1;
 
-                GL.Uniform1(shader.emitMapAlphaNormalTexture, 1, ref emitNormalalpha);
-
-                GL.Uniform3(shader.emitColorLocation, ref curMat.emitMapTint);
+                shader.insertUniform(Shader.Uniform.emit_a_normal, ref emitNormalalpha);
+                shader.insertUniform(Shader.Uniform.emit_a_base, ref emitBasealpha);
+                shader.insertUniform(Shader.Uniform.in_emitcolor, ref propertys.emitMapTint);
 
                 /*
                 if (curMat.envMapTexture != 0)
@@ -336,28 +293,25 @@ namespace OpenTkProject.Drawables
                 }
                  * */
             }
-            GL.Uniform1(shader.useEmitLocation, 1, ref emit);
+            shader.insertUniform(Shader.Uniform.use_emit, ref emit);
 
             int spec = 0;
-            if (curMat.useSpec)
+            if (propertys.useSpec)
             {
                 spec = 1;
 
                 int specBasealpha = 0;
-                if (curMat.specMapAlphaBaseTexture)
+                if (propertys.specMapAlphaBaseTexture)
                     specBasealpha = 1;
 
-                GL.Uniform1(shader.specMapAlphaBaseTexture, 1, ref specBasealpha);
-
                 int specNormalalpha = 0;
-                if (curMat.specMapAlphaNormalTexture)
+                if (propertys.specMapAlphaNormalTexture)
                     specNormalalpha = 1;
 
-                GL.Uniform1(shader.specMapAlphaNormalTexture, 1, ref specNormalalpha);
-
-                GL.Uniform3(shader.specColorLocation, ref curMat.specMapTint);
-
-                GL.Uniform1(shader.specExpLocation, 1, ref curMat.specExp);
+                shader.insertUniform(Shader.Uniform.spec_a_normal, ref specNormalalpha);
+                shader.insertUniform(Shader.Uniform.spec_a_base, ref specBasealpha);
+                shader.insertUniform(Shader.Uniform.in_speccolor, ref propertys.specMapTint);
+                shader.insertUniform(Shader.Uniform.in_specexp, ref propertys.specExp);
 
                 /*
                 if (curMat.envMapTexture != 0)
@@ -369,18 +323,16 @@ namespace OpenTkProject.Drawables
                 }
                  * */
             }
-            GL.Uniform1(shader.useSpecLocation, 1, ref spec);
+            shader.insertUniform(Shader.Uniform.use_spec, ref spec);
 
             int transparency = 0;
-            if (curMat.useAlpha)
-            {
+            if (propertys.useAlpha)
+            { 
                 transparency = 1;
 
-                GL.Uniform1(shader.refSizeLocation, 1, ref curMat.refStrength);
-
-                GL.Uniform1(shader.blurSizeLocation, 1, ref curMat.blurStrength);
-
-                GL.Uniform1(shader.fresnelStrLocation, 1, ref curMat.fresnelStrength);
+                shader.insertUniform(Shader.Uniform.ref_size, ref propertys.refStrength);
+                shader.insertUniform(Shader.Uniform.blur_size, ref propertys.blurStrength);
+                shader.insertUniform(Shader.Uniform.fresnel_str, ref propertys.fresnelStrength);
 
                 GL.ActiveTexture(TextureUnit.Texture0 + texunit);
                 GL.BindTexture(TextureTarget.Texture2D, this.Scene.backdropTextures[0]);
@@ -394,10 +346,10 @@ namespace OpenTkProject.Drawables
                 texunit++;
                 */
             }
+            shader.insertUniform(Shader.Uniform.use_alpha, ref transparency);
 
-            GL.Uniform1(shader.useAlphaLocation, 1, ref transparency);
 
-            if (curMat.useLight)
+            if (propertys.useLight)
             {
                 Scene.sunLight.activate(shader, this);
 
@@ -417,17 +369,16 @@ namespace OpenTkProject.Drawables
                 if (distToCamera < 10)
                     quality += 0.5f;
 
-                GL.Uniform1(shader.LightCountLocation, 1, ref Scene.lightCount);
-                GL.Uniform1(shader.shadowQualityLocation, 1, ref quality);
+                shader.insertUniform(Shader.Uniform.in_no_lights, ref scene.lightCount);
+                shader.insertUniform(Shader.Uniform.shadow_quality, ref quality);
 
                 for (int i = 0; i < Scene.spotlights.Count; i++)
                 {
                     Scene.spotlights[i].activate(shader, i, this);
                 }
 
-
-                GL.Uniform3(shader.eyePosLocation, ref Scene.eyePos);
-                GL.Uniform1(shader.waterLevelLocation, 1, ref Scene.waterLevel);
+                shader.insertUniform(Shader.Uniform.in_eyepos, ref Scene.eyePos);
+                shader.insertUniform(Shader.Uniform.in_waterlevel, ref Scene.waterLevel);
 
                 GL.Uniform1(GL.GetUniformLocation(handle, "shadowTexture"), texunit);
                 GL.ActiveTexture(TextureUnit.Texture0 + texunit);
@@ -440,7 +391,7 @@ namespace OpenTkProject.Drawables
                 texunit++;
             }
 
-            if (curMat.noCull)
+            if (propertys.noCull)
             {
                 GL.Disable(EnableCap.CullFace);
             }
@@ -449,7 +400,7 @@ namespace OpenTkProject.Drawables
                 GL.Enable(EnableCap.CullFace);
             }
 
-            if (curMat.noDepthMask)
+            if (propertys.noDepthMask)
             {
                 GL.DepthMask(false);
             }
@@ -458,7 +409,7 @@ namespace OpenTkProject.Drawables
                 GL.DepthMask(true);
             }
 
-            if (curMat.additive)
+            if (propertys.additive)
             {
                 GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
             }
@@ -468,6 +419,20 @@ namespace OpenTkProject.Drawables
             }
 
             return shader;
+        }
+
+        private static void activateTexture(Material.TexType type, ref Material curMat, ref int texunit, int handle)
+        {
+            string name = type.ToString();
+            int texid = curMat.getTextureId(type);
+
+            if (texid != 0)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
+                GL.BindTexture(TextureTarget.Texture2D, texid);
+                GL.Uniform1(GL.GetUniformLocation(handle, name), texunit);
+                texunit++;
+            }
         }
 
         public Shader activateMaterialSSN(Material curMat)
@@ -480,10 +445,11 @@ namespace OpenTkProject.Drawables
 
             GL.UseProgram(handle);
 
-            if (curMat.normalTexture != 0)
+            int normalTexture = curMat.getTextureId(Material.TexType.normalTexture);
+            if (normalTexture != 0)
             {
                 GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.normalTexture);
+                GL.BindTexture(TextureTarget.Texture2D, normalTexture);
                 GL.Uniform1(GL.GetUniformLocation(handle, "normalTexture"), texunit);
                 texunit++;
             }
@@ -501,28 +467,23 @@ namespace OpenTkProject.Drawables
 
             GL.UseProgram(handle);
 
-            if (curMat.normalTexture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, curMat.normalTexture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "normalTexture"), texunit);
-                texunit++;
-            }
+            activateTexture(Material.TexType.normalTexture , ref curMat, ref texunit, handle);
 
             return curMat.selectionshader;
         }
 
         public Shader activateMaterialShadow(Material curMat)
         {
+            Shader shader = curMat.shadowshader;
             int handle = curMat.shadowshader.handle;
 
-            if (!curMat.shadowshader.loaded)
-                return curMat.shadowshader;
+            if (!shader.loaded)
+                return shader;
 
             GL.UseProgram(handle);
 
-            GL.Uniform1(curMat.shadowshader.LightCountLocation, 1, ref Scene.lightCount);
-            GL.Uniform1(curMat.shadowshader.curLightLocation, 1, ref Scene.currentLight);
+            shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);
+            shader.insertUniform(Shader.Uniform.curLight, ref Scene.currentLight);
 
             return curMat.shadowshader;
         }
@@ -761,12 +722,12 @@ namespace OpenTkProject.Drawables
 
         public Vector3 EmissionColor
         {
-            get { return materials[0].emitMapTint; }
+            get { return materials[0].propertys.emitMapTint; }
             set
             {
                 for (int i = 0; i < materials.Length; i++)
                 {
-                    materials[i].emitMapTint = value;
+                    materials[i].propertys.emitMapTint = value;
                 }
             }
         }

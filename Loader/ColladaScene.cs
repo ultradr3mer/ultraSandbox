@@ -1530,22 +1530,4 @@ namespace OpenTkProject.Loader
             }
         }
     }
-
-    public struct AnimationData
-    {
-        //public int BoneCount;
-        public float stepSize;
-        public float lastFrame;
-        public float animationPos;
-        public string name;
-
-        //the animation Matrices[frame][bone]
-        public Matrix4[][] Matrices;
-        public string pointer;
-
-        public override string ToString()
-        {
-            return name;
-        }
-    }
 }

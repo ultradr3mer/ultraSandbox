@@ -23,8 +23,6 @@ namespace OpenTkProject.Drawables.Models
 
             for (int i = 0; i < 5; i++)
             {
-                int sidetex = mGameWindow.textureLoader.getTexture("skybox\\sky_000" + (i + 1) + ".png");
-
                 addMaterial("skybox\\sky" + (i + 1) + ".xmf");
                 addMesh("skybox\\sky_" + (i + 1) + ".obj");
                 //envTextures[i] = sidetex;
@@ -52,7 +50,7 @@ namespace OpenTkProject.Drawables.Models
         protected override void setSpecialUniforms(ref Shader shader, ref Mesh curMesh)
         {
             Vector3 sunColor = Scene.sunLight.Color.Xyz; ;
-            GL.Uniform3(shader.lightSunLocation, ref sunColor);
+            shader.insertUniform(Shader.Uniform.in_lightsun, ref sunColor);
         }
 
         public override void drawNormal(ViewInfo curView)

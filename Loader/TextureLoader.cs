@@ -10,75 +10,119 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections;
 using System.IO;
+using OpenTkProject.Game;
 
 namespace OpenTkProject
 {
+    [Serializable]
     public struct Texture
     {
-        public const int TYPE_FROMFILE = 1;
-        //public const int TYPE_FROMFILE = 2;
-        public const int TYPE_FRAMEBUFFER = 3;
-
         public int texture;
-        public int type;
+        public string name;
+
         public string pointer;
 
-        public bool loaded;
+        public Type type;
+        public enum Type {fromFile, fromFramebuffer, fromCache};
 
+        public bool loaded;
         public int identifier;
 
-        public string name;
         public bool multisampling;
 
-        /*
-        public Texture(string pointer)
-        {
-            type = TYPE_FROMFILE;
-            loaded = false;
+        public Bitmap bitmap;
 
-            this.pointer = pointer;
+        internal Texture nameOnly()
+        {
+            Texture tmpTexture = new Texture();
+
+            tmpTexture.name = name;
+
+            return tmpTexture;
         }
 
-        public Texture(int id)
+        public void cache(ref List<Texture> mList)
         {
-            type = TYPE_FRAMEBUFFER;
-            loaded = true;
+            if (type != Type.fromFramebuffer)
+            {
+                Texture tmpTex = new Texture();
 
-            this.texture = id;
+                tmpTex.name = name;
+                tmpTex.bitmap = bitmap;
+                tmpTex.multisampling = multisampling;
+
+                mList.Add(tmpTex);
+            }
         }
-         */
     }
 
     public class TextureLoader : GameObject
     {
 
-        public List<Texture> Textures = new List<Texture> { };
-        public Hashtable TextureNames = new Hashtable();
+        public List<Texture> textures = new List<Texture> { };
+        public Hashtable textureNames = new Hashtable();
 
         public TextureLoader(OpenTkProjectWindow mGameWindow)
         {
             this.gameWindow = mGameWindow;
         }
 
-        public int getTexture(string name)
+
+        /*
+        internal void readCacheFile()
+        {
+
+        }
+
+        internal void writeCacheFile()
+        {
+            List<Texture> saveList = new List<Texture> { };
+            foreach (var texture in textures)
+            {
+                texture.cache(ref saveList);
+            }
+
+            string filename = Settings.Instance.game.textureCacheFile;
+
+            FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+
+            using (fileStream)
+            {
+                byte[] saveAry = GenericMethods.ObjectToByteArray(saveList);
+                fileStream.Write(saveAry, 0, saveAry.Length);
+                fileStream.Close();
+            }
+        }
+         */
+
+        public Texture getTexture(string name)
+        {
+            if (name == "" || name == null)
+                return new Texture();
+
+            int identifier = (int)textureNames[name];
+            return textures[identifier];
+        }
+
+        public int getTextureId(string name)
         {
             if (name == "")
                 return 0;
 
-            int identifier = (int)TextureNames[name];
-            return Textures[identifier].texture;
+            int identifier = (int)textureNames[name];
+            return textures[identifier].texture;
         }
 
         public void fromFile(string file,bool sampling)
         {
             string name = file.Replace(gameWindow.materialFolder, "");
 
-            if (!TextureNames.ContainsKey(name))
+            if (!textureNames.ContainsKey(name))
             {
                 Texture curTexture = new Texture();
 
-                curTexture.identifier = Textures.Count;
-                curTexture.type = Texture.TYPE_FROMFILE;
+                curTexture.identifier = textures.Count;
+                curTexture.type = Texture.Type.fromFile;
                 curTexture.loaded = false;
                 curTexture.pointer = file;
                 curTexture.name = name;
@@ -93,8 +137,8 @@ namespace OpenTkProject
         {
             Texture curTexture = new Texture();
 
-            curTexture.identifier = Textures.Count;
-            curTexture.type = Texture.TYPE_FRAMEBUFFER;
+            curTexture.identifier = textures.Count;
+            curTexture.type = Texture.Type.fromFramebuffer;
             curTexture.loaded = true;
             curTexture.texture = texture;
             curTexture.name = name;
@@ -106,29 +150,30 @@ namespace OpenTkProject
 
         public void registerTexture(Texture curTex)
         {
-            if(TextureNames.ContainsKey(curTex.name))
-                    TextureNames.Remove(curTex.name);
+            if(textureNames.ContainsKey(curTex.name))
+                    textureNames.Remove(curTex.name);
 
-            TextureNames.Add(curTex.name, curTex.identifier);
-            Textures.Add(curTex);
+            textureNames.Add(curTex.name, curTex.identifier);
+            textures.Add(curTex);
         }
 
         public void LoadTextures()
         {
-            for (int i = 0; i < Textures.Count; i++)
+            for (int i = 0; i < textures.Count; i++)
             {
-                loadTexture(Textures[i]);
+                if (!textures[i].loaded)
+                    loadTexture(textures[i]);
             }
         }
 
         public float loadSingleTextures()
         {
-            for (int i = 0; i < Textures.Count; i++)
+            for (int i = 0; i < textures.Count; i++)
             {
-                if (!Textures[i].loaded)
+                if (!textures[i].loaded)
                 {
-                    loadTexture(Textures[i]);
-                    return (float)i / (float)Textures.Count;
+                    loadTexture(textures[i]);
+                    return (float)i / (float)textures.Count;
                 }
             }
             return 1;
@@ -136,49 +181,48 @@ namespace OpenTkProject
 
         public void loadTexture(Texture target)
         {
-            if (target.type == Texture.TYPE_FROMFILE)
+            gameWindow.log("loading Texture: " + target.name);
+
+            if (String.IsNullOrEmpty(target.pointer))
+                throw new ArgumentException(target.pointer);
+
+            target.texture = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, target.texture);
+
+            Bitmap bmp = new Bitmap(target.pointer);
+            target.bitmap = bmp;
+            BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
+
+            bmp.UnlockBits(bmp_data);
+
+            int sampling = 0;
+            if (target.multisampling)
             {
-                if (String.IsNullOrEmpty(target.pointer))
-                    throw new ArgumentException(target.pointer);
-
-                target.texture = GL.GenTexture();
-                GL.BindTexture(TextureTarget.Texture2D, target.texture);
-
-                Bitmap bmp = new Bitmap(target.pointer);
-                BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0,
-                    OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
-
-                bmp.UnlockBits(bmp_data);
-
-                int sampling = 0;
-                if (target.multisampling)
-                {
-                    sampling = (int)TextureMinFilter.Linear;
-                }
-                else
-                {
-                    sampling = (int)TextureMinFilter.Nearest;
-                }
-
-                // We haven't uploaded mipmaps, so disable mipmapping (otherwise the texture will not appear).
-                // On newer video cards, we can use GL.GenerateMipmaps() or GL.Ext.GenerateMipmaps() to create
-                // mipmaps automatically. In that case, use TextureMinFilter.LinearMipmapLinear to enable them.
-
-                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
-                
-                //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, sampling);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, sampling);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-
+                sampling = (int)TextureMinFilter.Linear;
             }
+            else
+            {
+                sampling = (int)TextureMinFilter.Nearest;
+            }
+
+            // We haven't uploaded mipmaps, so disable mipmapping (otherwise the texture will not appear).
+            // On newer video cards, we can use GL.GenerateMipmaps() or GL.Ext.GenerateMipmaps() to create
+            // mipmaps automatically. In that case, use TextureMinFilter.LinearMipmapLinear to enable them.
+
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, sampling);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, sampling);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
             target.loaded = true;
 
-            Textures[target.identifier] = target;
+            textures[target.identifier] = target;
         }
 
         // Returns a System.Drawing.Bitmap with the contents of the current framebuffer

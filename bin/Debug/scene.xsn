@@ -1,17 +1,4 @@
 <scene>
-	<pmodel name='GameObject'>
-		<position>-6.210132|2.372475|-10.59638</position>
-		<rotation>0.5427904|0.8269798|0.1465981|0.5123205|-0.1877061|-0.8380384|-0.6655195|0.5299822|-0.5255606</rotation>
-		<materials>spotlight.xmf</materials>
-		<meshes>spotlight.obj</meshes>
-		<pboxes>spotlight_pbox.obj</pboxes>
-		<isstatic/>
-		<lamp name=''>
-			<position>-6.210132|2.372475|-10.59638</position>
-			<direction>0.5123205|-0.1877061|-0.8380384</direction>
-			<color>0.5|0.7|1</color>
-		</lamp>
-	</pmodel>
 	<pmodel name='GameObject3'>
 		<position>3.743171|3.915359|-0.7881227</position>
 		<rotation>1|1.400662E-05|-6.890303E-05|-1.401613E-05|1|-0.0001380637|6.89011E-05|0.0001380646|1</rotation>
@@ -161,7 +148,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<pmodel name='GameObject7'>
-		<position>-6.693132|-1203456|5.577117</position>
+		<position>-6.693132|-1256850|5.577117</position>
 		<rotation>1|1.608755E-12|1.037284E-10|-1.593572E-12|1|-0.0001463689|-1.037286E-10|0.0001463689|1</rotation>
 		<materials>sphere.xmf</materials>
 		<meshes>sphere.obj</meshes>
@@ -232,23 +219,23 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<animodel name='GameObject'>
-		<position>-4.679991|0.3187107|-12.86664</position>
-		<rotation>-0.8319295|-0.01610103|0.5546482|0.5540599|0.03030107|0.8319257|-0.03020144|0.9994114|-0.01628753</rotation>
+		<position>-4.939691|0.3598206|-12.10397</position>
+		<rotation>-0.9193857|-0.006627155|0.393302|0.3926851|0.04299447|0.9186676|-0.02299802|0.9990537|-0.03692646</rotation>
 		<materials>testchar.xmf</materials>
 		<meshes>test_char.xmd</meshes>
 		<pboxes>rock_small_pbox.dae</pboxes>
 		<isstatic/>
 	</animodel>
 	<pmodel name='GameObject'>
-		<position>-10.69961|3.063392|3.210621</position>
-		<rotation>0.1062784|0.9251439|-0.3644388|-0.7054315|-0.1881525|-0.6833519|-0.7007684|0.3297117|0.6326275</rotation>
+		<position>11.03245|2.654587|4.967885</position>
+		<rotation>0.2720929|0.8764808|-0.3971777|-0.7264344|-0.0835979|-0.6821368|-0.631082|0.4741272|0.6139575</rotation>
 		<materials>spotlight.xmf</materials>
 		<meshes>spotlight.obj</meshes>
 		<pboxes>spotlight_pbox.obj</pboxes>
 		<isstatic/>
 		<lamp name='GameObject0'>
-			<position>-10.69961|3.063392|3.210621</position>
-			<direction>-0.7054315|-0.1881525|-0.6833519</direction>
+			<position>11.03245|2.654587|4.967885</position>
+			<direction>-0.7264344|-0.0835979|-0.6821368</direction>
 			<color>0.5|0.7|1</color>
 		</lamp>
 	</pmodel>

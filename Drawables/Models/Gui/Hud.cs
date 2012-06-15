@@ -42,15 +42,14 @@ namespace OpenTkProject.Drawables.Models
             {
                 //gameWindow.checkGlError("--uncaught ERROR--");
 
-                Shader mShader = activateMaterial(ref materials[0]);
+                Shader shader = activateMaterial(ref materials[0]);
 
                 //GL.DepthMask(false);
 
-                GL.Uniform2(mShader.hudElementSize, ref screenSize);
-                GL.Uniform4(mShader.hudElementColor, ref color);
-
-                GL.Uniform2(mShader.screenSizeLocation, ref gameWindow.virtual_size);
-                GL.Uniform2(mShader.renderSizeLocation, ref gameWindow.currentSize);
+                shader.insertUniform(Shader.Uniform.in_hudvalue, ref elementValue);
+                shader.insertUniform(Shader.Uniform.in_hudsize, ref screenSize);
+                shader.insertUniform(Shader.Uniform.in_hudpos, ref screenPosition);
+                shader.insertUniform(Shader.Uniform.in_hudcolor, ref color);
 
                 //GL.Uniform1(curShader.timeLocation, 1, ref mGameWindow.frameTime);
                 //GL.Uniform1(curShader.passLocation, 1, ref mGameWindow.currentPass);
@@ -59,11 +58,11 @@ namespace OpenTkProject.Drawables.Models
                 for (int i = 0; i < digits; i++)
                 {
                     Vector2 positon = new Vector2(screenSize.X * (digits - 2 * i - 1), 0f) + screenPosition;
-                    GL.Uniform2(mShader.hudElementPos, ref positon);
+                    shader.insertUniform(Shader.Uniform.in_hudpos, ref positon);
 
                     float value = elementValue / (float)Math.Pow(10, i);
-                    //Console.WriteLine(value);
-                    GL.Uniform1(mShader.hudElementValue, 1, ref value);
+                    shader.insertUniform(Shader.Uniform.in_hudvalue, ref value);
+
                     GL.DrawElements(BeginMode.Triangles, meshes[0].indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
                     //gameWindow.checkGlError("--Drawing ERROR Hud--");

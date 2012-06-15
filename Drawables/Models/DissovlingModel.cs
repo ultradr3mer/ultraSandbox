@@ -32,9 +32,9 @@ namespace OpenTkProject.Drawables.Models
             updateChilds();
         }
 
-        protected override void setSpecialUniforms(ref Shader curShader, ref Mesh curMesh)
+        protected override void setSpecialUniforms(ref Shader shader, ref Mesh curMesh)
         {
-            GL.Uniform1(curShader.modLocation, 1, ref state);
+            shader.insertUniform(Shader.Uniform.in_mod, ref state);
         }
     }
 }

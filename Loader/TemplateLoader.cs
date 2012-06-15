@@ -6,14 +6,16 @@ using OpenTK;
 using System.Collections;
 using System.Xml;
 using OpenTkProject.Drawables.Models;
+using OpenTkProject.Game;
+using System.IO;
 
 namespace OpenTkProject
 {
+    [Serializable]
     public struct Template
     {
-        public enum Type { FromXml };
+        public enum Type { fromXml , fromCache };
 
-        public int type;
         public int identifier;
 
         public List<string> meshes;
@@ -42,6 +44,13 @@ namespace OpenTkProject
 
         public float volumeRadius;
         public UseType useType;
+
+        public Type type;
+
+        internal void cache(ref List<Template> SaveList)
+        {
+            SaveList.Add(this);
+        }
     }
 
     public class TemplateLoader : GameObject
@@ -56,19 +65,94 @@ namespace OpenTkProject
         {
         }
 
+        internal void readCacheFile()
+        {
+            string filename = Settings.Instance.game.templateCacheFile;
+            FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            List<Template> tmpTemplates;
+
+            using (fileStream)
+            {
+                // Read the source file into a byte array.
+                byte[] bytes = new byte[fileStream.Length];
+                int numBytesToRead = (int)fileStream.Length;
+                int numBytesRead = 0;
+                while (numBytesToRead > 0)
+                {
+                    // Read may return anything from 0 to numBytesToRead.
+                    int n = fileStream.Read(bytes, numBytesRead, numBytesToRead);
+
+                    // Break when the end of the file is reached.
+                    if (n == 0)
+                        break;
+
+                    numBytesRead += n;
+                    numBytesToRead -= n;
+                }
+
+                tmpTemplates = (List<Template>)GenericMethods.ByteArrayToObject(bytes);
+                fileStream.Close();
+            }
+
+            int templateCount = tmpTemplates.Count;
+            for (int i = 0; i < templateCount; i++)
+            {
+                Template curTmp = tmpTemplates[i];
+                string name = curTmp.name;
+
+                if (!templateNames.ContainsKey(name))
+                {
+                    curTmp.type = Template.Type.fromCache;
+
+                    int identifier = templates.Count;
+
+                    curTmp.identifier = identifier;
+                    curTmp.loaded = true;
+
+                    templateNames.Add(name, identifier);
+                    templates.Add(curTmp);
+                }
+            }
+
+            gameWindow.log("loaded " + templateCount + " templates from cache");
+        }
+
+        public void writeCacheFile()
+        {
+            List<Template> saveList = new List<Template> { };
+            foreach (var template in templates)
+            {
+                template.cache(ref saveList);
+            }
+
+            string filename = Settings.Instance.game.templateCacheFile;
+
+            FileStream fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+
+            using (fileStream)
+            {
+                byte[] saveAry = GenericMethods.ObjectToByteArray(saveList);
+                fileStream.Write(saveAry, 0, saveAry.Length);
+                fileStream.Close();
+            }
+        }
+
         public void fromXmlFile(string pointer)
         {
             string name = pointer.Replace(gameWindow.templateFolder, "");
 
-            Template newTemp = new Template();
+            if (!templateNames.ContainsKey(name))
+            {
+                Template newTemp = new Template();
 
-            newTemp.type = Material.FROM_XML;
-            newTemp.loaded = false;
-            newTemp.name = name;
-            newTemp.pointer = pointer;
-            newTemp.filePosition = 0;
+                newTemp.type = Template.Type.fromXml;
+                newTemp.loaded = false;
+                newTemp.name = name;
+                newTemp.pointer = pointer;
+                newTemp.filePosition = 0;
 
-            register(newTemp);
+                register(newTemp);
+            }
         }
 
 

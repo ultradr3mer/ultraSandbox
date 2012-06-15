@@ -212,20 +212,38 @@ namespace OpenTkProject
             return enc.GetString(arr);
         }
 
-        // Convert an object to a string
-        public static string ObjectToString(Object obj)
+        static public float estSize(Vector3 vec)
+        {
+            vec.X *= Math.Sign(vec.X);
+            vec.Y *= Math.Sign(vec.Y);
+            vec.Z *= Math.Sign(vec.Z);
+
+            return vec.X + vec.Y + vec.Z;
+        }
+
+        static public float estSize(Vector2 vec)
+        {
+            vec.X *= Math.Sign(vec.X);
+            vec.Y *= Math.Sign(vec.Y);
+
+            return vec.X + vec.Y;
+        }
+
+        // Convert an object to a byte array
+        public static byte[] ObjectToByteArray(Object obj)
         {
             if (obj == null)
                 return null;
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream();
             bf.Serialize(ms, obj);
-            return Convert.ToBase64String(ms.ToArray());
+            //return Convert.ToBase64String(ms.ToArray());
+            return ms.ToArray();
         }
-        // Convert a string to an Object
-        public static Object StringToObject(string mString)
+
+        // Convert a byte array to an Object
+        public static Object ByteArrayToObject(byte[] arrBytes)
         {
-            byte[] arrBytes = Convert.FromBase64String(mString);
             MemoryStream memStream = new MemoryStream();
             BinaryFormatter binForm = new BinaryFormatter();
             memStream.Write(arrBytes, 0, arrBytes.Length);

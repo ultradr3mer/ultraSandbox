@@ -95,31 +95,30 @@ namespace OpenTkProject.Drawables.Models.Paticles
                 {
                     gameWindow.checkGlError("--uncaught ERROR drawing Model--" + meshes[i].name);
 
-                    if (materials[i].useAlpha == targetLayer)
+                    if (materials[i].propertys.useAlpha == targetLayer)
                     {
                         //Console.WriteLine("drawing: " + mMesh[i].name);
 
                         Material curMat = materials[i];
-                        Shader curShader = activateMaterial(ref curMat);
+                        Shader shader = activateMaterial(ref curMat);
                         Mesh curMesh = meshes[i];
 
-                        if (curShader.loaded)
+                        if (shader.loaded)
                         {
-                            GL.Uniform2(curShader.screenSizeLocation, ref gameWindow.virtual_size);
-                            GL.Uniform2(curShader.renderSizeLocation, ref gameWindow.currentSize);
-                            GL.Uniform1(curShader.timeLocation, 1, ref gameWindow.frameTime);
-
-                            GL.Uniform4(curShader.colorLocation, ref color);
+                            shader.insertUniform(Shader.Uniform.in_screensize, ref gameWindow.virtual_size);
+                            shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
+                            shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
+                            shader.insertUniform(Shader.Uniform.in_color, ref color);
 
                             //GL.Uniform1(curShader.nearLocation, 1, ref mGameWindow.mPlayer.zNear);
                             //GL.Uniform1(curShader.farLocation, 1, ref mGameWindow.mPlayer.zFar);
 
                             if (Scene != null)
                             {
-                                setupMatrices(ref curView, ref curShader, ref curMesh);
+                                setupMatrices(ref curView, ref shader, ref curMesh);
                             }
 
-                            setSpecialUniforms(ref curShader,ref curMesh);
+                            setSpecialUniforms(ref shader,ref curMesh);
 
                             GL.BindVertexArray(vaoHandle[i]);
 
@@ -128,8 +127,8 @@ namespace OpenTkProject.Drawables.Models.Paticles
                                 Particle curPat = particles[j];
                                 if (curPat.alive && curPat.rendertype == i)
                                 {
-                                    GL.Uniform3(curShader.particlePos, ref curPat.position);
-                                    GL.Uniform1(curShader.particleSize, 1, ref curPat.size);
+                                    shader.insertUniform(Shader.Uniform.in_particlepos, ref curPat.position);
+                                    shader.insertUniform(Shader.Uniform.in_particlesize, ref curPat.size);
                                     GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
                                 }
                             }

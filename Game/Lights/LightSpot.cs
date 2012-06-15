@@ -152,7 +152,7 @@ namespace OpenTkProject.Drawables
             set
             {
                 texturename = value;
-                ProjectionTexture = gameWindow.textureLoader.getTexture(value);
+                ProjectionTexture = gameWindow.textureLoader.getTextureId(value);
                 useProjectionTexture = true;
             }
         }

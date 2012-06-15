@@ -99,17 +99,16 @@ namespace OpenTkProject.Drawables.Models
         {
             if (isVisible)
             {
-                Shader mShader = activateMaterial(ref materials[0]);
+                Shader shader = activateMaterial(ref materials[0]);
 
                 //GL.DepthMask(false);
+                shader.insertUniform(Shader.Uniform.in_hudvalue, ref elementValue);
+                shader.insertUniform(Shader.Uniform.in_hudsize, ref screenSize);
+                shader.insertUniform(Shader.Uniform.in_hudpos, ref screenPosition);
+                shader.insertUniform(Shader.Uniform.in_hudcolor, ref color);
 
-                GL.Uniform1(mShader.hudElementValue, 1, ref elementValue);
-                GL.Uniform2(mShader.hudElementSize, ref screenSize);
-                GL.Uniform2(mShader.hudElementPos, ref screenPosition);
-                GL.Uniform4(mShader.hudElementColor, ref color);
-
-                GL.Uniform2(mShader.screenSizeLocation, ref gameWindow.virtual_size);
-                GL.Uniform2(mShader.renderSizeLocation, ref gameWindow.currentSize);
+                shader.insertUniform(Shader.Uniform.in_screensize, ref gameWindow.virtual_size);
+                shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
 
                 //GL.Uniform1(curShader.timeLocation, 1, ref mGameWindow.frameTime);
                 //GL.Uniform1(curShader.passLocation, 1, ref mGameWindow.currentPass);
