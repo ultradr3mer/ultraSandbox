@@ -7,6 +7,7 @@ using System.Collections;
 using OpenTkProject.Drawables;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
+using OpenTK.Graphics;
 
 namespace OpenTkProject.Game
 {
@@ -194,8 +195,8 @@ namespace OpenTkProject.Game
 			GL.GenBuffers(1, out renderIndexVBO);
 			CheckError();
 
-			Size = new Vector2(1280, 720);
-			Position = new Vector2(0, 1280);
+			Size = window.screenSize;
+			Position = new Vector2(0, 0);
 			step = Size.X / (float)Performance.Instance.SampleCount;
 
 			win = window;
@@ -240,6 +241,8 @@ namespace OpenTkProject.Game
 			GL.BindVertexArray(0);
 
 			CheckError();
+
+			ProjMatrix = Matrix4.CreateOrthographicOffCenter(0, win.screenSize.X, win.screenSize.Y, 0, 0, 1);
 		}
 
 		private static void CheckError()
@@ -253,11 +256,12 @@ namespace OpenTkProject.Game
 
 		public void Update()
 		{
-			Vector2 curPos = new Vector2(Position);
+			Vector2 curPos = Position;
+			curPos.Y = Size.Y;
 			curPos.X += Size.X;
 
 			drawn = 0;
-			foreach (FrameStatistics fs in Performance.Instance.samples)
+			foreach (FrameStatistics fs in Performance.Instance)
 			{
 				/*if (fs.Update == null)
 				{
@@ -310,6 +314,8 @@ namespace OpenTkProject.Game
 				curBarPoint += 3;
 			}
 
+			GL.Disable(EnableCap.CullFace);
+
 			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
 			CheckError();
 			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(cacheAmount * Vector3.SizeInBytes), points, BufferUsageHint.StaticDraw);
@@ -317,14 +323,35 @@ namespace OpenTkProject.Game
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
 			CheckError();
+
 			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), updateIndices, BufferUsageHint.StaticDraw);
 			CheckError();
 
-			/*GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			
-			CheckError();*/
+			GL.BindVertexArray(vao);
 
 			GL.UseProgram(shd.handle);
+
+			GL.Uniform4(perfColorPos, new Vector4(1f, 0f, 0f, 1f));
+			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
+
+			GL.DrawElements(BeginMode.TriangleStrip, updIndex, DrawElementsType.UnsignedInt, 0);
+
+
+			GL.BindVertexArray(vao2);
+
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
+			CheckError();
+
+			GL.BufferData<int>(BufferTarget.ElementArrayBuffer, (IntPtr)(cacheAmount * sizeof(int)), renderIndices, BufferUsageHint.StaticDraw);
+			CheckError();
+
+			GL.Uniform4(perfColorPos, new Vector4(0f, 1f, 0f, 0f));
+
+			GL.DrawElements(BeginMode.TriangleStrip, rndIndex, DrawElementsType.UnsignedInt, 0);
+
+
+			/*GL.UseProgram(shd.handle);
 			CheckError();
 
 			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -340,7 +367,7 @@ namespace OpenTkProject.Game
 			CheckError();
 
 			GL.BindVertexArray(vao2);
-			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);
+			GL.DrawElements(BeginMode.TriangleStrip, rndIndex - 2, DrawElementsType.UnsignedInt, 0);*/
 
 			/*GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
 			CheckError();
@@ -353,12 +380,12 @@ namespace OpenTkProject.Game
 			CheckError();*/
 		}
 
-		public void Render()
+		public void RenderTest()
 		{
 			int drawn = 0;
 
 			points[drawn++] = new Vector3(0, 250, 0);
-			points[drawn++] = new Vector3(0, 0,0);
+			points[drawn++] = new Vector3(0, 0, 0);
 			points[drawn++] = new Vector3(250, 250, 0);
 			points[drawn++] = new Vector3(250, 0, 0);
 
@@ -389,26 +416,18 @@ namespace OpenTkProject.Game
 
 			GL.Uniform4(perfColorPos, 1.0f, 1.0f, 1.0f, 1.0f);
 
-			ProjMatrix = Matrix4.CreateOrthographicOffCenter(0, win.screenSize.X, win.screenSize.Y, 0, 0, 1);
+
 
 			GL.UniformMatrix4(projPos, false, ref ProjMatrix);
 
 
-			
+
 			GL.DrawElements(BeginMode.TriangleStrip, 4, DrawElementsType.UnsignedInt, 0);
+		}
 
-			//Update();
-
-			/*GL.BindBuffer(BufferTarget.ElementArrayBuffer, updateIndexVBO);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, positionVBO);
-			
-			GL.UseProgram(shd.handle);
-			GL.Uniform4(perfColorPos, 1.0f, 0, 0, 1.0f);
-			GL.DrawElements(BeginMode.Quads, updIndex / 4, DrawElementsType.UnsignedInt, 0);
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, renderIndexVBO);
-			GL.Uniform4(perfColorPos, 0.0f, 1.0f, 0, 1.0f);
-			GL.DrawElements(BeginMode.Quads, rndIndex / 4, DrawElementsType.UnsignedInt, 0);*/
+		public void Render()
+		{
+			Update();
 		}
 
 		public int positionVBO;
