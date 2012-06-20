@@ -22,6 +22,7 @@ namespace OpenTkProject.Drawables.Models
         public Model(OpenTkProjectWindow mGameWindow)
         {
             this.gameWindow = mGameWindow;
+            renderlayer = RenderLayer.Solid;
         }
 
         public Model(GameObject parent)
@@ -29,6 +30,8 @@ namespace OpenTkProject.Drawables.Models
             Parent = parent;
             Scene = parent.Scene;
         }
+
+        public Model(){}
 
         public virtual void makeUnstatic()
         {
@@ -41,21 +44,21 @@ namespace OpenTkProject.Drawables.Models
 
         #region drawing
 
-        public override void draw(ViewInfo curView,bool targetLayer)
+        public override void draw(ViewInfo curView, bool renderlayer)
         {
-            if (vaoHandle != null && isVisible && curView.frustrumCheck(this))
-            {
+            if (isVisible && vaoHandle != null && curView.frustrumCheck(this))
+
                 //Vector4 screenpos;
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
-                    Mesh curMesh = meshes[i];
                     Material curMaterial = materials[i];
+                    Mesh curMesh = meshes[i];
                     gameWindow.checkGlError("--uncaught ERROR drawing Model--" + curMesh.name);
 
-                    if (curMaterial.propertys.useAlpha == targetLayer)
-                    {
-                        //Console.WriteLine("drawing: " + mMesh[i].name);
+                    //Console.WriteLine("drawing: " + mMesh[i].name);
 
+                    if (renderlayer == curMaterial.propertys.useAlpha)
+                    {
                         Shader shader = activateMaterial(ref curMaterial);
 
                         if (shader.loaded)
@@ -82,7 +85,6 @@ namespace OpenTkProject.Drawables.Models
                         }
                     }
                 }
-            }
         }
 
         protected virtual void setSpecialUniforms(ref Shader curShader, ref Mesh CurMesh)
@@ -120,7 +122,32 @@ namespace OpenTkProject.Drawables.Models
             {
                 for (int i = 0; i < vaoHandle.Length; i++)
                 {
-                    Shader curShader = activateMaterialSSN(materials[i]);
+                    Shader curShader = activateMaterialNormal(materials[i]);
+                    Mesh curMesh = meshes[i];
+
+                    if (curShader.loaded)
+                    {
+                        if (Scene != null)
+                        {
+
+                            setupMatrices(ref curView, ref curShader, ref curMesh);
+
+                        }
+
+                        GL.BindVertexArray(vaoHandle[i]);
+                        GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                    }
+                }
+            }
+        }
+
+        public override void drawDefInfo(ViewInfo curView)
+        {
+            if (vaoHandle != null && isVisible && curView.frustrumCheck(this))
+            {
+                for (int i = 0; i < vaoHandle.Length; i++)
+                {
+                    Shader curShader = activateMaterialDefInfo(materials[i]);
                     Mesh curMesh = meshes[i];
 
                     if (curShader.loaded)
@@ -178,6 +205,11 @@ namespace OpenTkProject.Drawables.Models
         public override void kill()
         {
             Scene.drawables.Remove(this);
+
+            for (int i = 0; i < vaoHandle.Length; i++)
+            {
+                //todo delete vaos
+            };
 
             Parent = null;
             //parent.childNames.Remove(name);

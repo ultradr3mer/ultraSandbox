@@ -291,7 +291,7 @@ namespace OpenTkProject.Game
 			        result.ssAmbientOccluison = ssAmbientOccluison;
 			        result.bloom = bloom;
 			        result.depthOfField = depthOfField;
-                     */
+                    */
 
                     break;
                 default:
@@ -317,6 +317,7 @@ namespace OpenTkProject.Game
     public class GameSettings
     {
         public bool dontShowSettings;
+        public bool debugMode;
 
         public bool generateCache = true;
         public bool useCache = true;

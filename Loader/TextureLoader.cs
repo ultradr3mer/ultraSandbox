@@ -164,16 +164,16 @@ namespace OpenTkProject
                 return new Texture();
 
             int identifier = (int)textureNames[name];
+
+            if (!textures[identifier].loaded)
+                loadTexture(textures[identifier]);
+
             return textures[identifier];
         }
 
         public int getTextureId(string name)
         {
-            if (name == "")
-                return 0;
-
-            int identifier = (int)textureNames[name];
-            return textures[identifier].texture;
+            return getTexture(name).texture;
         }
 
         public void fromPng(string file)
@@ -254,6 +254,7 @@ namespace OpenTkProject
 
         public float loadSingleTextures()
         {
+            /*
             for (int i = 0; i < textures.Count; i++)
             {
                 if (!textures[i].loaded)
@@ -262,6 +263,7 @@ namespace OpenTkProject
                     return (float)i / (float)textures.Count;
                 }
             }
+             * */
             return 1;
         }
 

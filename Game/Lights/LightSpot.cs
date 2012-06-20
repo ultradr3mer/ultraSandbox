@@ -16,6 +16,8 @@ namespace OpenTkProject.Drawables
         private string texturename;
         private bool useProjectionTexture = false;
 
+        public int lightId;
+
         new public static string nodename = "lamp";
 
         public LightSpot(GameObject parent)
@@ -28,6 +30,18 @@ namespace OpenTkProject.Drawables
             setupShadow();
 
             Parent.forceUpdate();
+
+            createRenderObject();
+        }
+
+        private void createRenderObject()
+        {
+            drawable = new LightVolume(this);
+            drawable.setMaterial("defShading\\lightSpot.xmf");
+            drawable.setMesh("spotlightCone.obj");
+
+            //drawable.Color = new Vector4(0.6f, 0.7f, 1.0f, 1);
+            drawable.isVisible = true;
         }
 
         public void setupShadow()
@@ -112,23 +126,38 @@ namespace OpenTkProject.Drawables
             killChilds();
         }
 
-        internal void activate(Shader shader, int i, Drawable drawble)
+        public override void activate(Shader shader, Drawable drawble)
         {
             int active = 0;
             if (viewInfo.frustrumCheck(drawble))
             {
-                GL.Uniform3(shader.lightLocationsLocation[i], ref position);
-                GL.Uniform3(shader.lightDirectionsLocation[i], ref pointingDirection);
-                GL.Uniform3(shader.lightColorsLocation[i], ref colorRgb);
+                GL.Uniform3(shader.lightLocationsLocation[lightId], ref position);
+                GL.Uniform3(shader.lightDirectionsLocation[lightId], ref pointingDirection);
+                GL.Uniform3(shader.lightColorsLocation[lightId], ref colorRgb);
 
-                GL.UniformMatrix4(shader.lightViewMatrixLocation[i], false, ref shadowMatrix);
+                GL.UniformMatrix4(shader.lightViewMatrixLocation[lightId], false, ref shadowMatrix);
 
 
-                GL.Uniform1(shader.lightTextureLocation[i], 1, ref ProjectionTexture);
+                //GL.Uniform1(shader.lightTextureLocation[lightId], 1, ref ProjectionTexture);
 
                 active = 1;
             }
-            GL.Uniform1(shader.lightActiveLocation[i], 1, ref active);
+            GL.Uniform1(shader.lightActiveLocation[lightId], 1, ref active);
+        }
+
+        public override void activateDeffered(Shader shader)
+        {
+            shader.insertUniform(Shader.Uniform.defPosition, ref position);
+            shader.insertUniform(Shader.Uniform.defDirection, ref pointingDirection);
+            shader.insertUniform(Shader.Uniform.defColor, ref colorRgb);
+
+            shader.insertUniform(Shader.Uniform.in_no_lights, ref scene.lightCount);
+            shader.insertUniform(Shader.Uniform.curLight, ref lightId);
+
+            shader.insertUniform(Shader.Uniform.defMatrix, ref shadowMatrix);
+            shader.insertUniform(Shader.Uniform.defInvPMatrix, ref viewInfo.invModelviewProjectionMatrix);
+
+            //GL.Uniform1(shader.lightTextureLocation[lightId], 1, ref ProjectionTexture);
         }
 
         public override Vector4 Color

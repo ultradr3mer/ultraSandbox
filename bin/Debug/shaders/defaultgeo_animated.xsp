@@ -1,1 +1,1 @@
-<shaderpair fragment="cubemaptest_multilight.fs" vertex="cubemaptest_animated.vs" />
+<shaderpair fragment="defaultgeo.fs" vertex="defaultgeo_animated.vs" />

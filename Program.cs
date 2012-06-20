@@ -156,7 +156,7 @@ namespace OpenTkProject
             if (Settings.Instance.game.useCache)
             {
                 meshLoader.readCacheFile();
-                shaderLoader.readCacheFile();
+                //shaderLoader.readCacheFile();
                 //textureLoader.readCacheFile();
                 materialLoader.readCacheFile();
                 templateLoader.readCacheFile();
@@ -183,9 +183,6 @@ namespace OpenTkProject
         {
             if (state == GameState.Playing || state == GameState.Menu)
             {
-				/// Starts performance counter for rendering
-				Performance.Instance.BeginRender();
-
                 double framerate = 1 / e.Time;
                 smoothframerate = framerate * (1 - framerate_smoothness) + smoothframerate * framerate_smoothness;
                 
@@ -207,6 +204,8 @@ namespace OpenTkProject
                 // create viewInfo for water reflections
                 waterViewInfo.projectionMatrix = player.viewInfo.projectionMatrix;
                 waterViewInfo.modelviewMatrix = Matrix4.Mult(mScene.mWaterMatrix, player.viewInfo.modelviewMatrix);
+                waterViewInfo.invModelviewMatrix = Matrix4.Mult(mScene.mWaterMatrix, player.viewInfo.invModelviewMatrix);
+                waterViewInfo.PointingDirection = player.viewInfo.PointingDirection;
                 waterViewInfo.generateViewProjectionMatrix();
 
                 // render water reflections
@@ -220,16 +219,9 @@ namespace OpenTkProject
                 // draw Guis
                 mScene.drawGuis();
 
-
-				/// Render performance graph trololo
-				PerformanceVisualizer.Instance.Render();
-
                 SwapBuffers();
 
                 mScene.resetUpdateState();
-
-				/// Ends performance counter for rendering and advances to next frame
-				Performance.Instance.EndRender();
             }
             else
             {
@@ -238,7 +230,7 @@ namespace OpenTkProject
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                 GL.Disable(EnableCap.CullFace);
 
-                splashFilter2d.draw(shaderLoader.getShader("splash_shader.fs"), new int[] { textureLoader.getTextureId("ultra_engine_back.png"), textureLoader.getTextureId("ultra_engine_back_h.png") }, Vector2.One * (loadingPercentage));
+                splashFilter2d.draw(shaderLoader.getShader("splash_shader.fs"), new int[] { textureLoader.getTextureId("ultra_engine_back.png"), textureLoader.getTextureId("ultra_engine_back_h.png") },Shader.Uniform.in_vector, Vector2.One * (loadingPercentage));
 
                 SwapBuffers();
               
@@ -272,9 +264,6 @@ namespace OpenTkProject
         {
             if (state == GameState.Playing || state == GameState.Menu)
             {
-				/// Begins performance counter
-				Performance.Instance.BeginUpdate();
-
                 // calculate mouse movement
                 //gameInput.calcDelta();
 
@@ -311,9 +300,6 @@ namespace OpenTkProject
 
                 // call scene tree to update
                 mScene.update();
-
-				/// Updates performance counter for current frame
-				Performance.Instance.EndUpdate();
             }
             else if (state == GameState.Started)
             {
@@ -329,7 +315,7 @@ namespace OpenTkProject
                 waterFramebufferSet = new FramebufferSet(framebufferCreator, waterFramebuffer, mOptionsWater);
 
                 //crate shadow framebuffer
-                shadowFramebuffer = framebufferCreator.createFrameBuffer("shadowFramebuffer", mScene.ShadowRes, mScene.ShadowRes, PixelInternalFormat.Rgba16f, false);
+                shadowFramebuffer = framebufferCreator.createFrameBuffer(mScene.ShadowRes, mScene.ShadowRes, PixelInternalFormat.Rgba16f, false);
 
                 //create main framebufferset
                 RenderOptions mOptions = Settings.Instance.video.CreateRenderOptions(VideoSettings.Target.main);
@@ -395,6 +381,7 @@ namespace OpenTkProject
                     mScene.noiseTexture = textureLoader.getTextureId("noise_pixel.png");
 
                     //set shaders for postprocessing
+                    mScene.ssaoPreShader = shaderLoader.getShader("ssMaker.xsp");
                     mScene.ssaoShader = shaderLoader.getShader("ssao.xsp");
                     mScene.ssaoBlrShader = shaderLoader.getShader("ao_blur.xsp");
                     mScene.ssaoBlrShaderA = shaderLoader.getShader("ao_blur_a.xsp");
@@ -406,20 +393,17 @@ namespace OpenTkProject
                     mScene.ssaoBlendShader = shaderLoader.getShader("ssao_blend.xsp");
                     mScene.copycatShader = shaderLoader.getShader("backdrop.xsp");
                     mScene.wipingShader = shaderLoader.getShader("sMapWipe.xsp");
+                    mScene.reflectionShader = shaderLoader.getShader("defReflections.xsp");
+                    mScene.lightBlurShader = shaderLoader.getShader("lightBlur.xsp");
 
                     // spawn the player
                     player = new Player(mScene, new Vector3(0, 3, 10), new Vector3(0, 0, -1), gameInput);
-                    mScene.sunLight.Parent = player;
-                    //player.setInput(gameInput);
 
                     mScene.init();
+                    mScene.sunLight.Parent = player;
 
                     // load objects saved in database
                     mScene.loadObjects();
-
-					/// Initialize performance profilers
-					Performance.Instance.Initialize(192);
-					PerformanceVisualizer.Instance.Initialize(this);
 
                     state = GameState.Playing;
                 }

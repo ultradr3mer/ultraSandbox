@@ -52,13 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawables\Models\LightVolume.cs" />
     <Compile Include="Drawables\Models\MetaModel.cs" />
     <Compile Include="Drawables\Models\AnimatedModel.cs" />
     <Compile Include="Drawables\Models\Particles\ParticleAffector.cs" />
     <Compile Include="Drawables\Models\Particles\ParticleSystem.cs" />
     <Compile Include="Game\Lights\LightSpot.cs" />
     <Compile Include="Game\Lights\LightSun.cs" />
-    <Compile Include="Game\Performance.cs" />
     <Compile Include="Game\Tools\GameMenu.cs" />
     <Compile Include="Game\Tools\Grabber.cs" />
     <Compile Include="Game\Tools\Remover.cs" />

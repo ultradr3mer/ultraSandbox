@@ -23,6 +23,6 @@ void main() {
 		discard;
 	}	
 	//out_frag_color = vec4(1,1,1,1)*ao;
-	//out_frag_color = texture(Texture2, v_texture);
+	//out_frag_color = texture(Texture1, v_texture);
 	//out_frag_color.a = 1;
 }

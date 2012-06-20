@@ -42,13 +42,9 @@ void main() {
 				
 			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
 			
-			if(normdiff > 0.9){
-					//normdiff = pow(normdiff,200);
-					//col += sample.a * normdiff;
-					//s += normdiff;
-					col += sample.a;
-					s ++;
-			}
+			normdiff = pow(normdiff,10);
+			col += sample.a * normdiff;
+			s += normdiff;
 		}
 		
 		for (float i = -samples ; i <= samples; ++i)
@@ -57,13 +53,9 @@ void main() {
 				
 			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
 			
-			if(normdiff > 0.9){
-					//normdiff = pow(normdiff,200);
-					//col += sample.a * normdiff;
-					//s += normdiff;
-					col += sample.a;
-					s ++;
-			}
+			normdiff = pow(normdiff,10);
+			col += sample.a * normdiff;
+			s += normdiff;
 		}
 		
 		vec4 oldsample = texture(Texture2, v_texture);

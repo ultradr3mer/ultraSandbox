@@ -9,14 +9,8 @@ uniform sampler2D baseTexture;
 
 out vec4 out_frag_color;
 
-vec2 screenpos(){
-	return gl_FragCoord.xy/in_rendersize;
-}
-
 void main() {
 	float depth = gl_FragCoord.z;
-	
-	vec2 screenposition = screenpos();
-	
+
 	out_frag_color = texture(baseTexture, v_texture)*in_color;
 }

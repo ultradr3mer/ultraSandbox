@@ -20,29 +20,26 @@ in vec2 in_texture;
 in vec3 in_tangent;
 
 out vec4 g_pos;
-out vec3 v_eyedirection;
 out vec3 v_normal;
 out vec2 v_texture;
 out vec3 v_tangent;
 out vec3 v_bnormal;
-out vec3 v_ss_normal;
-out vec3 v_ss_tangent;
-out vec3 v_ss_bnormal;
 out float v_depth;
+out float v_w;
 
 uniform bool use_alpha;
 #code
 	g_pos = model_matrix * rotation_matrix * vec4(in_position, 1);
 	gl_Position = projection_matrix * modelview_matrix * g_pos;
 	
-	v_eyedirection = normalize(g_pos.xyz - in_eyepos);
-  
 	v_texture = in_texture;
 	
 	v_normal = normalize((rotation_matrix * vec4(in_normal, 0)).xyz);
 	v_tangent = normalize((rotation_matrix * vec4(in_tangent, 0)).xyz);
 	v_bnormal = normalize(cross(v_normal, v_tangent));
-	
+		
 	v_texture = in_texture;
 	
 	v_depth = gl_Position.z;
+	v_w = gl_Position.w;
+	//v_depth = gl_Position.z / gl_Position.w;

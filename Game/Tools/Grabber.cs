@@ -42,6 +42,8 @@ namespace OpenTkProject.Game.Tools
             muzzleModel.Color = new Vector4(0.6f, 0.7f, 1.0f, 1);
             muzzleModel.isVisible = false;
 
+            muzzleModel.renderlayer = Drawable.RenderLayer.Transparent;
+
             muzzleModel.Scene = Scene;
         }
 
@@ -54,7 +56,10 @@ namespace OpenTkProject.Game.Tools
             arcModel.Color = new Vector4(0.6f, 0.7f, 1.0f, 1)*0.2f;
             arcModel.isVisible = false;
 
+            arcModel.renderlayer = Drawable.RenderLayer.Transparent;
+
             arcModel.Scene = Scene;
+            
         }
 
         protected override void fireDown()

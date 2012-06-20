@@ -6,6 +6,7 @@ using OpenTK;
 using Jitter.Dynamics;
 using OpenTkProject.Drawables;
 using OpenTK.Graphics.OpenGL;
+using OpenTkProject.Drawables.Models;
 
 namespace OpenTkProject
 {
@@ -29,6 +30,8 @@ namespace OpenTkProject
         //private Vector4 ssposition;
         //private Vector4 ssdirection;
 
+        public LightVolume drawable;
+
         /*
         public Light(Vector3 location, Vector3 direction, Vector3 color)
         {
@@ -42,5 +45,9 @@ namespace OpenTkProject
         public Light()
         {
         }
+
+        public virtual void activate(Shader shader, Drawable drawable) { }
+
+        public virtual void activateDeffered(Shader shader) { }
     }
 }

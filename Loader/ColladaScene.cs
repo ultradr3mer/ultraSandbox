@@ -1375,7 +1375,7 @@ namespace OpenTkProject.Loader
 
             XmlTextReader reader = new XmlTextReader(pointer);
 
-            stepSize = 1.0f / 25;
+            stepSize = 1.0f / 10;
 
             while (reader.Read())
             {

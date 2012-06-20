@@ -118,7 +118,17 @@ namespace OpenTkProject
 
             in_no_lights,
             curLight,
-            uni_no_bones
+            uni_no_bones,
+            invMVPMatrix,
+            defDirection,
+            defColor,
+            defMatrix,
+            defInnerMatrix,
+            invPMatrix,
+            defPosition,
+            defInvPMatrix,
+            invMMatrix,
+            useTexture
         }
 
         int[] locations;
@@ -163,6 +173,35 @@ namespace OpenTkProject
             int location = locations[(int)uni];
             if (location != -1)
                 GL.UniformMatrix4(location, false, ref value);
+        }
+
+        internal void insertGenUniform(Uniform uniform, object uniObj)
+        {
+            if (uniObj.GetType() == typeof(float))
+            {
+                float tmpValue = (float)uniObj;
+                insertUniform(uniform, ref tmpValue);
+                return;
+            }
+            if (uniObj.GetType() == typeof(Vector2))
+            {
+                Vector2 tmpValue = (Vector2)uniObj;
+                insertUniform(uniform, ref tmpValue);
+                return;
+            }
+            if (uniObj.GetType() == typeof(Vector3))
+            {
+                Vector3 tmpValue = (Vector3)uniObj;
+                insertUniform(uniform, ref tmpValue);
+                return;
+            }
+            if (uniObj.GetType() == typeof(Matrix4))
+            {
+                Matrix4 tmpValue = (Matrix4)uniObj;
+                insertUniform(uniform, ref tmpValue);
+                return;
+            }
+            throw new Exception("unable to assigin Uniform");
         }
 
         public void generateLocations()
@@ -545,12 +584,12 @@ namespace OpenTkProject
 
             GL.CompileShader(vertexShaderHandle);
             GL.GetShaderInfoLog(vertexShaderHandle, out log);
-            parseLog(log,"vertexShader: " + name, target.vShader);
+            parseLog(log,"vertexShader" + name, target.vShader);
             gameWindow.checkGlError("loadVertexShader (" + name + ")");
 
             GL.CompileShader(fragmentShaderHandle);
             GL.GetShaderInfoLog(fragmentShaderHandle, out log);
-            parseLog(log, "fragmentShader: " + name, target.fShader);
+            parseLog(log, "fragmentShader" + name, target.fShader);
             gameWindow.checkGlError("loadFragmentShader (" + name + ")");
 
             Debug.WriteLine(GL.GetShaderInfoLog(vertexShaderHandle));

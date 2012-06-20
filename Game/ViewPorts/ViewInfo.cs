@@ -30,6 +30,8 @@ namespace OpenTkProject
         public Vector3 pointingDirectionRight;
         public Vector3 pointingDirectionUp;
         public bool sunPerspective;
+        public Matrix4 invModelviewProjectionMatrix;
+        public Matrix4 invModelviewMatrix;
         //static ViewInfo Zero = new ViewInfo();
 
         public ViewInfo(GameObject parent)
@@ -46,11 +48,14 @@ namespace OpenTkProject
         public Matrix4 updateProjectionMatrix()
         {
             return projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, zNear, zFar);
+            //invProjectionMatrix = Matrix4.Invert(projectionMatrix);
         }
 
         private Matrix4 generateModelViewMatrix()
         {
-            return modelviewMatrix = Matrix4.LookAt(Position, Position + PointingDirection, upVec);
+            modelviewMatrix = Matrix4.LookAt(Position, Position + PointingDirection, upVec);
+            invModelviewMatrix = Matrix4.Invert(modelviewMatrix);
+            return modelviewMatrix;
         }
 
         public float getFocus()
@@ -135,6 +140,7 @@ namespace OpenTkProject
         public void generateViewProjectionMatrix()
         {
             modelviewProjectionMatrix = Matrix4.Mult(modelviewMatrix, projectionMatrix);
+            invModelviewProjectionMatrix = Matrix4.Invert(modelviewProjectionMatrix);
         }
         /*
         internal void checkForUpdates()

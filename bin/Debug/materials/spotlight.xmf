@@ -1,5 +1,5 @@
-<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
-	<textures base="spotlight.png" normal="spotlight_n.png" emit="spotlight_e.png"/>
+<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp" definfo="defInfo.xsp">
+	<textures base="spotlight.png" normal="spotlight_n.png" emit="spotlight_e.png" definfo="generic_i.png"/>
 	<emit  tint="0.2|0.2|1" source="basealpha" />
 	<lighted/>
 	<envmap  tint="0.5|0.5|0.5" />

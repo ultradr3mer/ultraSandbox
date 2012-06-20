@@ -1,5 +1,5 @@
-<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
-	<textures base="grey.png" normal="hex_n.png" />
+<material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp" definfo="defInfo.xsp">
+	<textures base="grey.png" normal="hex_n.png" definfo="generic_i.png"/>
 	<envmap  source="normalalpha" />
 	<lighted/>
 </material>

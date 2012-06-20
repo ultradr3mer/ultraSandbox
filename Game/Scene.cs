@@ -52,15 +52,13 @@ namespace OpenTkProject
 
         public Scene(OpenTkProjectWindow mGameWindow)
         {
+            //prepare list of world textures
+            int texCount = Enum.GetValues(typeof(Material.WorldTexture)).Length;
+            if (worldTextures == null)
+                worldTextures = new Texture[texCount];
+
             this.gameWindow = mGameWindow;
             Scene = this;
-
-            sunLight = new LightSun(new Vector3(0.1f, 0.125f, 0.2f) * 3f, this);
-            sunLight.lightAmbient = new Vector3(0.1f, 0.125f, 0.2f) * 0.5f;//new Vector3(0.2f, 0.125f, 0.1f);//new Vector3(0.1f, 0.14f, 0.3f);
-            sunLight.PointingDirection = Vector3.Normalize(new Vector3(674, -674, 1024));
-            sunFrameBuffer = gameWindow.framebufferCreator.createFrameBuffer("shadowFramebuffer", shadowRes * 2, shadowRes * 2, PixelInternalFormat.Rgba8, false);
-            sunInnerFrameBuffer = gameWindow.framebufferCreator.createFrameBuffer("shadowFramebuffer", shadowRes * 2, shadowRes * 2, PixelInternalFormat.Rgba8, false);
-
             //sunLight.pointingDirection = Vector3.Normalize(new Vector3(674, 674, 1024));
 
             // creating a new collision system and adding it to the new world
@@ -161,6 +159,13 @@ namespace OpenTkProject
         public void init()
         {
 
+            sunLight = new LightSun(new Vector3(0.1f, 0.125f, 0.2f) * 3f, this);
+            sunLight.lightAmbient = new Vector3(0.1f, 0.125f, 0.2f) * 0.5f;//new Vector3(0.2f, 0.125f, 0.1f);//new Vector3(0.1f, 0.14f, 0.3f);
+            sunLight.PointingDirection = Vector3.Normalize(new Vector3(674, -674, 1024));
+            sunFrameBuffer = gameWindow.framebufferCreator.createFrameBuffer("shadowFramebuffer", shadowRes * 2, shadowRes * 2, PixelInternalFormat.Rgba8, false);
+            sunInnerFrameBuffer = gameWindow.framebufferCreator.createFrameBuffer("shadowFramebuffer", shadowRes * 2, shadowRes * 2, PixelInternalFormat.Rgba8, false);
+
+
             mFilter2d = new Quad2d(this);
 
             mSkyModel = new Skybox(this, gameWindow);
@@ -172,7 +177,7 @@ namespace OpenTkProject
             mGroundPlane.setMaterial("floor.xmf");
 
             //need to be fixed -- cant be executed after voxel Manager creation.
-            generateParticleSys();
+            //generateParticleSys();
 
             voxelManager = new VoxelManager(this);
 
@@ -218,14 +223,21 @@ namespace OpenTkProject
             pSys.Orientation = Matrix4.Identity;
 
             pSys.generateParticles(1000);
+
+            pSys.renderlayer = RenderLayer.Transparent;
         }
 
-        public static int NULLPASS = 0;
-        public static int WATERPASS = 1;
-        public static int SELECTIONPASS = 2;
-        public static int NORMALPASS = 3;
-        public static int TRANSPARENTPASS = 4;
-        public static int SHADOWPASS = 5;
+        public enum Pass
+        {
+            diffuse,
+            water,
+            selection,
+            normal,
+            transparent,
+            shadow,
+            defInfo
+        }
+
         public Shader ssaoShader;
         public Shader ssaoBlrShader;
         public Shader bloomShader;
@@ -255,6 +267,10 @@ namespace OpenTkProject
         public Shader ssNormalShaderAni;
         private float gamma;
         private Vector2 compositeMod = Vector2.Zero;
+        private Texture[] worldTextures;
+        public Shader reflectionShader;
+        public Shader ssaoPreShader;
+        public Shader lightBlurShader;
 
         public override void update()
         {
@@ -298,32 +314,50 @@ namespace OpenTkProject
 
         #region draw
 
-        public bool drawSceene(int currentPass, ViewInfo curView)
+        public bool drawSceene(Pass currentPass, ViewInfo curView)
         {
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            if (currentPass == NULLPASS)
+            if (currentPass == Pass.diffuse)
             {
                 GL.Disable(EnableCap.Blend);
                 foreach (Drawable curDrawable in drawables)
                 {
-                    curDrawable.draw(curView,false);
+                    if ((curDrawable.renderlayer == RenderLayer.Solid) ||
+                        (curDrawable.renderlayer == RenderLayer.Both))
+                    {
+                        curDrawable.draw(curView, false);
+                    }
                 }
             }
 
-            if (currentPass == TRANSPARENTPASS)
+            if (currentPass == Pass.transparent)
             {
                 GL.Enable(EnableCap.Blend);
-                
+                /*
                 for (int i = drawables.Count - 1; i >= 0; i--)
                 {
-                    drawables[i].draw(curView, true);
+                    if ((drawables[i].renderlayer == RenderLayer.Transparent)||
+                        (drawables[i].renderlayer == RenderLayer.Both))
+                    {
+                        drawables[i].draw(curView, true);
+                    }
                 }
+                 * */
+                foreach (Drawable curDrawable in drawables)
+                {
+                    if ((curDrawable.renderlayer == RenderLayer.Transparent) ||
+                        (curDrawable.renderlayer == RenderLayer.Both))
+                    {
+                        curDrawable.draw(curView, true);
+                    }
+                }
+                GL.Disable(EnableCap.Blend);
             }
 
-            if (currentPass == SHADOWPASS)
+            if (currentPass == Pass.shadow)
             {
                 foreach (Drawable curDrawable in drawables)
                 {
@@ -331,7 +365,7 @@ namespace OpenTkProject
                 }
             }
 
-            if (currentPass == SELECTIONPASS)
+            if (currentPass == Pass.selection)
             {
                 bool hasSelection = false;
                 foreach (Drawable curDrawable in drawables)
@@ -345,16 +379,21 @@ namespace OpenTkProject
                 return hasSelection;
             }
 
-            if (currentPass == NORMALPASS)
+            if (currentPass == Pass.normal)
             {
                 GL.Disable(EnableCap.Blend);
-                Shader SSNormalShader = ssNormalShader;
-
-                mGroundPlane.draw(curView,ssNormalShaderNoTex);
-
                 foreach (Drawable curDrawable in drawables)
                 {
                     curDrawable.drawNormal(curView);
+                }
+            }
+
+            if (currentPass == Pass.defInfo)
+            {
+                GL.Disable(EnableCap.Blend);
+                foreach (Drawable curDrawable in drawables)
+                {
+                    curDrawable.drawDefInfo(curView);
                 }
             }
 
@@ -371,158 +410,187 @@ namespace OpenTkProject
 
             RenderOptions renderOptions = curFramebuffers.renderOptions;
 
-            if (renderOptions.postProcessing)
+            GL.Enable(EnableCap.Blend);
+
+            curFramebuffers.sceeneFramebuffer.enable(true);
+            curFramebuffers.sceeneFramebuffer.Multisampeling = false;
+
+            GL.Enable(EnableCap.Blend);
+
+            drawSceene(Pass.normal, curView);
+
+            GL.Disable(EnableCap.Blend);
+
+            if (renderOptions.ssAmbientOccluison)
             {
-                GL.Enable(EnableCap.Blend);
+                curFramebuffers.aoPreFramebuffer.enable(false);
+                mFilter2d.draw(ssaoPreShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture },Shader.Uniform.modelview_matrix,curView.modelviewMatrix);
 
-                curFramebuffers.sceeneFramebuffer.enable(true);
-                curFramebuffers.sceeneFramebuffer.Multisampeling = false;
+                curFramebuffers.aoFramebuffer.enable(false);
+                mFilter2d.draw(ssaoShader, new int[] { curFramebuffers.aoPreFramebuffer.ColorTexture, noiseTexture });
 
-                GL.Enable(EnableCap.Blend);
+                curFramebuffers.aoBlurFramebuffer.enable(false);
+                mFilter2d.draw(ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture });
 
-                drawSceene(Scene.NORMALPASS, curView);
+                curFramebuffers.aoBlurFramebuffer2.enable(false);
+                mFilter2d.draw(ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture });
+            }
 
-                GL.Disable(EnableCap.Blend);
+            //reder defered information
+            curFramebuffers.sceeneDefInfoFb.enable(true);
+            drawSceene(Pass.defInfo, curView);
 
-                if (renderOptions.ssAmbientOccluison)
-                {
-                    curFramebuffers.aoFramebuffer.enable(false);
-                    mFilter2d.draw(ssaoShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, noiseTexture });
-
-                    GL.Disable(EnableCap.Blend);
-                    curFramebuffers.aoBlurFramebuffer.enable(false);
-                    mFilter2d.draw(ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture});
-
-                    curFramebuffers.aoBlurFramebuffer2.enable(false);
-                    mFilter2d.draw(ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture});
-                }
-                
-                curFramebuffers.sceeneFramebuffer.enable(false);
-
-                GL.Disable(EnableCap.Blend);
-
-                drawSceene(Scene.NULLPASS, curView);
-
-                GL.Enable(EnableCap.Blend);
-
-                // copy scene to transparent fb -- we can do lookups
-                curFramebuffers.sceeneFramebufferTrans.enable(true);
-                mFilter2d.draw(copycatShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
-
-                // switch back to scene fb
-                curFramebuffers.sceeneFramebuffer.enable(false);
-
-                backdropTextures = new int[] { 
-                    curFramebuffers.sceeneFramebufferTrans.ColorTexture, 
-                    curFramebuffers.sceeneFramebufferTrans.DepthTexture };
-
-                if (renderOptions.ssAmbientOccluison)
-                {
-                    mFilter2d.draw(ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture, curFramebuffers.sceeneFramebufferTrans.ColorTexture });
-                }
-
-                drawSceene(Scene.TRANSPARENTPASS, curView);
-
-                curFramebuffers.selectionFb.enable(true);
-
-                bool hasSelection = drawSceene(Scene.SELECTIONPASS, curView);
-
-                GL.Disable(EnableCap.Blend);
-                GL.Disable(EnableCap.DepthTest);
-                GL.Disable(EnableCap.CullFace);
-
-                Vector2 bloomSize = new Vector2(80, 20);
-
-                if (hasSelection)
-                {
-                    curFramebuffers.selectionblurFb.enable(false);
-                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionFb.ColorTexture }, bloomSize);
-                }
-
-                curFramebuffers.selectionblurFb2.enable(true);
-
-                if (hasSelection)
-                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, bloomSize*0.2f);
-
-
-                curFramebuffers.bloomFramebuffer2.Multisampeling = false;
-                if (renderOptions.bloom)
-                {
-                    curFramebuffers.bloomFramebuffer2.enable(false);
-                    mFilter2d.draw(bloomCurveShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
-
-                    for (int i = 0; i < 2; i++)
-                    {
-                        curFramebuffers.bloomFramebuffer.enable(false);
-                        mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer2.ColorTexture }, bloomSize);
-
-                        curFramebuffers.bloomFramebuffer2.enable(false);
-                        mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, bloomSize * 0.2f);
-
-                        bloomSize *= 2f;
-                    }
-                }
-                curFramebuffers.bloomFramebuffer2.Multisampeling = true;
-
-                if (renderOptions.depthOfField)
-                {
-                    curFramebuffers.dofPreFramebuffer.enable(false);
-                    mFilter2d.draw(dofpreShader, new int[] { 
-                        curFramebuffers.screenNormalFb.ColorTexture, 
-                        curFramebuffers.sceeneFramebufferTrans.ColorTexture
-                    }, new Vector2(curView.getFocus(0.9f), 0.01f));
-
-                    curFramebuffers.dofFramebuffer.enable(false);
-                    mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofPreFramebuffer.ColorTexture, noiseTexture });
-
-                    curFramebuffers.dofFramebuffer2.enable(false);
-                    mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofFramebuffer.ColorTexture, noiseTexture });
-                }
-
-                curFramebuffers.outputFb.enable(false);
-                curFramebuffers.sceeneFramebuffer.Multisampeling = true;
-
-                mFilter2d.draw(compositeShader, new int[] { 
+            //render defferd reflections
+            curFramebuffers.reflectionFramebuffer.enable(true);
+            mFilter2d.draw(reflectionShader, new int[] { 
+                Scene.envTextures[0],
+                Scene.envTextures[1],
+                Scene.envTextures[2],
+                Scene.envTextures[3],
+                Scene.envTextures[4],
+                Scene.envTextures[5],
                 curFramebuffers.sceeneFramebuffer.ColorTexture,
-                curFramebuffers.bloomFramebuffer2.ColorTexture,
-                curFramebuffers.selectionFb.ColorTexture,
-                curFramebuffers.selectionblurFb2.ColorTexture,
-                curFramebuffers.dofFramebuffer2.ColorTexture,
-                curFramebuffers.aoBlurFramebuffer2.ColorTexture},
-                compositeMod);
+                curFramebuffers.sceeneDefInfoFb.ColorTexture
+            },
+                Shader.Uniform.invMVPMatrix, 
+                curView.invModelviewProjectionMatrix);
 
-                gameWindow.checkGlError("--uncaught ERROR leaving Scene--");
-            }
-            else
+            setTextureId(Material.WorldTexture.reflectionMap, curFramebuffers.reflectionFramebuffer.ColorTexture);
+
+            //render defferedLight
+            curFramebuffers.lightFramebuffer.enable(true);
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
+
+            setTextureId(Material.WorldTexture.lightMap, curFramebuffers.lightBlurFramebuffer.ColorTexture);
+
+            sunLight.drawable.draw(new int[]{
+                curFramebuffers.sceeneFramebuffer.ColorTexture,
+                sunFrameBuffer.DepthTexture,
+                sunInnerFrameBuffer.DepthTexture,
+                noiseTexture,
+                curFramebuffers.sceeneDefInfoFb.ColorTexture
+            }, ref curView);
+
+            GL.Enable(EnableCap.CullFace);
+
+            foreach (var light in spotlights)
             {
-                gameWindow.checkGlError("--uncaught ERROR entering Scene--");
-                curFramebuffers.outputFb.enable(true);
-
-                GL.Enable(EnableCap.Blend);
-                GL.Enable(EnableCap.DepthTest);
-                GL.Enable(EnableCap.CullFace);
-
-                drawSceene(Scene.NULLPASS, curView);
-
-                // copy scene to transparent fb -- we can do lookups
-                curFramebuffers.sceeneFramebufferTrans.enable(true);
-                mFilter2d.draw(copycatShader, new int[] { curFramebuffers.outputFb.ColorTexture });
-
-                // switch back to scene fb
-                curFramebuffers.outputFb.enable(false);
-
-                backdropTextures = new int[] { 
-                    curFramebuffers.sceeneFramebufferTrans.ColorTexture, 
-                    curFramebuffers.sceeneFramebufferTrans.DepthTexture };
-
-                drawSceene(Scene.TRANSPARENTPASS, curView);
-
-                GL.Disable(EnableCap.Blend);
-                GL.Disable(EnableCap.DepthTest);
-                GL.Disable(EnableCap.CullFace);
-
-                gameWindow.checkGlError("--uncaught ERROR leaving Scene--");
+                light.drawable.draw(new int[]{
+                    curFramebuffers.sceeneFramebuffer.ColorTexture,
+                    gameWindow.shadowFramebuffer.ColorTexture,
+                    noiseTexture,
+                    curFramebuffers.sceeneDefInfoFb.ColorTexture
+                }, ref curView);
             }
+
+            GL.Disable(EnableCap.Blend);
+            GL.Disable(EnableCap.CullFace);
+
+            curFramebuffers.lightBlurFramebuffer.enable(false);
+            mFilter2d.draw(lightBlurShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.lightFramebuffer.ColorTexture });
+
+            curFramebuffers.sceeneFramebuffer.enable(false);
+
+            drawSceene(Pass.diffuse, curView);
+
+            GL.Enable(EnableCap.Blend);
+
+            // copy scene to transparent fb -- we can do lookups
+            curFramebuffers.sceeneBackdropFb.enable(true);
+            mFilter2d.draw(copycatShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
+
+            // switch back to scene fb
+            curFramebuffers.sceeneFramebuffer.enable(false);
+
+            backdropTextures = new int[] { 
+                curFramebuffers.sceeneBackdropFb.ColorTexture, 
+                curFramebuffers.sceeneBackdropFb.DepthTexture };
+
+            if (renderOptions.ssAmbientOccluison)
+            {
+                mFilter2d.draw(ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture, curFramebuffers.sceeneBackdropFb.ColorTexture });
+            }
+
+            drawSceene(Pass.transparent, curView);
+            
+            curFramebuffers.selectionFb.enable(true);
+
+            bool hasSelection = drawSceene(Pass.selection, curView);
+
+            GL.Disable(EnableCap.Blend);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+
+            Vector2 bloomSize = new Vector2(80, 20);
+
+            if (hasSelection)
+            {
+                curFramebuffers.selectionblurFb.enable(false);
+                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+            }
+
+            curFramebuffers.selectionblurFb2.enable(true);
+
+            if (hasSelection)
+                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize* 0.2f);
+
+
+            curFramebuffers.bloomFramebuffer2.Multisampeling = false;
+            if (renderOptions.bloom)
+            {
+                curFramebuffers.bloomFramebuffer2.enable(false);
+                mFilter2d.draw(bloomCurveShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
+
+                for (int i = 0; i < 2; i++)
+                {
+                    curFramebuffers.bloomFramebuffer.enable(false);
+                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer2.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+
+                    curFramebuffers.bloomFramebuffer2.enable(false);
+                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, Shader.Uniform.in_vector, bloomSize * 0.2f);
+
+                    bloomSize *= 2f;
+                }
+            }
+            curFramebuffers.bloomFramebuffer2.Multisampeling = true;
+
+            if (renderOptions.depthOfField)
+            {
+                curFramebuffers.dofPreFramebuffer.enable(false);
+                mFilter2d.draw(dofpreShader, new int[] { 
+                    curFramebuffers.screenNormalFb.ColorTexture, 
+                    curFramebuffers.sceeneBackdropFb.ColorTexture
+                }, Shader.Uniform.in_vector, new Vector2(curView.getFocus(0.9f), 0.01f));
+
+                curFramebuffers.dofFramebuffer.enable(false);
+                mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofPreFramebuffer.ColorTexture, noiseTexture });
+
+                curFramebuffers.dofFramebuffer2.enable(false);
+                mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofFramebuffer.ColorTexture, noiseTexture });
+            }
+
+            curFramebuffers.outputFb.enable(false);
+            curFramebuffers.sceeneFramebuffer.Multisampeling = true;
+
+            int texture = curFramebuffers.sceeneFramebuffer.ColorTexture;
+
+            if (curFramebuffers.aoPreFramebuffer != null)
+                texture = curFramebuffers.lightBlurFramebuffer.ColorTexture;
+
+
+            mFilter2d.draw(compositeShader, new int[] { 
+            curFramebuffers.sceeneFramebuffer.ColorTexture,
+            curFramebuffers.bloomFramebuffer2.ColorTexture,
+            curFramebuffers.selectionFb.ColorTexture,
+            curFramebuffers.selectionblurFb2.ColorTexture,
+            curFramebuffers.dofFramebuffer2.ColorTexture,
+            texture},
+            Shader.Uniform.in_vector,
+            compositeMod);
+
+            gameWindow.checkGlError("--uncaught ERROR leaving Scene--");
         }
 
         internal void drawShadowBuffers(Framebuffer shadowFb)
@@ -531,6 +599,8 @@ namespace OpenTkProject
 
             for (int i = 0; i < spotlights.Count; i++)
             {
+                spotlights[i].lightId = i;
+
                 bool needsUpdate = spotlights[i].viewInfo.checkForUpdates(drawables);
                 currentLight = i;
 
@@ -544,11 +614,11 @@ namespace OpenTkProject
                     //GL.CullFace(CullFaceMode.Front);
 
                     GL.DepthFunc(DepthFunction.Always);
-                    mFilter2d.draw(wipingShader, new int[] { spotlights[i].ProjectionTexture },new Vector2(i,lightCount));
+                    mFilter2d.draw(wipingShader, new int[] { spotlights[i].ProjectionTexture },Shader.Uniform.in_vector,new Vector2(i,lightCount));
                     GL.DepthFunc(DepthFunction.Less);
 
                     GL.ColorMask(false, false, false, true);
-                    drawSceene(Scene.SHADOWPASS, spotlights[i].viewInfo);
+                    drawSceene(Pass.shadow, spotlights[i].viewInfo);
                     GL.ColorMask(true, true, true, true);
                 }
             }
@@ -569,7 +639,7 @@ namespace OpenTkProject
                 sunFrameBuffer.enable(true);
 
                 GL.ColorMask(false, false, false, false);
-                drawSceene(Scene.SHADOWPASS, sunLight.viewInfo);
+                drawSceene(Pass.shadow, sunLight.viewInfo);
                 GL.ColorMask(true, true, true, true);
             }
 
@@ -578,7 +648,7 @@ namespace OpenTkProject
             sunInnerFrameBuffer.enable(true);
 
             GL.ColorMask(false, false, false, false);
-            drawSceene(Scene.SHADOWPASS, sunLight.innerViewInfo);
+            drawSceene(Pass.shadow, sunLight.innerViewInfo);
             GL.ColorMask(true, true, true, true);
 
 
@@ -609,5 +679,15 @@ namespace OpenTkProject
         }
 
         public int ShadowRes { get { return shadowRes; } set { shadowRes = value; } }
+
+        internal int getTextureId(Material.WorldTexture type)
+        {
+            return worldTextures[(int)type].texture;
+        }
+
+        internal void setTextureId(Material.WorldTexture type, int id)
+        {
+            worldTextures[(int)type].texture = id;
+        }
     }
 }

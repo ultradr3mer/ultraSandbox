@@ -29,16 +29,22 @@ namespace OpenTkProject.Drawables
 
         public void draw(Shader curShader, int[] curtexture)
         {
-            draw(curShader, curtexture, Vector2.Zero);
+            draw(curShader, curtexture,Shader.Uniform.in_vector, Vector2.Zero);
         }
-
-        public void draw(Shader shader, int[] curtexture, Vector2 shadingVec)
+        /*
+        public void draw(Shader curShader, int[] curtexture, Shader.Uniform uniform, Vector2 vector2)
+        {
+            draw(curShader, curtexture,new UniformPairList( Shader.Uniform.in_vector, Vector2.Zero));
+        }
+        */
+        public void draw(Shader shader, int[] curtexture, Shader.Uniform uniform, object obj)
         {
             gameWindow.checkGlError("--uncaught ERROR drawing 2d Quad--" + shader.name);
 
             GL.UseProgram(shader.handle);
 
-            shader.insertUniform(Shader.Uniform.in_vector, ref shadingVec);
+            //unis.insert(ref shader);
+            shader.insertGenUniform(uniform, obj);
             shader.insertUniform(Shader.Uniform.in_screensize, ref gameWindow.virtual_size);
             shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
             shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
@@ -47,6 +53,8 @@ namespace OpenTkProject.Drawables
             {
                 shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);
                 shader.insertUniform(Shader.Uniform.curLight, ref Scene.currentLight);
+
+                shader.insertUniform(Shader.Uniform.in_eyepos, ref Scene.eyePos);
             }
 
             initTextures(curtexture, shader.handle, "Texture");

@@ -2,13 +2,17 @@
 
 #variables
 
+out vec3 v_ss_normal;
+out vec3 v_ss_tangent;
+out vec3 v_ss_bnormal;
+
 #functions
 
 void main(void)
 {
 	#include vAnimation.snip
 	
-	#include vBase.snip replace:in_position:ani_position replace:in_normal:ani_normal replace:in_tangent:ani_tangent
+	#include vBase.snip replace:in_position:ani_position
 	
 	v_ss_normal = normalize((modelview_matrix * rotation_matrix * vec4(in_normal, 0)).xyz);
 	v_ss_tangent = normalize((modelview_matrix * rotation_matrix * vec4(in_tangent, 0)).xyz);

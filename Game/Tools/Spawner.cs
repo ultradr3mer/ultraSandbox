@@ -39,6 +39,8 @@ namespace OpenTkProject.Game.Tools
 
             grid.Position = Position;
             grid.Scene = Scene;
+
+            grid.renderlayer = Drawable.RenderLayer.Transparent;
         }
 
         private void generateGhost()
@@ -73,32 +75,32 @@ namespace OpenTkProject.Game.Tools
 
             if (Parent.tool == this)
             {
-                ghost.isVisible = true;
-                grid.isVisible = true;
+               ghost.isVisible = true;
+               grid.isVisible = true;
+               
+               RigidBody body; JVector normal; float frac;
 
-                RigidBody body; JVector normal; float frac;
+               bool result = Scene.world.CollisionSystem.Raycast(GenericMethods.FromOpenTKVector(Position), GenericMethods.FromOpenTKVector(PointingDirection),
+                   raycastCallback, out body, out normal, out frac);
 
-                bool result = Scene.world.CollisionSystem.Raycast(GenericMethods.FromOpenTKVector(Position), GenericMethods.FromOpenTKVector(PointingDirection),
-                    raycastCallback, out body, out normal, out frac);
+               Vector3 hitCoords = Position + PointingDirection * frac;
 
-                Vector3 hitCoords = Position + PointingDirection * frac;
+               if (result && ghost != null)
+               {
+                   float smoothness = 0.9f;
 
-                if (result && ghost != null)
-                {
-                    float smoothness = 0.9f;
+                   //Matrix4 newOri = Matrix4.Mult(Matrix4.CreateRotationX((float)Math.PI / 2), Conversion.MatrixFromVector(normal));
+                   Matrix4 newOri = GenericMethods.MatrixFromVector(normal);
+                   Vector3 newPos = hitCoords + GenericMethods.ToOpenTKVector(normal) * template.positionOffset;
 
-                    //Matrix4 newOri = Matrix4.Mult(Matrix4.CreateRotationX((float)Math.PI / 2), Conversion.MatrixFromVector(normal));
-                    Matrix4 newOri = GenericMethods.MatrixFromVector(normal);
-                    Vector3 newPos = hitCoords + GenericMethods.ToOpenTKVector(normal) * template.positionOffset;
+                   grid.Position = smoothness * grid.Position + (1 - smoothness) * hitCoords;
+                   grid.Orientation = GenericMethods.BlendMatrix(grid.Orientation, newOri, smoothness);
 
-                    grid.Position = smoothness * grid.Position + (1 - smoothness) * hitCoords;
-                    grid.Orientation = GenericMethods.BlendMatrix(grid.Orientation, newOri, smoothness);
+                   ghost.Position = smoothness * ghost.Position + (1 - smoothness) * newPos;
 
-                    ghost.Position = smoothness * ghost.Position + (1 - smoothness) * newPos;
-
-                    if (template.normal)
-                        ghost.Orientation = newOri;
-                }
+                   if (template.normal)
+                       ghost.Orientation = newOri;
+               }
             }
             else
             {

@@ -50,7 +50,7 @@ namespace OpenTkProject
             PointingDirection = viewDir;
 
             upVector = new Vector3(0, 1, 0);
-            zNear = 0.1f;
+            zNear = 0.5f;
             zFar = 100;
 
             Shape boxShape = new BoxShape(new JVector(0.5f, 2, 0.5f));
@@ -74,9 +74,9 @@ namespace OpenTkProject
 
             tools.Add(new GameMenu(this, gameInput));
             tools.Add(new Spawner(this, gameInput));
+            tools.Add(new TerrainGun(this, gameInput));
             tools.Add(new Grabber(this, gameInput));
             tools.Add(new Remover(this, gameInput));
-            tools.Add(new TerrainGun(this, gameInput));
 
             tool = tools[1];
         }
@@ -130,7 +130,8 @@ namespace OpenTkProject
             Position = GenericMethods.ToOpenTKVector(Body.Position);
             Position += new Vector3(0, 1, 0);
 
-            hud.fpsCounter.setValue((float)gameWindow.smoothframerate);
+            if(Settings.Instance.game.debugMode)
+                hud.fpsCounter.setValue((float)gameWindow.smoothframerate);
 
             if (gameWindow.state == GameState.Playing)
             {

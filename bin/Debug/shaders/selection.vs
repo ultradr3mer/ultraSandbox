@@ -2,6 +2,10 @@
 
 #variables
 
+out vec3 v_ss_normal;
+out vec3 v_ss_tangent;
+out vec3 v_ss_bnormal;
+
 #functions
 
 void main(void)

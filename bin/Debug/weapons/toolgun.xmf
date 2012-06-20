@@ -1,5 +1,5 @@
-<material shader="defaultgeo.xsp" selection="selection.xsp" ssnshader="ssnormals.xsp">
-	<textures base="weapons\toolgun.png" normal="weapons\toolgun_n.png"/>
+<material shader="defaultgeo.xsp" selection="selection.xsp" ssnshader="ssnormals.xsp" definfo="defInfo.xsp">
+	<textures base="weapons\toolgun.png" normal="weapons\toolgun_n.png" definfo="weapons\toolgun_i.png"/>
 	<lighted/>
 	<envmap  tint="0.2|0.2|0.2" source="normalalpha" />
 	<specmap tint="2|2|2" source="normalalpha" exp="20" />

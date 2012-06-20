@@ -1,7 +1,7 @@
 <material shader="unlitGeneric.xsp">
 	<textures base="spawn_grid.png"/>
-	<transparency/>
 	<nodepthmask/>
 	<additive/>
 	<nocull/>
+	<transparency/>
 </material>

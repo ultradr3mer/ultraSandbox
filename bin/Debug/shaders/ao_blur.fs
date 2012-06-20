@@ -39,13 +39,9 @@ void main() {
 				
 			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
 			
-			if(normdiff > 0.9){
-					//normdiff = pow(normdiff,200);
-					//col += sample.a * normdiff;
-					//s += normdiff;
-					col += sample.a;
-					s ++;
-			}
+			normdiff = pow(normdiff,10);
+			col += sample.a * normdiff;
+			s += normdiff;
 		}
 		
 		for (float i = -samples ; i <= samples; ++i)
@@ -53,14 +49,10 @@ void main() {
 			sample = readSample( vec2(v_texture.s+rastersize.x*i,v_texture.t-rastersize.y*i) );
 				
 			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
-			
-			if(normdiff > 0.9){
-					//normdiff = pow(normdiff,200);
-					//col += sample.a * normdiff;
-					//s += normdiff;
-					col += sample.a;
-					s ++;
-			}
+
+			normdiff = pow(normdiff,10);
+			col += sample.a * normdiff;
+			s += normdiff;
 		}
 		
 			out_frag_color = vec4(curpixel.xyz,col/s);

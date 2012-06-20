@@ -48,15 +48,8 @@ void main(void)
   //normal = normalize((modelview_matrix * vec4(in_normal, 0)).xyz);
 
 	g_pos = model_matrix * vec4(in_particlepos, 1);
-	
-	
+
 	gl_Position = projection_matrix * modelview_matrix * g_pos + vec4((in_position*512)/vec3(in_screensize,1),0) * in_particlesize;
 	
 	v_texture = in_texture;
-	
-	v_eyedirection = normalize(g_pos.xyz - in_eyepos);
-	
-	v_normal = normalize((rotation_matrix * vec4(in_normal, 0)).xyz);
-	v_tangent = normalize((rotation_matrix * vec4(in_tangent, 0)).xyz);
-	v_bnormal = normalize(cross(v_normal, v_tangent));
 }

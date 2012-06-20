@@ -43,26 +43,9 @@ vec3 boneWeights()
 	int int_joint_1 = int(in_joint_1);
 	int int_joint_2 = int(in_joint_2);
 	
-	if(int_joint_0 != 0)
-	{
-		ani_position += (bone_matrix[int_joint_0-1] * vec4(in_position, 1)).xyz * in_weight_0;
+	ani_position += (bone_matrix[int_joint_0-1] * vec4(in_position, 1)).xyz * in_weight_0;
 		
-		ani_normal += (bone_matrix[int_joint_0-1] * vec4(in_normal, 0)).xyz * in_weight_0;
-		ani_tangent += (bone_matrix[int_joint_0-1] * vec4(in_tangent, 0)).xyz * in_weight_0;
-	}
-		
-	if(int_joint_1 != 0)
-	{
-		ani_position += (bone_matrix[int_joint_1-1] * vec4(in_position, 1)).xyz * in_weight_1;
-		
-		ani_normal += (bone_matrix[int_joint_1-1] * vec4(in_normal, 0)).xyz * in_weight_1;
-		ani_tangent += (bone_matrix[int_joint_1-1] * vec4(in_tangent, 0)).xyz * in_weight_1;
-	}
-		
-	if(int_joint_2 != 0)
-	{
-		ani_position += (bone_matrix[int_joint_2-1] * vec4(in_position, 1)).xyz * in_weight_2;
-		
-		ani_normal += (bone_matrix[int_joint_2-1] * vec4(in_normal, 0)).xyz * in_weight_2;
-		ani_tangent += (bone_matrix[int_joint_2-1] * vec4(in_tangent, 0)).xyz * in_weight_2;
-	}
+	ani_position += (bone_matrix[int_joint_1-1] * vec4(in_position, 1)).xyz * in_weight_1;
+
+	ani_position += (bone_matrix[int_joint_2-1] * vec4(in_position, 1)).xyz * in_weight_2;
+

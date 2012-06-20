@@ -29,7 +29,14 @@ namespace OpenTkProject
             emitMapTexture,
             specMapTexture,
             envMapTexture,
-            envTexture
+            envTexture,
+            definfoTexture
+        }
+
+        public enum WorldTexture
+        {
+            lightMap,
+            reflectionMap
         }
 
         public int identifier;
@@ -71,6 +78,7 @@ namespace OpenTkProject
         public Shader ssnshader;
         public Shader selectionshader;
         public Shader shadowshader;
+        public Shader definfoshader;
 
         public Propertys propertys;
 
@@ -90,6 +98,7 @@ namespace OpenTkProject
             tmpMat.ssnshader = ssnshader.nameOnly();
             tmpMat.selectionshader = selectionshader.nameOnly();
             tmpMat.shadowshader = shadowshader.nameOnly();
+            tmpMat.definfoshader = definfoshader.nameOnly();
 
             //textures
             int texCount = textures.Length;
@@ -152,14 +161,17 @@ public Texture nameOnly()
             if (shader.name != null)
                 shader = shaderLoader.getShader(shader.name);
 
-            if (shader.name != null)
+            if (shadowshader.name != null)
                 shadowshader = shaderLoader.getShader(shadowshader.name);
 
-            if (shader.name != null)
+            if (ssnshader.name != null)
                 ssnshader = shaderLoader.getShader(ssnshader.name);
 
-            if (shader.name != null)
+            if (selectionshader.name != null)
                 selectionshader = shaderLoader.getShader(selectionshader.name);
+
+            if (definfoshader.name != null)
+                definfoshader = shaderLoader.getShader(definfoshader.name);
         }
     }
 
@@ -176,6 +188,10 @@ public Texture nameOnly()
         public Material getMaterial(string name)
         {
             int id = (int)materialNames[name];
+
+            if (!materials[id].loaded)
+                loadMaterial(materials[id]);
+
             return materials[id];
         }
 
@@ -351,6 +367,9 @@ public Texture nameOnly()
 
                         else if (reader.Name == "shadow")
                             target.shadowshader = gameWindow.shaderLoader.getShader(reader.Value);
+
+                        else if (reader.Name == "definfo")
+                            target.definfoshader = gameWindow.shaderLoader.getShader(reader.Value);
                     }
                     gameWindow.log("shader: " + target.shader.name);
                     reader.MoveToElement();
@@ -377,6 +396,9 @@ public Texture nameOnly()
 
                         else if (reader.Name == "reflection")
                             target.setTexture(Material.TexType.reflectionTexture, tmpTex);
+
+                        else if (reader.Name == "definfo")
+                            target.setTexture(Material.TexType.definfoTexture, tmpTex);
 
                         else if (reader.Name == "emit")
                             target.setTexture(Material.TexType.emitTexture, tmpTex);

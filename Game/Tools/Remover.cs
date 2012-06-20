@@ -49,6 +49,8 @@ namespace OpenTkProject.Game.Tools
             muzzleModel.Color = Vector4.Zero;
             muzzleModel.isVisible = true;
 
+            muzzleModel.renderlayer = Drawable.RenderLayer.Transparent;
+
             muzzleModel.Scene = Scene;
         }
 

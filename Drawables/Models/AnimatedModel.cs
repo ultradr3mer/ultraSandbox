@@ -20,6 +20,7 @@ namespace OpenTkProject.Drawables.Models
         protected override void setupMatrices(ref ViewInfo curView,ref  Shader curShader,ref Mesh curMesh)
         {
             base.setupMatrices(ref curView, ref curShader, ref curMesh);
+
             AnimationData animationData = curMesh.curAnimationData;
             int curframe = (int)(animationData.animationPos / animationData.stepSize);
 

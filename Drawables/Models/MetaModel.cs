@@ -97,5 +97,9 @@ namespace OpenTkProject.Drawables.Models
         public override void drawShadow(ViewInfo curView)
         {
         }
+
+        public override void drawDefInfo(ViewInfo curView)
+        {
+        }
     }
 }

@@ -103,7 +103,7 @@ namespace OpenTkProject
 
                     if (value.Scene != null)
                     {
-                        Scene = value.Scene;
+                        scene = value.Scene;
                     }
 
                     parent = value;

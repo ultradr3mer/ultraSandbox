@@ -9,7 +9,6 @@ uniform vec4 in_color;
 
 uniform sampler2D baseTexture;
 uniform sampler2D base2Texture;
-uniform sampler2D backDepthTexture;
 
 out vec4 out_frag_color;
 
@@ -24,10 +23,6 @@ void main(void)
 	float depth = gl_FragCoord.z;
 	
 	vec2 screenposition = screenpos();
-
-	if(depth > texture(backDepthTexture, screenposition).x){
-		discard;
-	}
 	
 	vec2 noiseOffset = vec2(0,1)*in_time;
 	

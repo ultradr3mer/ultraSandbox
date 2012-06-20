@@ -22,7 +22,6 @@ uniform sampler2D Texture4;
 uniform sampler2D Texture5;
 uniform sampler2D Texture6;
 
-
 out vec4 out_frag_color;
 
 float PI = 3.14159265;
@@ -51,6 +50,9 @@ void main(void)
 		out_frag_color.g = pow(out_frag_color.g,in_vector.x);
 		out_frag_color.b = pow(out_frag_color.b,in_vector.x);
 	}
+	
+	//out_frag_color.rgb = texture(Texture6, v_texture).rgb+texture(Texture6, v_texture).rgb*texture(Texture6, v_texture).a;
+	//out_frag_color.a = 1;
 }
 
 

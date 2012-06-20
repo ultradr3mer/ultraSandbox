@@ -366,7 +366,12 @@ namespace OpenTkProject
             dofFramebuffer,
             dofPreFramebuffer,
             dofFramebuffer2,
-            sceeneFramebufferTrans;
+            sceeneBackdropFb,
+            reflectionFramebuffer,
+            lightFramebuffer,
+            lightBlurFramebuffer,
+            sceeneDefInfoFb,
+            aoPreFramebuffer;
 
         public RenderOptions renderOptions;
 
@@ -389,47 +394,57 @@ namespace OpenTkProject
             Vector2 size3 = size2 * 0.3f;
 
             //sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y);
-            sceeneFramebufferTrans = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+            sceeneBackdropFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+            sceeneDefInfoFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16, false);
+            sceeneDefInfoFb.clearColor = new Color4(0f, 0f, 0f, 1f);
 
-            if (mOptions.postProcessing)
+            lightFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+            lightFramebuffer.clearColor = new Color4(0f, 0f, 0f, 0f);
+
+            lightBlurFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+
+            reflectionFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+
+            sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16, false);
+            sceeneFramebuffer.clearColor = new Color4(0f, 0f, 0f, 1f);
+
+            selectionFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+
+
+            //screenNormalFb = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba16f, false);
+            //screenNormalFb.clearColor = new Color4(0f, 0f, 0f, 100f);
+            //lightFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16f, false);
+
+            if (mOptions.depthOfField)
             {
-                sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16f, false);
-                sceeneFramebuffer.clearColor = new Color4(0f, 0f, 0f, 100f);
-
-                selectionFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
-                
-
-                //screenNormalFb = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba16f, false);
-                //screenNormalFb.clearColor = new Color4(0f, 0f, 0f, 100f);
-                //lightFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16f, false);
-
-                if (mOptions.depthOfField)
-                {
-                    // depth of field buffers
-                    dofPreFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
-                    dofFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
-                }
-
-                dofFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, true);
-
-                aoBlurFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, true);
-                aoBlurFramebuffer2.clearColor = new Color4(0f, 0f, 0f, 0.5f);
-
-                if (mOptions.ssAmbientOccluison)
-                {
-                    aoFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
-                    aoBlurFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
-                } else {
-                    // if ao is set of make the buffer grey 
-                    //aoBlurFramebuffer2.enable();
-                }
-
-                
-                selectionblurFb = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
-                selectionblurFb2 = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, true);
-                bloomFramebuffer = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
-                bloomFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
+                // depth of field buffers
+                dofPreFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
+                dofFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
             }
+
+            dofFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, true);
+
+            aoBlurFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, true);
+            aoBlurFramebuffer2.clearColor = new Color4(0f, 0f, 0f, 0.5f);
+
+            if (mOptions.ssAmbientOccluison)
+            {
+                aoPreFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba16, false);
+                aoFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
+                aoBlurFramebuffer = mFramebufferCreator.createFrameBuffer((int)size2.X, (int)size2.Y, PixelInternalFormat.Rgba8, false);
+            }
+            else
+            {
+                // if ao is set of make the buffer grey 
+                //aoBlurFramebuffer2.enable();
+            }
+
+
+            selectionblurFb = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
+            selectionblurFb2 = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, true);
+            bloomFramebuffer = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
+            bloomFramebuffer2 = mFramebufferCreator.createFrameBuffer((int)size3.X, (int)size3.Y, PixelInternalFormat.Rgba8, false);
+
             renderOptions = mOptions;
             this.outputFb = outputFb;
         }

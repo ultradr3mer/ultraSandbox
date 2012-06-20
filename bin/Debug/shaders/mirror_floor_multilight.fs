@@ -16,7 +16,7 @@ void main(void)
 	
 	#include base.snip
 
-	#include lighting.snip
+	#include defLighting.snip
 
 	vec4 color = vec4(0.5,0.7,1.0,1.0);
 	vec4 reflection = texture(reflectionTexture, screenposition);

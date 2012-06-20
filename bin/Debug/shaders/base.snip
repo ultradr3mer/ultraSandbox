@@ -46,5 +46,5 @@ vec2 screenpos(){
 	
 	float depth = gl_FragCoord.z;
 	vec2 screenposition = screenpos();
-	vec3 refn = reflect(v_eyedirection,N);
+	//vec3 refn = reflect(v_eyedirection,N);
 	vec4 base = texture(baseTexture, v_texture);

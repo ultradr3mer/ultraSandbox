@@ -23,6 +23,10 @@ namespace OpenTkProject.Drawables.Models
         {
         }
 
+        public override void drawDefInfo(ViewInfo curView)
+        {
+        }
+
         public override void update()
         {
             updateSelection();

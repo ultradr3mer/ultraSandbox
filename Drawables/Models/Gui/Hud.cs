@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
+using OpenTkProject.Game;
 
 namespace OpenTkProject.Drawables.Models
 {
@@ -19,10 +20,13 @@ namespace OpenTkProject.Drawables.Models
             crossHair.setSizeRel(new Vector2(100, 100));
             crossHair.setMaterial("crosshair.xmf");
 
-            fpsCounter = new HudNumber(this);
-            fpsCounter.Position = new Vector2(0, -0.8f);
-            fpsCounter.setSizeRel(new Vector2(80, 160));
-            fpsCounter.digits = 3;
+            if (Settings.Instance.game.debugMode)
+            {
+                fpsCounter = new HudNumber(this);
+                fpsCounter.Position = new Vector2(0, -0.8f);
+                fpsCounter.setSizeRel(new Vector2(80, 160));
+                fpsCounter.digits = 3;
+            }
         }
     }
 
