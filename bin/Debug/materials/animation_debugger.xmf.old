@@ -1,0 +1,5 @@
+<material shader="defaultgeo_animated.xsp" ssnshader="ssnormals_animated.xsp" selection="selection_animated.xsp" shadow="shadow_animated.xsp">
+	<textures base="voxel_debug.png" normal="metroid_cap_n.png"/>
+	<lighted/>
+	<specmap tint="0.7|0.7|0.7" source="normalalpha" exp="15" />
+</material>

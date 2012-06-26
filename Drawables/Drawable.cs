@@ -243,7 +243,6 @@ namespace OpenTkProject.Drawables
 
             activateTexture(Material.TexType.normalTexture, ref curMat, ref texunit, handle);
             activateTexture(Material.TexType.reflectionTexture, ref curMat, ref texunit, handle);
-            activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
 
             activateWorldTexture(Material.WorldTexture.reflectionMap, ref texunit, handle);
 
@@ -255,6 +254,10 @@ namespace OpenTkProject.Drawables
             {
                 emit = 1;
 
+                activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
+                shader.insertUniform(Shader.Uniform.in_emitcolor, ref propertys.emitMapTint);
+
+                /*
                 int emitBasealpha = 0;
                 if (propertys.emitMapAlphaBaseTexture)
                     emitBasealpha = 1;
@@ -266,8 +269,7 @@ namespace OpenTkProject.Drawables
                 shader.insertUniform(Shader.Uniform.emit_a_normal, ref emitNormalalpha);
                 shader.insertUniform(Shader.Uniform.emit_a_base, ref emitBasealpha);
                 shader.insertUniform(Shader.Uniform.in_emitcolor, ref propertys.emitMapTint);
-
-                /*
+                 
                 if (curMat.envMapTexture != 0)
                 {
                     GL.ActiveTexture(TextureUnit.Texture0 + texunit);

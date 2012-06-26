@@ -1,5 +1,5 @@
 <material shader="hud.xsp">
-	<textures base="hud\spawner_icon.png" />
+	<textures base="hud\spawner_icon.dds" />
 	<nocull/>
 	<additive/>
 </material>

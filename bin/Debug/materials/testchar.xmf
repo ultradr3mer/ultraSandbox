@@ -1,5 +1,5 @@
 <material shader="defaultgeo_animated.xsp" ssnshader="ssnormals_animated.xsp" selection="selection_animated.xsp" shadow="shadow_animated.xsp" definfo="defInfo_animated.xsp">
-	<textures base="testchar.png" normal="testchar_n.png" definfo="testchar_i.png"/>
+	<textures base="testchar.dds" normal="testchar_n.dds" definfo="testchar_i.dds"/>
 	<lighted/>
 	<specmap tint="0.7|0.7|0.7" source="normalalpha" exp="15" />
 </material>

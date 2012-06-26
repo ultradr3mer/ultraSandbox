@@ -21,16 +21,8 @@ namespace OpenTkProject.Drawables.Models
         {
             base.setupMatrices(ref curView, ref curShader, ref curMesh);
 
-            AnimationData animationData = curMesh.curAnimationData;
-            int curframe = (int)(animationData.animationPos / animationData.stepSize);
-
-            int framecount = animationData.Matrices.Length;
-            if (curframe > framecount - 1)
-                curframe = framecount - 1;
-
-            Matrix4[] matrices = animationData.Matrices[curframe];
+            Matrix4[] matrices = curMesh.curAnimationData.activeMatrices;
             int bonecount = matrices.Length;
-
             for (int i = 0; i < bonecount; i++)
             {
                 GL.UniformMatrix4(curShader.BoneMatixLocations[i], false, ref matrices[i]);
@@ -48,6 +40,15 @@ namespace OpenTkProject.Drawables.Models
                 animationData.animationPos += gameWindow.lastFrameDuration;
                 if (animationData.animationPos > animationData.lastFrame)
                     animationData.animationPos -= animationData.lastFrame;
+
+                int curframe = (int)(animationData.animationPos / animationData.stepSize);
+
+                int framecount = animationData.Matrices.Length;
+                if (curframe > framecount - 1)
+                    curframe = framecount - 1;
+
+                animationData.activeMatrices = animationData.Matrices[curframe];
+                
 
                 meshes[i].curAnimationData = animationData;
             }

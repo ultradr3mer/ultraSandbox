@@ -1,4 +1,4 @@
 <material shader="mirror_floor.xsp" ssnshader="ssnormals_notex.xsp" definfo="defInfo_none.xsp">
-	<textures base="floor_fade.png" normal="plain_n.png" reflection="waterFramebuffercolor" />
+	<textures base="floor_fade.dds" normal="plain_n.dds" reflection="waterFramebuffercolor" />
 	<lighted/>
 </material>

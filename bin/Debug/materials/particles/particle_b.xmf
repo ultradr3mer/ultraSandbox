@@ -1,5 +1,5 @@
 <material shader="sprite.xsp">
-	<textures base="particles\particle_b.png"/>
+	<textures base="particles\particle_b.dds"/>
 	<transparency/>
 	<nodepthmask/>
 	<additive/>

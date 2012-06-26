@@ -1,0 +1,6 @@
+<material shader="normaldebug.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp">
+	<textures base="voxel_debug.png" normal="plain_n.png"/>
+	<lighted/>
+	<envmap  tint="0.2|0.2|0.2" source="normalalpha" />
+	<specmap tint="2|2|2" source="normalalpha" exp="20" />
+</material>

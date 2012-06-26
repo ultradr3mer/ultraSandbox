@@ -69,6 +69,11 @@ namespace OpenTkProject
             public bool additive;
         }
 
+        public override string ToString()
+        {
+            return name;
+        }
+
         public Type type;
 
         //stuff to be saved

@@ -54,12 +54,7 @@ void main(void)
 	vec3 emit = vec3(0,0,0);
 	if(use_emit){
 		emit = in_emitcolor;
-	
-		if(emit_a_base)
-			emit *= base.a;
-			
-		if(emit_a_normal)
-			emit *= NTexValue.a;
+		emit *= texture(emitTexture,v_texture).rgb;
 	}
 	
 	#include defLighting.snip

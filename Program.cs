@@ -156,7 +156,7 @@ namespace OpenTkProject
             if (Settings.Instance.game.useCache)
             {
                 meshLoader.readCacheFile();
-                //shaderLoader.readCacheFile();
+                shaderLoader.readCacheFile();
                 //textureLoader.readCacheFile();
                 materialLoader.readCacheFile();
                 templateLoader.readCacheFile();

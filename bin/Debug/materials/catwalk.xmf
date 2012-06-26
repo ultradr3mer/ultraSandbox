@@ -1,5 +1,5 @@
 <material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp" definfo="defInfo.xsp">
-	<textures base="catwalk.png" normal="catwalk_n.png" definfo="catwalk_i.png"/>
+	<textures base="catwalk.dds" normal="catwalk_n.dds" definfo="catwalk_i.dds"/>
 	<lighted/>
 	<envmap  tint="0.2|0.2|0.2" source="normalalpha" />
 	<specmap tint="2|2|2" source="normalalpha" exp="20" />

@@ -37,9 +37,8 @@ void main() {
 		{
 			sample = readSample( vec2(v_texture.s+rastersize.x*i,v_texture.t+rastersize.y*i) );
 				
-			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
-			
-			normdiff = pow(normdiff,10);
+			normdiff = clamp(dot(sample.xyz,curpixel.xyz) - 0.9, 0.0, 1);
+
 			col += sample.a * normdiff;
 			s += normdiff;
 		}
@@ -48,9 +47,8 @@ void main() {
 		{
 			sample = readSample( vec2(v_texture.s+rastersize.x*i,v_texture.t-rastersize.y*i) );
 				
-			normdiff = clamp(dot(sample.xyz,curpixel.xyz), 0.0, 1);
+			normdiff = clamp(dot(sample.xyz,curpixel.xyz) - 0.9, 0.0, 1);
 
-			normdiff = pow(normdiff,10);
 			col += sample.a * normdiff;
 			s += normdiff;
 		}

@@ -13,6 +13,7 @@ using System.IO;
 using OpenTkProject.Game;
 using OpenTK.Platform;
 using OpenTkProject;
+using DDSTextureLoader;
 
 namespace OpenTkProject
 {
@@ -34,6 +35,11 @@ namespace OpenTkProject
 
         public byte[] cacheBitmap;
         public Bitmap bitmap;
+
+        public override string ToString()
+        {
+            return name;
+        }
 
         internal Texture nameOnly()
         {
@@ -286,9 +292,10 @@ namespace OpenTkProject
         {
             GL.Enable(EnableCap.Texture2D);
 
-            TextureTarget ImageTextureTarget;
             uint ImageTextureHandle;
-            ImageDDS.LoadFromDisk(target.pointer, out ImageTextureHandle, out ImageTextureTarget);
+            TextureTarget ImageTextureTarget;
+
+            DDSLoader.LoadFromDisk(target.pointer, out ImageTextureHandle, out ImageTextureTarget);
 
                 // load succeeded, Texture can be used.
                 GL.BindTexture(ImageTextureTarget, ImageTextureHandle);

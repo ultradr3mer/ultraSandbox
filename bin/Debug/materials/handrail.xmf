@@ -1,5 +1,5 @@
 <material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp" definfo="defInfo.xsp">
-	<textures base="handrail.png" normal="handrail_n.png" definfo="handrail_i.png"/>
+	<textures base="handrail.dds" normal="handrail_n.dds" definfo="handrail_i.dds"/>
 	<lighted/>
 	<envmap  tint="0.2|0.2|0.2" source="normalalpha" />
 	<specmap tint="2|2|2" source="normalalpha" exp="20" />

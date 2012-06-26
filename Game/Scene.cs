@@ -177,7 +177,7 @@ namespace OpenTkProject
             mGroundPlane.setMaterial("floor.xmf");
 
             //need to be fixed -- cant be executed after voxel Manager creation.
-            //generateParticleSys();
+            generateParticleSys();
 
             voxelManager = new VoxelManager(this);
 
@@ -523,7 +523,7 @@ namespace OpenTkProject
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
 
-            Vector2 bloomSize = new Vector2(80, 20);
+            Vector2 bloomSize = new Vector2(10, 4);
 
             if (hasSelection)
             {
@@ -534,7 +534,7 @@ namespace OpenTkProject
             curFramebuffers.selectionblurFb2.enable(true);
 
             if (hasSelection)
-                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize* 0.2f);
+                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
 
 
             curFramebuffers.bloomFramebuffer2.Multisampeling = false;
@@ -549,9 +549,7 @@ namespace OpenTkProject
                     mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer2.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
 
                     curFramebuffers.bloomFramebuffer2.enable(false);
-                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, Shader.Uniform.in_vector, bloomSize * 0.2f);
-
-                    bloomSize *= 2f;
+                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
                 }
             }
             curFramebuffers.bloomFramebuffer2.Multisampeling = true;

@@ -119,6 +119,7 @@ namespace OpenTkProject
         //the animation Matrices[frame][bone]
         public Matrix4[][] Matrices;
         public string pointer;
+        public Matrix4[] activeMatrices;
 
         public override string ToString()
         {

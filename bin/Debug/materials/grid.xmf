@@ -1,5 +1,5 @@
 <material shader="unlitGeneric.xsp">
-	<textures base="spawn_grid.png"/>
+	<textures base="spawn_grid.dds"/>
 	<nodepthmask/>
 	<additive/>
 	<nocull/>

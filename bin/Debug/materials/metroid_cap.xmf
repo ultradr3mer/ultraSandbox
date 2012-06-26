@@ -1,5 +1,5 @@
 <material shader="defaultgeo.xsp" selection="selection.xsp">
-	<textures base="metroid_cap.png" normal="metroid_cap_n.png" />
+	<textures base="grey.dds" normal="plain_n.dds" />
 	<envmap  tint="0.5|0.5|0.5" />
 	<emit  tint="0.5|0.2|0.5" />
 	<transparency refraction="0.35" blur="35" fresnel="0.5"/>

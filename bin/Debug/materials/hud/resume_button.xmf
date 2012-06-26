@@ -1,5 +1,5 @@
 <material shader="hud.xsp">
-	<textures base="hud\resume_button.png" />
+	<textures base="hud\resume_button.dds" />
 	<nocull/>
 	<additive/>
 	<nodepthmask/>

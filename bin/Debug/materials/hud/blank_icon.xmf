@@ -1,5 +1,5 @@
 <material shader="hud.xsp">
-	<textures base="hud\blank_icon.png" />
+	<textures base="hud\blank_icon.dds" />
 	<nocull/>
 	<additive/>
 </material>
