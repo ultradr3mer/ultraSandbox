@@ -1,6 +1,6 @@
 <template type="animated">
-	<material source="testchar.xmf"/>
-	<mesh source="test_char.xmd"/>
+	<material source="cy.xmf"/>
+	<mesh source="cy_rig.xmd"/>
 	<pmesh source="rock_small_pbox.dae"/>
 	<position offset="1"/>
 </template>

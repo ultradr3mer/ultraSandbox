@@ -523,7 +523,7 @@ namespace OpenTkProject
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
 
-            Vector2 bloomSize = new Vector2(10, 4);
+            Vector2 bloomSize = new Vector2(5, 2);
 
             if (hasSelection)
             {

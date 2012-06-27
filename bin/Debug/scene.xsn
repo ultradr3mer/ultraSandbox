@@ -225,15 +225,15 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<animodel name='GameObject'>
-		<position>-16.32362|-634128.9|-7.949774</position>
+		<position>-16.32362|-764100.1|-7.949774</position>
 		<rotation>0.344467|-0.3158072|-0.8840863|0.03881398|0.9457066|-0.3226957|0.9379958|0.07684311|0.3380224</rotation>
 		<materials>testchar.xmf</materials>
 		<meshes>test_char.xmd</meshes>
 		<pboxes>rock_small_pbox.dae</pboxes>
 	</animodel>
 	<pmodel name='GameObject'>
-		<position>-4.085347|2.609411|-2.497349</position>
-		<rotation>0.0944301|-0.00788055|-0.9955077|-0.5303112|0.8458973|-0.05699851|0.8425396|0.5333042|0.0757001</rotation>
+		<position>-3.915757|2.642677|-2.381587</position>
+		<rotation>0.08558588|0.006963702|-0.9963068|-0.5518854|0.8328823|-0.04158723|0.8295173|0.5534063|0.07512617</rotation>
 		<materials>catwalk.xmf</materials>
 		<meshes>catwalk.obj</meshes>
 		<pboxes>catwalk_pbox.obj</pboxes>

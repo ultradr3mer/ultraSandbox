@@ -70,6 +70,7 @@ namespace OpenTkProject
         public float boundingSphere;
 
         public List<AnimationData> animationData;
+        public float animationFps;
 
         public override string ToString()
         {
@@ -304,6 +305,12 @@ namespace OpenTkProject
                                 curMesh.animationData.Add(tmpAni);
                             }
                         }
+
+                    if (reader.Name == "fps" && reader.NodeType != XmlNodeType.EndElement)
+                    {
+                        reader.Read();
+                        curMesh.animationFps = GenericMethods.FloatFromString(reader.Value);
+                    }
                 }
 
                 meshesNames.Add(curMesh.name, curMesh.identifier);
@@ -387,6 +394,7 @@ namespace OpenTkProject
             gameWindow.log("load Managed Collada: " + target.pointer);
 
             ColladaScene colladaScene = new ColladaScene(gameWindow.modelFolder + target.pointer);
+            colladaScene.stepSize = 1.0f / target.animationFps;
             colladaScene.appendAnimations(target.animationData);
             colladaScene.saveTo(ref target);
 

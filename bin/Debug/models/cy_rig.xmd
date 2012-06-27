@@ -1,0 +1,5 @@
+<model>
+	<mesh source="cy_rig.dae"/>
+	<animation source="cy_rig_move.dae"/>
+	<fps>20</fps>
+</model>
