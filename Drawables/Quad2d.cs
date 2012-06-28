@@ -49,6 +49,9 @@ namespace OpenTkProject.Drawables
             shader.insertUniform(Shader.Uniform.in_rendersize, ref gameWindow.currentSize);
             shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
 
+            //shader.insertUniform(Shader.Uniform.in_near, ref );
+            //shader.insertUniform(Shader.Uniform.in_far, ref gameWindow.currentSize);
+
             if (Scene != null)
             {
                 shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);

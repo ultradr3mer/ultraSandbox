@@ -31,6 +31,11 @@ namespace OpenTkProject.Drawables.Models
             shader.insertUniform(Shader.Uniform.in_time, ref gameWindow.frameTime);
             shader.insertUniform(Shader.Uniform.invMVPMatrix, ref curView.invModelviewProjectionMatrix);
 
+            shader.insertUniform(Shader.Uniform.viewUp , ref curView.pointingDirectionUp);
+            shader.insertUniform(Shader.Uniform.viewRight, ref curView.pointingDirectionRight);
+            shader.insertUniform(Shader.Uniform.viewDirection, ref curView.pointingDirection);
+            shader.insertUniform(Shader.Uniform.viewPosition, ref curView.position);
+
             if (Scene != null)
             {
                 shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);

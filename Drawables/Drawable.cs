@@ -241,7 +241,8 @@ namespace OpenTkProject.Drawables
             activateTexture(Material.TexType.base2Texture, ref curMat, ref texunit, handle);
             activateTexture(Material.TexType.base3Texture, ref curMat, ref texunit, handle);
 
-            activateTexture(Material.TexType.normalTexture, ref curMat, ref texunit, handle);
+            //activateTexture(Material.TexType.normalTexture, ref curMat, ref texunit, handle);
+            activateTexture(Material.TexType.definfoTexture, ref curMat, ref texunit, handle);
             activateTexture(Material.TexType.reflectionTexture, ref curMat, ref texunit, handle);
 
             activateWorldTexture(Material.WorldTexture.reflectionMap, ref texunit, handle);
@@ -254,7 +255,7 @@ namespace OpenTkProject.Drawables
             {
                 emit = 1;
 
-                activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
+                //activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
                 shader.insertUniform(Shader.Uniform.in_emitcolor, ref propertys.emitMapTint);
 
                 /*
@@ -386,29 +387,6 @@ namespace OpenTkProject.Drawables
                 GL.ActiveTexture(TextureUnit.Texture0 + texunit);
                 GL.BindTexture(TextureTarget.Texture2D, normalTexture);
                 GL.Uniform1(GL.GetUniformLocation(handle, "normalTexture"), texunit);
-                texunit++;
-            }
-
-            return shader;
-        }
-
-        public Shader activateMaterialDefInfo(Material curMat)
-        {
-            int texunit = 0;
-            Shader shader = curMat.definfoshader;
-            int handle = shader.handle;
-
-            if (!shader.loaded)
-                return shader;
-
-            GL.UseProgram(handle);
-
-            int texture = curMat.getTextureId(Material.TexType.definfoTexture);
-            if (texture != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, texture);
-                GL.Uniform1(GL.GetUniformLocation(handle, "defTexture"), texunit);
                 texunit++;
             }
 

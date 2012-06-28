@@ -26,10 +26,11 @@ out vec4 out_frag_color;
 
 void main(void)
 {
-	vec4 NTexValue = texture(normalTexture, v_texture) * 2.0 - 1.0;
-	vec3 N = normalize(NTexValue[2] * v_normal + NTexValue[0] * v_tangent + NTexValue[1] * v_bnormal);
+	vec4 NTexValue = texture(normalTexture, v_texture);
+	vec3 N = NTexValue.agb * 2.0 - 1.0;
+	N = normalize(N[2] * v_normal + N[0] * v_tangent + N[1] * v_bnormal);
 	
 	out_frag_color.rgb = N * 0.5 + 0.5;
 	
-	out_frag_color.a = v_depth/100.0;//(in_far-in_near);//1-length(g_pos.xyz-in_eyepos)/(in_far-in_near);
+	out_frag_color.a = NTexValue.r;//(in_far-in_near);//1-length(g_pos.xyz-in_eyepos)/(in_far-in_near);
 }

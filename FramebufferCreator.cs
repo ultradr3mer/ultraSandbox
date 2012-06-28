@@ -395,8 +395,6 @@ namespace OpenTkProject
 
             //sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y);
             sceeneBackdropFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
-            sceeneDefInfoFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16, false);
-            sceeneDefInfoFb.clearColor = new Color4(0f, 0f, 0f, 1f);
 
             lightFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
             lightFramebuffer.clearColor = new Color4(0f, 0f, 0f, 0f);
@@ -405,8 +403,8 @@ namespace OpenTkProject
 
             reflectionFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
 
-            sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba16, false);
-            sceeneFramebuffer.clearColor = new Color4(0f, 0f, 0f, 1f);
+            sceeneFramebuffer = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
+            sceeneFramebuffer.clearColor = new Color4(0f, 0f, 0f, 0f);
 
             selectionFb = mFramebufferCreator.createFrameBuffer((int)size.X, (int)size.Y, PixelInternalFormat.Rgba8, false);
 

@@ -1,4 +1,4 @@
 #variables
 uniform sampler2D reflectionMap;
 #code
-	vec3 env = texture(reflectionMap,screenposition).rgb;
+	vec3 env = texture(reflectionMap,screenposition).rgb*info.b;

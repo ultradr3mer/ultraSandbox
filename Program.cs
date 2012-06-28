@@ -156,9 +156,9 @@ namespace OpenTkProject
             if (Settings.Instance.game.useCache)
             {
                 meshLoader.readCacheFile();
-                shaderLoader.readCacheFile();
+                //shaderLoader.readCacheFile();
                 //textureLoader.readCacheFile();
-                materialLoader.readCacheFile();
+                //materialLoader.readCacheFile();
                 templateLoader.readCacheFile();
             }
 
@@ -178,6 +178,9 @@ namespace OpenTkProject
 
         double framerate_smoothness = 0.995;
         public double smoothframerate;
+
+        static Vector3 yFlip = new Vector3(1, -1, 1);
+        static Vector3 waterLevel = new Vector3(0, Scene.waterLevel ,0);
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
@@ -205,7 +208,10 @@ namespace OpenTkProject
                 waterViewInfo.projectionMatrix = player.viewInfo.projectionMatrix;
                 waterViewInfo.modelviewMatrix = Matrix4.Mult(mScene.mWaterMatrix, player.viewInfo.modelviewMatrix);
                 waterViewInfo.invModelviewMatrix = Matrix4.Mult(mScene.mWaterMatrix, player.viewInfo.invModelviewMatrix);
-                waterViewInfo.PointingDirection = player.viewInfo.PointingDirection;
+                waterViewInfo.pointingDirection = Vector3.Multiply(player.viewInfo.pointingDirection, yFlip);
+                waterViewInfo.pointingDirectionUp = Vector3.Multiply(player.viewInfo.pointingDirectionUp, yFlip);
+                waterViewInfo.pointingDirectionRight = Vector3.Multiply(player.viewInfo.pointingDirectionRight, yFlip);
+                waterViewInfo.position = Vector3.Multiply(player.viewInfo.position, yFlip) + waterLevel * 2;
                 waterViewInfo.generateViewProjectionMatrix();
 
                 // render water reflections

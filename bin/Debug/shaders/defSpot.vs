@@ -1,6 +1,6 @@
 #version 130
 
-precision highp float;
+precision lowp float;
 
 uniform vec3 in_light;
 
@@ -16,16 +16,25 @@ uniform mat4 defMatrix;
 uniform mat4 defInnerMatrix;
 uniform mat4 defInvPMatrix;
 
-out vec2 v_texture;
+uniform mat4 invMVPMatrix;
+
+out vec3 g_pos_far;
 
 void main(void)
 {
 	vec4 g_pos = vec4(in_position.xyz,1);
 	g_pos = defInvPMatrix * g_pos;
+	g_pos.xyz /= g_pos.w;
+	g_pos.w = 1;
+	
+	vec4 screenpos = projection_matrix * modelview_matrix * g_pos;
+	gl_Position = screenpos;
+	
+	screenpos /= screenpos.w;
+
+	g_pos = invMVPMatrix * vec4(screenpos.xy,1,1);
 	g_pos /= g_pos.w;
 	
-	g_pos.w = 1;
-	gl_Position = projection_matrix * modelview_matrix * g_pos;
-
-	v_texture = 1-in_texture;
+	g_pos_far = g_pos.xyz;
+	//g_pos_far = vec3(screenpos.xy,0);
 }

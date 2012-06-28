@@ -43,9 +43,9 @@ vec4 getback(vec2 coord,float blur_size) {
 
 void main(void)
 {
-	vec4 NTexValue = texture(normalTexture, v_texture) * vec4(2,2,2,1) - vec4(1,1,1,0);
+	//vec4 NTexValue = texture(normalTexture, v_texture) * vec4(2,2,2,1) - vec4(1,1,1,0);
 	//vec3 N = normalize(NTexValue[2] * v_normal + NTexValue[0] * v_tangent + NTexValue[1] * v_bnormal);
-	
+
 	#include base.snip
 	
 	#include defReflections.snip
@@ -54,7 +54,7 @@ void main(void)
 	vec3 emit = vec3(0,0,0);
 	if(use_emit){
 		emit = in_emitcolor;
-		emit *= texture(emitTexture,v_texture).rgb;
+		emit *= info.g;
 	}
 	
 	#include defLighting.snip

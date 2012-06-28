@@ -28,6 +28,9 @@ float PI = 3.14159265;
 int samples = 4; //samples on the first ring (5-10)
 int rings = samples; //ring count (2-6)
 
+uniform float in_near = 0.5; //Z-in_near
+uniform float in_far = 100.0; //Z-in_far
+
 vec4 sample(vec2 coo)
 {
 	return texture(Texture4, coo);
@@ -51,7 +54,7 @@ void main(void)
 		out_frag_color.b = pow(out_frag_color.b,in_vector.x);
 	}
 	
-	//out_frag_color.rgb = texture(Texture6, v_texture).rgb+texture(Texture6, v_texture).rgb*texture(Texture6, v_texture).a;
+	//out_frag_color.rgb = texture(Texture6,v_texture).rgb+texture(Texture6,v_texture).rgb*texture(Texture6,v_texture).a;
 	//out_frag_color.a = 1;
 }
 

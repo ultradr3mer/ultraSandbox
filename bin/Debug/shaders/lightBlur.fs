@@ -27,9 +27,6 @@ void main() {
 
 	vec4 base_color = vec4(0.0,0.0,0.0,0.0);
 	
-	if(curpixel.a == 1)
-		discard;
-
 	vec4 col;	
 	float s = 0;
 	vec4 sample;

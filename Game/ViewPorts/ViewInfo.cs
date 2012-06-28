@@ -25,6 +25,8 @@ namespace OpenTkProject
         public float fovy = (float)Math.PI / 4;
         public float aspect = 1;
 
+        new public Vector3 pointingDirection;
+
         //public FrustrumCube frustrumCube;
         public Matrix4 modelviewProjectionMatrix = Matrix4.Identity;
         public Vector3 pointingDirectionRight;
@@ -33,6 +35,8 @@ namespace OpenTkProject
         public Matrix4 invModelviewProjectionMatrix;
         public Matrix4 invModelviewMatrix;
         //static ViewInfo Zero = new ViewInfo();
+
+        new public Vector3 position;
 
         public ViewInfo(GameObject parent)
         {
@@ -70,6 +74,18 @@ namespace OpenTkProject
             else
             {
                 return zFar;
+            }
+        }
+
+        public override Vector3 Position
+        {
+            get
+            {
+                return position;
+            }
+            set
+            {
+                position = value;
             }
         }
 
@@ -129,12 +145,40 @@ namespace OpenTkProject
             {
                 generateModelViewMatrix();
                 generateViewProjectionMatrix();
-
-                pointingDirectionRight = Vector3.Normalize(Vector3.Cross(upVec, PointingDirection));
-                pointingDirectionUp = Vector3.Normalize(Vector3.Cross(pointingDirectionRight, PointingDirection));
+                calculateVectors();
 
                 updateChilds();
             }
+        }
+
+        public override Vector3 PointingDirection
+        {
+            get
+            {
+                return Vector3.Normalize(pointingDirection);
+            }
+            set
+            {
+                pointingDirection = value*zFar;
+            }
+        }
+
+        private void calculateVectors()
+        {
+            Vector4 bottomLeft = new Vector4(-1, -1, 1, 1);
+            bottomLeft = GenericMethods.Mult(bottomLeft, invModelviewProjectionMatrix);
+            bottomLeft /= bottomLeft.W;
+
+            Vector4 bottomRight = new Vector4(1, -1, 1, 1);
+            bottomRight = GenericMethods.Mult(bottomRight, invModelviewProjectionMatrix);
+            bottomRight /= bottomRight.W;
+
+            Vector4 topLeft = new Vector4(-1, 1, 1, 1);
+            topLeft = GenericMethods.Mult(topLeft, invModelviewProjectionMatrix);
+            topLeft /= topLeft.W;
+
+            pointingDirectionUp = topLeft.Xyz - bottomLeft.Xyz;
+            pointingDirectionRight = bottomRight.Xyz - bottomLeft.Xyz;
         }
 
         public void generateViewProjectionMatrix()

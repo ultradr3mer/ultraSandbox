@@ -17,8 +17,8 @@ in vec3 v_ss_tangent;
 in vec3 v_ss_bnormal;
 
 uniform sampler2D baseTexture;
-uniform sampler2D normalTexture;
 uniform sampler2D emitTexture;
+uniform sampler2D definfoTexture;
 
 uniform sampler2D backColorTexture;
 
@@ -48,3 +48,4 @@ vec2 screenpos(){
 	vec2 screenposition = screenpos();
 	//vec3 refn = reflect(v_eyedirection,N);
 	vec4 base = texture(baseTexture, v_texture);
+	vec4 info = texture(definfoTexture,v_texture);

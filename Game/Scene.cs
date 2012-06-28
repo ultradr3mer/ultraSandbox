@@ -152,7 +152,7 @@ namespace OpenTkProject
         }
         
         Skybox mSkyModel;
-        public float waterLevel = 0.3f;
+        public static float waterLevel = 0.3f;
         public int[] envTextures = new int[6];
         public Matrix4 mWaterMatrix;
 
@@ -406,7 +406,7 @@ namespace OpenTkProject
 
         internal void draw(FramebufferSet curFramebuffers, ViewInfo curView)
         {
-            gameWindow.checkGlError("--uncaught ERROR entering Scene--");
+            gameWindow.checkGlError("--uncaught ERROR entering Scene draw--");
 
             RenderOptions renderOptions = curFramebuffers.renderOptions;
 
@@ -424,7 +424,7 @@ namespace OpenTkProject
             if (renderOptions.ssAmbientOccluison)
             {
                 curFramebuffers.aoPreFramebuffer.enable(false);
-                mFilter2d.draw(ssaoPreShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture },Shader.Uniform.modelview_matrix,curView.modelviewMatrix);
+                mFilter2d.draw(ssaoPreShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.sceeneFramebuffer.DepthTexture }, Shader.Uniform.modelview_matrix, curView.modelviewMatrix);
 
                 curFramebuffers.aoFramebuffer.enable(false);
                 mFilter2d.draw(ssaoShader, new int[] { curFramebuffers.aoPreFramebuffer.ColorTexture, noiseTexture });
@@ -437,8 +437,10 @@ namespace OpenTkProject
             }
 
             //reder defered information
+            /*
             curFramebuffers.sceeneDefInfoFb.enable(true);
             drawSceene(Pass.defInfo, curView);
+             */
 
             //render defferd reflections
             curFramebuffers.reflectionFramebuffer.enable(true);
@@ -450,7 +452,6 @@ namespace OpenTkProject
                 Scene.envTextures[4],
                 Scene.envTextures[5],
                 curFramebuffers.sceeneFramebuffer.ColorTexture,
-                curFramebuffers.sceeneDefInfoFb.ColorTexture
             },
                 Shader.Uniform.invMVPMatrix, 
                 curView.invModelviewProjectionMatrix);
@@ -470,7 +471,7 @@ namespace OpenTkProject
                 sunFrameBuffer.DepthTexture,
                 sunInnerFrameBuffer.DepthTexture,
                 noiseTexture,
-                curFramebuffers.sceeneDefInfoFb.ColorTexture
+                curFramebuffers.sceeneFramebuffer.DepthTexture
             }, ref curView);
 
             GL.Enable(EnableCap.CullFace);
@@ -480,8 +481,9 @@ namespace OpenTkProject
                 light.drawable.draw(new int[]{
                     curFramebuffers.sceeneFramebuffer.ColorTexture,
                     gameWindow.shadowFramebuffer.ColorTexture,
+                    0,
                     noiseTexture,
-                    curFramebuffers.sceeneDefInfoFb.ColorTexture
+                    curFramebuffers.sceeneFramebuffer.DepthTexture
                 }, ref curView);
             }
 

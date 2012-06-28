@@ -47,7 +47,7 @@ namespace OpenTkProject.Drawables
         public void setupShadow()
         {
             viewInfo = new ViewInfo(this);
-            viewInfo.zNear = 0.6f;
+            viewInfo.zNear = 0.7f;
             viewInfo.zFar = 10f;
             viewInfo.fovy = (float)Math.PI/2f;
             viewInfo.updateProjectionMatrix();

@@ -11,8 +11,8 @@ uniform sampler2D reflectionTexture;
 
 void main(void)
 {
-	vec4 NTexValue = texture(normalTexture, v_texture) * 2.0 - 1.0;
-	vec3 N = v_normal;
+	//vec4 NTexValue = texture(normalTexture, v_texture) * 2.0 - 1.0;
+	//vec3 N = v_normal;
 	
 	#include base.snip
 

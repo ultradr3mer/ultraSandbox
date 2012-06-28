@@ -8,7 +8,6 @@ uniform sampler2D Texture4;
 uniform sampler2D Texture5;
 uniform sampler2D Texture6;
 uniform sampler2D Texture7;
-uniform sampler2D Texture8;
 in vec2 v_texture;
 
 uniform vec2 in_rendersize;
@@ -18,7 +17,7 @@ uniform vec2 in_screensize;
 
 uniform mat4 invMVPMatrix;
 
-uniform vec3 in_eyepos;
+uniform vec3 viewDirection;
 
 float PI = 3.14159265;
 int samples = 5; //samples on the first ring (5-10)
@@ -71,22 +70,17 @@ vec2 screenpos()
 }
 
 void main() {
-	vec4 info = texture(Texture8, v_texture);
 	vec2 screenpos = screenpos();
 	
-	if(info.a == 1)
+	vec4 texN = texture(Texture7, v_texture);
+	
+	if(texN.a == 0)
 		discard;
-
-	vec3 N = texture(Texture7, v_texture).rgb;
-	N = N * 2 -1;
+		
+	vec3 N = texN.rgb * 2 -1;
+		
+	vec3 refn  = reflect(v_view,N);
 	
-	vec4 g_pos = vec4((screenpos * 2 -1),info.a,1);
-	g_pos = invMVPMatrix * g_pos;
-	g_pos /= g_pos.w;
-	
-	vec3 viewDir = normalize(g_pos.xyz-in_eyepos);
-	vec3 refn  = reflect(viewDir,N);
-	
-	out_frag_color.rgb = get_env(refn)*info.b;
+	out_frag_color.rgb = get_env(refn);
 	out_frag_color.a = 1.0;
 }

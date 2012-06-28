@@ -128,7 +128,11 @@ namespace OpenTkProject
             defPosition,
             defInvPMatrix,
             invMMatrix,
-            useTexture
+            useTexture,
+            viewUp,
+            viewRight,
+            viewDirection,
+            viewPosition
         }
 
         int[] locations;

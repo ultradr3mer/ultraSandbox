@@ -27,8 +27,6 @@ namespace OpenTkProject
     {
         public Vector3 rawRotation, rotation, upVector, fwdVec, rightVec;
 
-        public float aspectRatio, zNear, zFar;
-
         public ViewInfo viewInfo;
 
         public Tool tool;
@@ -50,8 +48,6 @@ namespace OpenTkProject
             PointingDirection = viewDir;
 
             upVector = new Vector3(0, 1, 0);
-            zNear = 0.5f;
-            zFar = 100;
 
             Shape boxShape = new BoxShape(new JVector(0.5f, 2, 0.5f));
 

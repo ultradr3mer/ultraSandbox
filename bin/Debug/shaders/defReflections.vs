@@ -1,6 +1,6 @@
 #version 130
 
-precision highp float;
+precision lowp float;
 
 uniform vec3 in_light;
 
@@ -18,13 +18,13 @@ void main(void)
   
 	v_texture = 1-in_texture;
 	
-	vec4 g_pos = vec4(in_position.xy,-1,1);
-	g_pos = invMVPMatrix * g_pos;
-	g_pos /= g_pos.w;
+	vec4 g_pos_near = vec4(in_position.xy,-1,1);
+	g_pos_near = invMVPMatrix * g_pos_near;
+	g_pos_near /= g_pos_near.w;
+		
+	vec4 g_pos_far = vec4(in_position.xy,1,1);
+	g_pos_far = invMVPMatrix * g_pos_far;
+	g_pos_far /= g_pos_far.w;
 	
-	vec4 g_pos2 = vec4(in_position.xy,1,1);
-	g_pos2 = invMVPMatrix * g_pos;
-	g_pos2 /= g_pos.w;
-	
-	v_view = normalize(g_pos2.xyz - g_pos.xyz);
+	v_view = normalize(g_pos_far.xyz - g_pos_near.xyz);
 } 

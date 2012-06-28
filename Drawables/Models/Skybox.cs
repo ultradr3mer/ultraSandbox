@@ -29,7 +29,7 @@ namespace OpenTkProject.Drawables.Models
                 //addTextures(new string[] { "skybox\\sky_000" + (i + 1) + ".png" });
             }
 
-            float skyScale = mGameWindow.player.zFar / (float)Math.Sqrt(3);
+            float skyScale = mGameWindow.player.viewInfo.zFar / (float)Math.Sqrt(3);
 
             Size = new Vector3(skyScale, skyScale, skyScale);
             //updateModelMatrix();

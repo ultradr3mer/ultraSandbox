@@ -1,0 +1,165 @@
+#variables
+precision lowp float;
+
+uniform sampler2D Texture1;
+uniform sampler2D Texture2;
+uniform sampler2D Texture3;
+uniform sampler2D Texture4;
+uniform sampler2D Texture5;
+
+out vec4 out_frag_color;
+uniform vec2 in_screensize;
+uniform vec2 in_rendersize;
+
+uniform mat4 invMVPMatrix;
+
+uniform vec3 defDirection;
+uniform vec3 defColor;
+uniform vec3 defPosition;
+uniform mat4 defMatrix;
+uniform mat4 defInnerMatrix;
+
+uniform float defRadius = 0.0015;
+uniform vec3 in_lightambient;
+
+uniform int in_no_lights;
+uniform int curLight;
+
+uniform vec3 in_eyepos;
+
+uniform vec3 viewUp;
+uniform vec3 viewRight;
+uniform vec3 viewDirection;
+uniform vec3 viewPosition;
+
+uniform float in_near = 0.1; //Z-in_near
+uniform float in_far = 100.0; //Z-in_far
+
+#functions
+vec2 screenpos()
+{
+	return gl_FragCoord.xy/in_rendersize;
+}
+
+float shadowSampling(sampler2D texture, float quality, vec3 coords, vec2 size,float bias)
+{
+	float shadow = 0;
+	float x,y;
+	for (y = -quality ; y <=quality ; y+=1.0)
+		for (x = -quality ; x <=quality ; x+=1.0)
+		{
+			float distanceFromLight = texture(texture ,coords.xy + vec2(x*size.x,y*size.y)).a + bias;	
+			shadow += distanceFromLight < coords.z ? 0.0 : 1.0 ;
+		}
+						
+	shadow /= pow(quality*2+1,2);
+		
+	return shadow;
+}
+
+float calcShadow(vec4 g_pos,vec2 rnd, float bias)
+{
+	float shadowQuality = 1;
+	
+	vec4 v_sun_map_pos = defMatrix * g_pos;
+	vec4 shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
+
+	if(0 < shadowCoordinateWdivide.x 
+	&& 1 > shadowCoordinateWdivide.x 
+	&& 0 < shadowCoordinateWdivide.y 
+	&& 1 > shadowCoordinateWdivide.y 
+	&& 0 < shadowCoordinateWdivide.z
+	&& 1 > shadowCoordinateWdivide.z)
+	{		
+		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*defRadius;
+		
+		float light_angular;
+		light_angular = clamp((1-length(shadowCoordinateWdivide.xy*2.0-1.0))*10.0,0.0,1.0);
+		
+		shadowCoordinateWdivide.x = (shadowCoordinateWdivide.x + curLight) / float(in_no_lights);
+		
+		float light_distance = pow(1-shadowCoordinateWdivide.z,1.3);
+
+		return 10.0*light_angular*light_distance*shadowSampling(Texture2,shadowQuality,shadowCoordinateWdivide.xyz,vec2(1/float(in_no_lights),1)*defRadius,bias);
+		//return texture(Texture2,shadowCoordinateWdivide.xy).x;
+	} 
+	
+	return 0.0;
+}
+
+float shadowSamplingR(sampler2D texture, float quality, vec3 coords, vec2 size,float bias)
+{
+	float shadow = 0;
+	float x,y;
+	for (y = -quality ; y <=quality ; y+=1.0)
+		for (x = -quality ; x <=quality ; x+=1.0)
+		{
+			float distanceFromLight = texture(texture ,coords.xy + vec2(x*size.x,y*size.y)).r + bias;	
+			shadow += distanceFromLight < coords.z ? 0.0 : 1.0 ;
+		}
+						
+	shadow /= pow(quality*2+1,2);
+		
+	return shadow;
+}
+
+float calcSunShadow(vec4 g_pos,vec2 rnd, float bias)
+{
+	float sunShadowQuality = 1;
+	
+	vec4 v_sun_map_pos = defInnerMatrix * g_pos;
+	vec4 shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
+
+	if(0 < shadowCoordinateWdivide.x 
+	&& 1 > shadowCoordinateWdivide.x 
+	&& 0 < shadowCoordinateWdivide.y 
+	&& 1 > shadowCoordinateWdivide.y 
+	&& 0 < shadowCoordinateWdivide.z
+	&& 1 > shadowCoordinateWdivide.z)
+	{		
+		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*defRadius*0.5;
+		
+		return shadowSamplingR(Texture3,sunShadowQuality,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias);
+	} 
+	
+	v_sun_map_pos = defMatrix * g_pos;
+	shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
+
+	if(0 < shadowCoordinateWdivide.x 
+	&& 1 > shadowCoordinateWdivide.x 
+	&& 0 < shadowCoordinateWdivide.y 
+	&& 1 > shadowCoordinateWdivide.y 
+	&& 0 < shadowCoordinateWdivide.z
+	&& 1 > shadowCoordinateWdivide.z)
+	{		
+		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*defRadius*0.5;
+		
+		return shadowSamplingR(Texture2,sunShadowQuality-0.5,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias*2);
+	} 
+	
+	return 1.0;
+}
+#code
+	float ratio = in_screensize.x/in_screensize.y;
+	vec2 screenpos = screenpos();
+
+	float depth = texture(Texture5,screenpos).r;
+	
+	//not quite sure about adding 0.001 (buffer precision?) - makes stuff work
+	depth += 0.001;
+	depth = (1.0 * in_near) / (in_far + in_near - depth * (in_far-in_near));
+	depth -= 0.001;
+
+	vec2 screenHelper = screenpos - 0.5;
+	vec3 viewVec = depth * (viewDirection + viewUp * screenHelper.y + viewRight * screenHelper.x);
+	vec3 g_pos = viewPosition + viewVec;
+	viewVec = normalize(viewVec);
+
+	vec4 Ntex = texture(Texture1,screenpos);
+	vec3 N = Ntex.rgb * 2 -1;
+	
+	if(depth == 1.0 || Ntex.a == 0.0)
+		discard;
+	
+	vec2 rnd = texture(Texture4,gl_FragCoord.xy/128).xy * 2 -1;
+	

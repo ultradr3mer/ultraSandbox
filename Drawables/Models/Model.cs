@@ -141,31 +141,6 @@ namespace OpenTkProject.Drawables.Models
             }
         }
 
-        public override void drawDefInfo(ViewInfo curView)
-        {
-            if (vaoHandle != null && isVisible && curView.frustrumCheck(this))
-            {
-                for (int i = 0; i < vaoHandle.Length; i++)
-                {
-                    Shader curShader = activateMaterialDefInfo(materials[i]);
-                    Mesh curMesh = meshes[i];
-
-                    if (curShader.loaded)
-                    {
-                        if (Scene != null)
-                        {
-
-                            setupMatrices(ref curView, ref curShader, ref curMesh);
-
-                        }
-
-                        GL.BindVertexArray(vaoHandle[i]);
-                        GL.DrawElements(BeginMode.Triangles, curMesh.indicesVboData.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
-                    }
-                }
-            }
-        }
-
         public override void drawShadow(ViewInfo curView)
         {
             if (vaoHandle != null && isVisible && curView.frustrumCheck(this))
