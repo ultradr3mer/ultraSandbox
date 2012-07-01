@@ -16,8 +16,8 @@
 		<isstatic/>
 	</pmodel>
 	<pmodel name='GameObject5'>
-		<position>2.802359|6.890873|6.647877</position>
-		<rotation>0.9992025|0.02096228|-0.03399094|-0.0357353|0.8492857|-0.5267233|0.01782672|0.5275175|0.8493572</rotation>
+		<position>2.802327|6.890879|6.648344</position>
+		<rotation>0.9994155|0.02036586|-0.02747081|-0.03207255|0.8369411|-0.546353|0.01186453|0.5469142|0.8371048</rotation>
 		<materials>catwalk.xmf</materials>
 		<meshes>catwalk.obj</meshes>
 		<pboxes>catwalk_pbox.obj</pboxes>
@@ -97,29 +97,21 @@
 		<isstatic/>
 	</pmodel>
 	<pmodel name='GameObject20'>
-		<position>1.66434|5.455184|-4.626915</position>
+		<position>1.447003|5.455303|-4.700463</position>
 		<rotation>-0.9997465|0.003195086|0.02239623|0.002170405|0.9989583|-0.04562773|-0.02251988|-0.04556749|-0.9987102</rotation>
 		<materials>handrail.xmf</materials>
 		<meshes>handrail.obj</meshes>
 		<pboxes>handrail_pbox.obj</pboxes>
 		<isstatic/>
 	</pmodel>
-	<pmodel name='GameObject21'>
-		<position>5.673151|5.456818|-4.668646</position>
-		<rotation>-0.9999891|-0.002665913|-0.004140009|-0.002538874|0.9995356|-0.03039622|0.004218913|-0.03038556|-0.9995314</rotation>
-		<materials>handrail.xmf</materials>
-		<meshes>handrail.obj</meshes>
-		<pboxes>handrail_pbox.obj</pboxes>
-		<isstatic/>
-	</pmodel>
-	<metamodel name='GameObject11'>
+	<metamodel name='GameObject'>
 		<position>-20.33113|0.4404539|-2.008359</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<metamodel name='GameObject13'>
+	<metamodel name='GameObject0'>
 		<position>-18.48081|6.055536|-7.230632</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
@@ -133,110 +125,152 @@
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject17'>
-		<position>25.48666|0.3008416|-17.88285</position>
-		<materials>rock_face.xmf</materials>
-		<meshes>rock_volume_1_big.obj</meshes>
-		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
-		<vradius>6</vradius>
-	</metamodel>
-	<metamodel name='GameObject18'>
+	<metamodel name='GameObject1'>
 		<position>28.73459|0.3803907|-11.71537</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<metamodel name='GameObject'>
+	<metamodel name='GameObject2'>
 		<position>6.262619|1.134198|-2.992826</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject0'>
+	<metamodel name='GameObject6'>
 		<position>6.465515|1.162619|0.2142662</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject4'>
-		<position>-18.98425|0.3004634|-9.170166</position>
-		<materials>rock_face.xmf</materials>
-		<meshes>rock_volume_1_big.obj</meshes>
-		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
-		<vradius>6</vradius>
-	</metamodel>
-	<metamodel name='GameObject3'>
+	<metamodel name='GameObject19'>
 		<position>26.73849|0.6251721|-6.404442</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject4'>
+	<metamodel name='GameObject22'>
 		<position>24.44007|0.3225337|-2.178442</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject5'>
+	<metamodel name='GameObject23'>
 		<position>28.35298|0.3008715|4.471347</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<metamodel name='GameObject'>
+	<metamodel name='GameObject24'>
 		<position>1.687387|0.6318663|-3.120872</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1.obj</meshes>
 		<pboxes>rock_volume_pbox_1.obj</pboxes>
 		<vradius>3</vradius>
 	</metamodel>
-	<metamodel name='GameObject'>
+	<metamodel name='GameObject25'>
 		<position>-20.44018|0.3872758|3.946513</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<metamodel name='GameObject0'>
+	<metamodel name='GameObject26'>
 		<position>-17.13808|0.8950956|8.7491</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<metamodel name='GameObject0'>
+	<metamodel name='GameObject27'>
 		<position>5.875766|0.3000985|13.47624</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
-	<animodel name='GameObject'>
-		<position>-16.32362|-1042179|-7.949774</position>
+	<animodel name='GameObject28'>
+		<position>-16.32362|-1279667|-7.949774</position>
 		<rotation>0.344467|-0.3158072|-0.8840863|0.03881398|0.9457066|-0.3226957|0.9379958|0.07684311|0.3380224</rotation>
 		<materials>testchar.xmf</materials>
 		<meshes>test_char.xmd</meshes>
 		<pboxes>rock_small_pbox.dae</pboxes>
 	</animodel>
-	<pmodel name='GameObject'>
-		<position>-3.915757|2.642677|-2.381587</position>
+	<pmodel name='GameObject29'>
+		<position>-3.925415|2.561615|-2.916795</position>
 		<rotation>0.08558588|0.006963702|-0.9963068|-0.5518854|0.8328823|-0.04158723|0.8295173|0.5534063|0.07512617</rotation>
 		<materials>catwalk.xmf</materials>
 		<meshes>catwalk.obj</meshes>
 		<pboxes>catwalk_pbox.obj</pboxes>
 		<isstatic/>
 	</pmodel>
-	<metamodel name='GameObject'>
+	<metamodel name='GameObject30'>
 		<position>6.514642|0.302474|-17.96487</position>
 		<materials>rock_face.xmf</materials>
 		<meshes>rock_volume_1_big.obj</meshes>
 		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
 		<vradius>6</vradius>
 	</metamodel>
+	<metamodel name='GameObject9'>
+		<position>-19.34504|0.3113539|-9.183718</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1_big.obj</meshes>
+		<pboxes>rock_volume_big_pbox_1.obj</pboxes>
+		<vradius>6</vradius>
+	</metamodel>
+	<metamodel name='GameObject35'>
+		<position>-20.14807|0.4257077|-15.01619</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1.obj</meshes>
+		<pboxes>rock_volume_pbox_1.obj</pboxes>
+		<vradius>3</vradius>
+	</metamodel>
+	<metamodel name='GameObject37'>
+		<position>-16.94462|0.6560437|-14.75526</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1.obj</meshes>
+		<pboxes>rock_volume_pbox_1.obj</pboxes>
+		<vradius>3</vradius>
+	</metamodel>
+	<metamodel name='GameObject36'>
+		<position>26.10837|5.494669|3.988826</position>
+		<materials>rock_face.xmf</materials>
+		<meshes>rock_volume_1.obj</meshes>
+		<pboxes>rock_volume_pbox_1.obj</pboxes>
+		<vradius>3</vradius>
+	</metamodel>
+	<pmodel name='GameObject21'>
+		<position>-12.357|2.543883|3.414529</position>
+		<rotation>-0.4342954|-0.8821102|-0.1824035|0.6802636|-0.1884501|-0.7083287|0.5904494|-0.4317058|0.6819099</rotation>
+		<materials>spotlight.xmf</materials>
+		<meshes>spotlight.obj</meshes>
+		<pboxes>spotlight_pbox.obj</pboxes>
+		<isstatic/>
+		<lamp name='GameObject32'>
+			<position>-12.357|2.543883|3.414529</position>
+			<direction>0.6802636|-0.1884501|-0.7083287</direction>
+			<color>0.5|0.7|1</color>
+		</lamp>
+	</pmodel>
+	<pmodel name='GameObject31'>
+		<position>-9.616861|2.340282|1.424047</position>
+		<rotation>0.9999921|-0.0005076502|0.003934799|0.0005082223|0.9999999|-0.0001444016|-0.003934726|0.0001464003|0.9999923</rotation>
+		<materials>temple_pillar.xmf</materials>
+		<meshes>temple_pillar.obj</meshes>
+		<pboxes>temple_pillar_pbox.obj</pboxes>
+	</pmodel>
+	<pmodel name='GameObject33'>
+		<position>5.504918|5.424311|-4.780248</position>
+		<rotation>-0.9995303|0.002316208|0.03064568|0.0009847907|0.9990588|-0.04339112|-0.03071637|-0.04334042|-0.9985906</rotation>
+		<materials>handrail.xmf</materials>
+		<meshes>handrail.obj</meshes>
+		<pboxes>handrail_pbox.obj</pboxes>
+		<isstatic/>
+	</pmodel>
 </scene>

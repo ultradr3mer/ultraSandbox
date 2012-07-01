@@ -172,7 +172,7 @@ namespace OpenTkProject
             gameWindow.checkGlError("createFrameBuffer");
 
             Framebuffer myFramebuffer = new Framebuffer(FboHandle, ColorTexture, DepthTexture, new Vector2(FboWidth, FboHeight), this);
-            myFramebuffer.name = name;
+            myFramebuffer.Name = name;
 
             if (name != null)
             {
@@ -187,12 +187,12 @@ namespace OpenTkProject
             Framebuffers.Add(newFb);
 
             int identifier = Framebuffers.Count;
-            if (FramebufferNames.ContainsKey(newFb.name))
-                FramebufferNames.Remove(newFb.name);
+            if (FramebufferNames.ContainsKey(newFb.Name))
+                FramebufferNames.Remove(newFb.Name);
 
-            FramebufferNames.Add(newFb.name, identifier);
+            FramebufferNames.Add(newFb.Name, identifier);
 
-            gameWindow.textureLoader.fromFramebuffer(newFb.name + "color", newFb.ColorTexture);
+            gameWindow.textureLoader.fromFramebuffer(newFb.Name + "color", newFb.ColorTexture);
         }
 
         public void createLightBuffer(string name, int size, bool multisampling)
@@ -520,6 +520,8 @@ namespace OpenTkProject
 
         protected new Vector2 size;
 
+        new private string name;
+
         new public Vector2 Size { get { return size; } set { size = value; } }
 
         public Framebuffer(
@@ -539,7 +541,7 @@ namespace OpenTkProject
 
         public virtual void enable(bool wipe)
         {
-            gameWindow.checkGlError("--uncaught ERROR enabeling framebuffer--" + name);
+            gameWindow.checkGlError("--uncaught ERROR enabeling framebuffer--" + Name);
 
             GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, FboHandle);
             GL.Ext.FramebufferTexture2D(FramebufferTarget.FramebufferExt, FramebufferAttachment.ColorAttachment0Ext, TextureTarget.Texture2D, ColorTexture, 0);
@@ -555,7 +557,12 @@ namespace OpenTkProject
 
             gameWindow.currentSize = size;
 
-            gameWindow.checkGlError("--ERROR enabeling framebuffer--" + name);
+            gameWindow.checkGlError("--ERROR enabeling framebuffer--" + Name);
+        }
+
+        public override string Name{
+            get { return name; }
+            set { name = value; }
         }
 
         public bool Multisampeling

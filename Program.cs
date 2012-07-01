@@ -158,7 +158,7 @@ namespace OpenTkProject
                 meshLoader.readCacheFile();
                 //shaderLoader.readCacheFile();
                 //textureLoader.readCacheFile();
-                //materialLoader.readCacheFile();
+                materialLoader.readCacheFile();
                 templateLoader.readCacheFile();
             }
 
@@ -384,9 +384,10 @@ namespace OpenTkProject
                     waterViewInfo.updateProjectionMatrix();
 
                     //set noise texture
-                    mScene.noiseTexture = textureLoader.getTextureId("noise_pixel.png");
+                    mScene.setTextureId(Material.WorldTexture.noise ,textureLoader.getTextureId("noise_pixel.png"));
 
                     //set shaders for postprocessing
+                    /* now managed
                     mScene.ssaoPreShader = shaderLoader.getShader("ssMaker.xsp");
                     mScene.ssaoShader = shaderLoader.getShader("ssao.xsp");
                     mScene.ssaoBlrShader = shaderLoader.getShader("ao_blur.xsp");
@@ -401,6 +402,10 @@ namespace OpenTkProject
                     mScene.wipingShader = shaderLoader.getShader("sMapWipe.xsp");
                     mScene.reflectionShader = shaderLoader.getShader("defReflections.xsp");
                     mScene.lightBlurShader = shaderLoader.getShader("lightBlur.xsp");
+                    */
+
+                    // managed setup of shaders
+                    mScene.setupShaders();
 
                     // spawn the player
                     player = new Player(mScene, new Vector3(0, 3, 10), new Vector3(0, 0, -1), gameInput);

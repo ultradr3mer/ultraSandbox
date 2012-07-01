@@ -6,6 +6,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTkProject.Drawables.Models;
 using System.Xml;
+using OpenTkProject.Game;
 
 
 namespace OpenTkProject.Drawables
@@ -26,12 +27,14 @@ namespace OpenTkProject.Drawables
 
             Scene.spotlights.Add(this);
 
-            name = Scene.getUniqueName();
+            Name = Scene.getUniqueName();
             setupShadow();
 
             Parent.forceUpdate();
 
             createRenderObject();
+
+            shadowQuality = Settings.Instance.video.shadowQuality;
         }
 
         private void createRenderObject()
@@ -61,13 +64,13 @@ namespace OpenTkProject.Drawables
             string myposition = GenericMethods.StringFromVector3(Position);
             string direction = GenericMethods.StringFromVector3(PointingDirection);
             string stringColor = GenericMethods.StringFromVector3(colorRgb);
-            string mparent = Parent.name;
+            string mparent = Parent.Name;
 
 
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<lamp name='" + name + "'>");
+            sb.AppendLine(tab + "<lamp name='" + Name + "'>");
             sb.AppendLine(tab2 + "<position>" + myposition + "</position>");
             sb.AppendLine(tab2 + "<direction>" + direction + "</direction>");
             sb.AppendLine(tab2 + "<color>" + stringColor + "</color>");
@@ -77,7 +80,7 @@ namespace OpenTkProject.Drawables
                 sb.AppendLine(tab2 + "<texture>" + Texture + "</texture>");
 
             // output saving message
-            Console.WriteLine("Saving Light: '" + name + "'");
+            Console.WriteLine("Saving Light: '" + Name + "'");
 
             sb.AppendLine(tab + "</lamp>");
 
@@ -151,12 +154,13 @@ namespace OpenTkProject.Drawables
             shader.insertUniform(Shader.Uniform.defDirection, ref pointingDirection);
             shader.insertUniform(Shader.Uniform.defColor, ref colorRgb);
 
-            shader.insertUniform(Shader.Uniform.in_no_lights, ref scene.lightCount);
+            shader.insertUniform(Shader.Uniform.in_no_lights, ref Scene.lightCount);
             shader.insertUniform(Shader.Uniform.curLight, ref lightId);
 
             shader.insertUniform(Shader.Uniform.defMatrix, ref shadowMatrix);
             shader.insertUniform(Shader.Uniform.defInvPMatrix, ref viewInfo.invModelviewProjectionMatrix);
 
+            shader.insertUniform(Shader.Uniform.shadowQuality, ref shadowQuality);
             //GL.Uniform1(shader.lightTextureLocation[lightId], 1, ref ProjectionTexture);
         }
 

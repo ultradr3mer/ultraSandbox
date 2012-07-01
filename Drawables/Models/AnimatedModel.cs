@@ -67,7 +67,7 @@ namespace OpenTkProject.Drawables.Models
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<" + nodename + " name='" + name + "'>");
+            sb.AppendLine(tab + "<" + nodename + " name='" + Name + "'>");
             sb.AppendLine(tab2 + "<position>" + position + "</position>");
             sb.AppendLine(tab2 + "<rotation>" + rotation + "</rotation>");
             sb.AppendLine(tab2 + "<materials>" + stringMaterial + "</materials>");
@@ -87,7 +87,7 @@ namespace OpenTkProject.Drawables.Models
 
              */
 
-            Console.WriteLine("Saving model: '" + name + "'");
+            Console.WriteLine("Saving model: '" + Name + "'");
 
             saveChilds(ref sb, level);
 

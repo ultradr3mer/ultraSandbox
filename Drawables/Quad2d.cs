@@ -66,5 +66,23 @@ namespace OpenTkProject.Drawables
 
             gameWindow.checkGlError("--Drawing ERROR Quad--" + shader.name);
         }
+
+        internal void draw(Scene.ShaderTypes shaderTypes, int[] p, Shader.Uniform uniform, Vector2 vector2)
+        {
+            Shader shader = Scene.getShader(shaderTypes);
+            draw(shader, p, uniform, vector2);
+        }
+
+        internal void draw(Scene.ShaderTypes shaderTypes, int[] p)
+        {
+            Shader shader = Scene.getShader(shaderTypes);
+            draw(shader, p);
+        }
+
+        internal void draw(Scene.ShaderTypes shaderTypes, int[] p, Shader.Uniform uniform, Matrix4 matrix4)
+        {
+            Shader shader = Scene.getShader(shaderTypes);
+            draw(shader, p, uniform, matrix4);
+        }
     }
 }

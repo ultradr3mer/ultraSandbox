@@ -13,14 +13,14 @@ namespace OpenTkProject
 {
     public abstract class GameObject
     {
-        protected Scene scene;
+        private Scene scene;
         public OpenTkProjectWindow gameWindow;
 
         public bool wasUpdated = true;
 
         public static string nodename = "";
 
-        public string name = "";
+        private string name = "";
 
         //public bool savable = false;
 
@@ -28,7 +28,6 @@ namespace OpenTkProject
         protected int childId;
 
         protected List<GameObject> childs = new List<GameObject> { };
-        protected Hashtable childNames = new Hashtable();
 
         protected Vector3 position;
 
@@ -45,7 +44,17 @@ namespace OpenTkProject
 
         public virtual RigidBody Body { get; set; }
 
-        public virtual Scene Scene { get { return scene; } set { scene = value; } }
+        public virtual Scene Scene
+        {
+            get { return scene; }
+            set
+            {
+                scene = value;
+                if (scene.getChild(Name) != null && name != "")
+                    Name = scene.getUniqueName();
+
+            }
+        }
 
         public bool Forceupdate { get { return forceupdate; } set { forceupdate = value; } }
 
@@ -109,14 +118,55 @@ namespace OpenTkProject
                     parent = value;
 
                     childId = parent.AddChild(this);
-
-                    if (name != "")
-                        parent.childNames.Add(name, childId);
                 }
             }
         }
 
         #endregion parent management
+
+        public int getChildId(string name)
+        {
+            int length = childs.Count;
+            for (int i = 0; i < length; i++)
+			{
+                if (childs[i].Name == name)
+                    return i;
+            }
+            return -1;
+        }
+
+        public GameObject getChild(string name)
+        {
+            if (name != "")
+            {
+                int length = childs.Count;
+                for (int i = 0; i < length; i++)
+                {
+                    GameObject curChild = childs[i];
+                    if (curChild.Name == name)
+                        return curChild;
+                else
+                    if ((curChild = curChild.getChild(name)) != null)
+                        return curChild;
+                }
+            }
+            return null;
+        }
+
+
+        public virtual string Name
+        {
+            get { return name; }
+            set
+            {
+                if(scene != null)
+                    if (scene.getChild(value) == null)
+                        name = value;
+                    else
+                        name = scene.getUniqueName();
+            }
+        }
+
 
         public virtual void save(ref StringBuilder sb, int level)
         {
@@ -141,8 +191,6 @@ namespace OpenTkProject
         {
             Parent = null;
 
-            parent.childNames.Remove(this);
-
             killChilds();
         }
 
@@ -165,12 +213,6 @@ namespace OpenTkProject
             {
                 childs[i].update();
             }
-        }
-
-        internal void renameChild(GameObject curChild, string newName)
-        {
-            childNames.Remove(curChild.name);
-            childNames.Add(newName, curChild.childId);
         }
 
         internal void resetUpdateState()
@@ -217,7 +259,7 @@ namespace OpenTkProject
                 }
 
                 GameObject child = new PhysModel(this);
-                child.name = childname;
+                child.Name = childname;
                 child.load(ref reader, "pmodel");
             }
 
@@ -232,7 +274,7 @@ namespace OpenTkProject
                 }
 
                 GameObject child = new AnimatedModel(this);
-                child.name = childname;
+                child.Name = childname;
                 child.load(ref reader, "animodel");
             }
 
@@ -247,7 +289,7 @@ namespace OpenTkProject
                 }
 
                 GameObject child = new MetaModel(this);
-                child.name = childname;
+                child.Name = childname;
                 child.load(ref reader, "metamodel");
             }
 
@@ -262,7 +304,7 @@ namespace OpenTkProject
                 }
 
                 GameObject child = new LightSpot(this);
-                child.name = childname;
+                child.Name = childname;
                 child.load(ref reader, "lamp");
             }
 

@@ -2,6 +2,8 @@
 
 #variables
 
+out vec3 viewDir;
+
 #functions
 
 void main(void)
@@ -12,4 +14,6 @@ void main(void)
 	#include vBase.snip
 	  		
 	#include vLightCalc.snip
+	
+	viewDir = normalize(g_pos.xyz - in_eyepos);
 }

@@ -18,7 +18,8 @@ void main()
 	
 	float bias = 0.008/clamp(angle,0.01,1.0);
 	float shadow = calcShadow(vec4(g_pos,1), rnd, bias);
-
-	out_frag_color.rgb = defColor*angle*shadow;
+	shadow *= angle;
+	
+	out_frag_color.rgb = defColor*shadow;
 	out_frag_color.a = spec*shadow;
 }

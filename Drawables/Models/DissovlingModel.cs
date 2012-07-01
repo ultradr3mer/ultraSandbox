@@ -12,6 +12,7 @@ namespace OpenTkProject.Drawables.Models
         float state = 1;
         public DissovlingModel(GameObject parent):base(parent){
             color = new Vector4(0.8f, 0.3f, 0.8f, 1.0f) * 0.2f;
+            renderlayer = RenderLayer.Transparent;
         }
 
         public override void update()

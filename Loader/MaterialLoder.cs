@@ -7,6 +7,7 @@ using System.Collections;
 using System.IO;
 using OpenTK;
 using OpenTkProject.Game;
+using OpenTK.Graphics.OpenGL;
 
 namespace OpenTkProject
 {
@@ -36,7 +37,8 @@ namespace OpenTkProject
         public enum WorldTexture
         {
             lightMap,
-            reflectionMap
+            reflectionMap,
+            noise
         }
 
         public int identifier;
@@ -67,6 +69,9 @@ namespace OpenTkProject
             public bool noCull;
             public bool noDepthMask;
             public bool additive;
+
+            public float fresnelExp;
+            public float fresnelStr;
         }
 
         public override string ToString()
@@ -177,6 +182,20 @@ public Texture nameOnly()
 
             if (definfoshader.name != null)
                 definfoshader = shaderLoader.getShader(definfoshader.name);
+        }
+
+        internal void activateTexture(TexType type, ref int texunit,ref int handle)
+        {
+            string name = type.ToString();
+            int texid = getTextureId(type);
+
+            if (texid != 0)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
+                GL.BindTexture(TextureTarget.Texture2D, texid);
+                GL.Uniform1(GL.GetUniformLocation(handle, name), texunit);
+                texunit++;
+            }
         }
     }
 
@@ -442,6 +461,7 @@ public Texture nameOnly()
                     }
                 }
 
+                /* -- moved to textures
                 // parsing specular data
                 if (reader.Name == "specmap")
                 {
@@ -474,6 +494,7 @@ public Texture nameOnly()
                         reader.MoveToElement();
                     }
                 }
+                 */
 
                 // parsing emit data
                 if (reader.Name == "emit")
@@ -547,6 +568,20 @@ public Texture nameOnly()
                 if (reader.Name == "additive")
                 {
                     target.propertys.additive = true;
+                }
+
+                // parsing fresnel data
+                if (reader.Name == "fresnel" && reader.HasAttributes)
+                {
+                    while (reader.MoveToNextAttribute())
+                    {
+                        if (reader.Name == "exp")
+                            target.propertys.fresnelExp = GenericMethods.FloatFromString(reader.Value);
+
+                        else if (reader.Name == "strength")
+                            target.propertys.fresnelStr = GenericMethods.FloatFromString(reader.Value);
+                    }
+                    reader.MoveToElement();
                 }
 
 

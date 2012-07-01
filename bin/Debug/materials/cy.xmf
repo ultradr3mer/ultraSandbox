@@ -1,6 +1,6 @@
 <material shader="defaultgeo_animated.xsp" ssnshader="ssnormals_animated.xsp" selection="selection_animated.xsp" shadow="shadow_animated.xsp" definfo="defInfo_animated.xsp">
 	<textures base="cy.dds" normal="cy_n.dds" definfo="cy_i.dds" emit="cy_emit.dds" />
 	<emit  tint="0.4|0.4|1"/>
+	<fresnel exp="2" strength="12"/>
 	<lighted/>
-	<specmap tint="0.7|0.7|0.7" source="normalalpha" exp="15" />
 </material>

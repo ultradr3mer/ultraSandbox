@@ -5,6 +5,7 @@ using System.Text;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTkProject.Drawables.Models;
+using OpenTkProject.Game;
 
 namespace OpenTkProject.Drawables
 {
@@ -39,6 +40,8 @@ namespace OpenTkProject.Drawables
             nextFarUpdate = gameWindow.frameTime;
 
             createRenderObject();
+
+            shadowQuality = Settings.Instance.video.shadowQuality;
         }
 
         private void createRenderObject()
@@ -85,6 +88,8 @@ namespace OpenTkProject.Drawables
 
             shader.insertUniform(Shader.Uniform.defMatrix ,ref shadowMatrix);
             shader.insertUniform(Shader.Uniform.defInnerMatrix, ref innerShadowMatrix);
+
+            shader.insertUniform(Shader.Uniform.shadowQuality, ref shadowQuality);
         }
     }
 }

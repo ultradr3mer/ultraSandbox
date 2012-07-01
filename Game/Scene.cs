@@ -25,9 +25,6 @@ namespace OpenTkProject
 
     public class Scene:Drawable
     {
-        //public OpenTkProjectWindow mGameWindow; 
-
-        string dataSource = "WorldObjects.db";
         //List<GameObject> WorldObjects = new List<Model> { };
         public List<Drawable> drawables = new List<Drawable> { };
         public List<Gui> guis = new List<Gui> { };
@@ -40,6 +37,24 @@ namespace OpenTkProject
         public World world;
 
         public Matrix4 projectionMatrix, modelviewMatrix;
+
+        public enum ShaderTypes
+        {
+            ssaoPreShader,
+            ssaoShader,
+            ssaoBlrShader,
+            ssaoBlrShaderA,
+            bloomCurveShader,
+            bloomShader,
+            dofpreShader,
+            dofShader,
+            composite,
+            ssaoBlendShader,
+            copycatShader,
+            wipingShader,
+            reflectionShader,
+            lightBlurShader
+        }
 
         /*
         public Model 
@@ -147,8 +162,7 @@ namespace OpenTkProject
 
         public Model getModelbyName(string name)
         {
-            int identifier = (int)childNames[name];
-            return (Model)childs[identifier];
+            return (Model)getChild(name);
         }
         
         Skybox mSkyModel;
@@ -177,7 +191,9 @@ namespace OpenTkProject
             mGroundPlane.setMaterial("floor.xmf");
 
             //need to be fixed -- cant be executed after voxel Manager creation.
-            generateParticleSys();
+
+            if(Settings.Instance.video.Particles)
+                generateParticleSys();
 
             voxelManager = new VoxelManager(this);
 
@@ -207,7 +223,7 @@ namespace OpenTkProject
 
         public void generateParticleSys()
         {
-            ParticleSystem pSys = new ParticleSystem(scene);
+            ParticleSystem pSys = new ParticleSystem(Scene);
             pSys.addMaterial("particles\\particle_a.xmf");
             pSys.addMesh("sprite_plane.obj");
 
@@ -216,8 +232,8 @@ namespace OpenTkProject
 
             pSys.Color = new Vector4(0.8f, 0.3f, 0.8f, 1.0f);
 
-            pSys.Position = scene.Position;
-            pSys.Parent = scene;
+            pSys.Position = Scene.Position;
+            pSys.Parent = Scene;
             pSys.Size = OpenTK.Vector3.One * 1f;
 
             pSys.Orientation = Matrix4.Identity;
@@ -238,39 +254,19 @@ namespace OpenTkProject
             defInfo
         }
 
-        public Shader ssaoShader;
-        public Shader ssaoBlrShader;
-        public Shader bloomShader;
-        public Shader compositeShader;
         public Quad2d mFilter2d;
-        public int noiseTexture;
         public OpenTK.Vector3 eyePos;
         private GroundPlane mGroundPlane;
-        public Shader dofpreShader;
-        public Shader dofShader;
-        public Shader ssaoBlendShader;
         public int[] backdropTextures;
-        public Shader copycatShader;
         public int currentLight;
         public int lightCount;
         private int shadowRes = 512;
-        public Shader ssaoMergeShader;
-        public Shader ssaoBlrShaderA;
-        public Shader wipingShader;
-        public Shader ssNormalShader;
-        public Shader ssNormalShaderNoTex;
         public VoxelManager voxelManager;
         public List<ParticleAffector> particleAffectors = new List<ParticleAffector> { };
-        public int ClippingTexture;
-        public Shader bloomCurveShader;
-        public Shader selectionShaderAni;
-        public Shader ssNormalShaderAni;
         private float gamma;
         private Vector2 compositeMod = Vector2.Zero;
         private Texture[] worldTextures;
-        public Shader reflectionShader;
-        public Shader ssaoPreShader;
-        public Shader lightBlurShader;
+        private Shader[] shaders;
 
         public override void update()
         {
@@ -286,7 +282,7 @@ namespace OpenTkProject
             lightCount = spotlights.Count;
             int fbTargetRes = (int)gameWindow.shadowFramebuffer.Size.X / shadowRes;
 
-            if (fbTargetRes != lightCount)
+            if (fbTargetRes != lightCount && lightCount > 0)
             {
                 Console.WriteLine("updating Shadow Framebuffer: " + fbTargetRes + "->" + lightCount + " lights");
                 gameWindow.shadowFramebuffer = gameWindow.framebufferCreator.createFrameBuffer("shadowFramebuffer", shadowRes * lightCount, shadowRes, PixelInternalFormat.Rgba16f, false);
@@ -424,16 +420,16 @@ namespace OpenTkProject
             if (renderOptions.ssAmbientOccluison)
             {
                 curFramebuffers.aoPreFramebuffer.enable(false);
-                mFilter2d.draw(ssaoPreShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.sceeneFramebuffer.DepthTexture }, Shader.Uniform.modelview_matrix, curView.modelviewMatrix);
+                mFilter2d.draw(ShaderTypes.ssaoPreShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.sceeneFramebuffer.DepthTexture }, Shader.Uniform.modelview_matrix, curView.modelviewMatrix);
 
                 curFramebuffers.aoFramebuffer.enable(false);
-                mFilter2d.draw(ssaoShader, new int[] { curFramebuffers.aoPreFramebuffer.ColorTexture, noiseTexture });
+                mFilter2d.draw(ShaderTypes.ssaoShader, new int[] { curFramebuffers.aoPreFramebuffer.ColorTexture, getTextureId(Material.WorldTexture.noise) });
 
                 curFramebuffers.aoBlurFramebuffer.enable(false);
-                mFilter2d.draw(ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture });
+                mFilter2d.draw(ShaderTypes.ssaoBlrShaderA, new int[] { curFramebuffers.aoFramebuffer.ColorTexture, curFramebuffers.aoBlurFramebuffer2.ColorTexture });
 
                 curFramebuffers.aoBlurFramebuffer2.enable(false);
-                mFilter2d.draw(ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture });
+                mFilter2d.draw(ShaderTypes.ssaoBlrShader, new int[] { curFramebuffers.aoBlurFramebuffer.ColorTexture });
             }
 
             //reder defered information
@@ -444,7 +440,7 @@ namespace OpenTkProject
 
             //render defferd reflections
             curFramebuffers.reflectionFramebuffer.enable(true);
-            mFilter2d.draw(reflectionShader, new int[] { 
+            mFilter2d.draw(ShaderTypes.reflectionShader, new int[] { 
                 Scene.envTextures[0],
                 Scene.envTextures[1],
                 Scene.envTextures[2],
@@ -464,13 +460,11 @@ namespace OpenTkProject
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
 
-            setTextureId(Material.WorldTexture.lightMap, curFramebuffers.lightBlurFramebuffer.ColorTexture);
-
             sunLight.drawable.draw(new int[]{
                 curFramebuffers.sceeneFramebuffer.ColorTexture,
                 sunFrameBuffer.DepthTexture,
                 sunInnerFrameBuffer.DepthTexture,
-                noiseTexture,
+                getTextureId(Material.WorldTexture.noise),
                 curFramebuffers.sceeneFramebuffer.DepthTexture
             }, ref curView);
 
@@ -482,7 +476,7 @@ namespace OpenTkProject
                     curFramebuffers.sceeneFramebuffer.ColorTexture,
                     gameWindow.shadowFramebuffer.ColorTexture,
                     0,
-                    noiseTexture,
+                    getTextureId(Material.WorldTexture.noise),
                     curFramebuffers.sceeneFramebuffer.DepthTexture
                 }, ref curView);
             }
@@ -490,8 +484,16 @@ namespace OpenTkProject
             GL.Disable(EnableCap.Blend);
             GL.Disable(EnableCap.CullFace);
 
-            curFramebuffers.lightBlurFramebuffer.enable(false);
-            mFilter2d.draw(lightBlurShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.lightFramebuffer.ColorTexture });
+            if (Settings.Instance.video.lightmapSmoothing)
+            {
+                setTextureId(Material.WorldTexture.lightMap, curFramebuffers.lightBlurFramebuffer.ColorTexture);
+
+                curFramebuffers.lightBlurFramebuffer.enable(false);
+                mFilter2d.draw(ShaderTypes.lightBlurShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture, curFramebuffers.lightFramebuffer.ColorTexture });
+            }
+            else
+                setTextureId(Material.WorldTexture.lightMap, curFramebuffers.lightFramebuffer.ColorTexture);
+
 
             curFramebuffers.sceeneFramebuffer.enable(false);
 
@@ -501,7 +503,7 @@ namespace OpenTkProject
 
             // copy scene to transparent fb -- we can do lookups
             curFramebuffers.sceeneBackdropFb.enable(true);
-            mFilter2d.draw(copycatShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
+            mFilter2d.draw(ShaderTypes.copycatShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
 
             // switch back to scene fb
             curFramebuffers.sceeneFramebuffer.enable(false);
@@ -512,7 +514,7 @@ namespace OpenTkProject
 
             if (renderOptions.ssAmbientOccluison)
             {
-                mFilter2d.draw(ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture, curFramebuffers.sceeneBackdropFb.ColorTexture });
+                mFilter2d.draw(ShaderTypes.ssaoBlendShader, new int[] { curFramebuffers.aoBlurFramebuffer2.ColorTexture, curFramebuffers.sceeneBackdropFb.ColorTexture });
             }
 
             drawSceene(Pass.transparent, curView);
@@ -530,28 +532,28 @@ namespace OpenTkProject
             if (hasSelection)
             {
                 curFramebuffers.selectionblurFb.enable(false);
-                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+                mFilter2d.draw(ShaderTypes.bloomShader, new int[] { curFramebuffers.selectionFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
             }
 
             curFramebuffers.selectionblurFb2.enable(true);
 
             if (hasSelection)
-                mFilter2d.draw(bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+                mFilter2d.draw(ShaderTypes.bloomShader, new int[] { curFramebuffers.selectionblurFb.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
 
 
             curFramebuffers.bloomFramebuffer2.Multisampeling = false;
             if (renderOptions.bloom)
             {
                 curFramebuffers.bloomFramebuffer2.enable(false);
-                mFilter2d.draw(bloomCurveShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
+                mFilter2d.draw(ShaderTypes.bloomCurveShader, new int[] { curFramebuffers.sceeneFramebuffer.ColorTexture });
 
                 for (int i = 0; i < 2; i++)
                 {
                     curFramebuffers.bloomFramebuffer.enable(false);
-                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer2.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+                    mFilter2d.draw(ShaderTypes.bloomShader, new int[] { curFramebuffers.bloomFramebuffer2.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
 
                     curFramebuffers.bloomFramebuffer2.enable(false);
-                    mFilter2d.draw(bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
+                    mFilter2d.draw(ShaderTypes.bloomShader, new int[] { curFramebuffers.bloomFramebuffer.ColorTexture }, Shader.Uniform.in_vector, bloomSize);
                 }
             }
             curFramebuffers.bloomFramebuffer2.Multisampeling = true;
@@ -559,16 +561,16 @@ namespace OpenTkProject
             if (renderOptions.depthOfField)
             {
                 curFramebuffers.dofPreFramebuffer.enable(false);
-                mFilter2d.draw(dofpreShader, new int[] { 
+                mFilter2d.draw(ShaderTypes.dofpreShader, new int[] { 
                     curFramebuffers.screenNormalFb.ColorTexture, 
                     curFramebuffers.sceeneBackdropFb.ColorTexture
                 }, Shader.Uniform.in_vector, new Vector2(curView.getFocus(0.9f), 0.01f));
 
                 curFramebuffers.dofFramebuffer.enable(false);
-                mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofPreFramebuffer.ColorTexture, noiseTexture });
+                mFilter2d.draw(ShaderTypes.dofShader, new int[] { curFramebuffers.dofPreFramebuffer.ColorTexture, getTextureId(Material.WorldTexture.noise) });
 
                 curFramebuffers.dofFramebuffer2.enable(false);
-                mFilter2d.draw(dofShader, new int[] { curFramebuffers.dofFramebuffer.ColorTexture, noiseTexture });
+                mFilter2d.draw(ShaderTypes.dofShader, new int[] { curFramebuffers.dofFramebuffer.ColorTexture, getTextureId(Material.WorldTexture.noise) });
             }
 
             curFramebuffers.outputFb.enable(false);
@@ -580,7 +582,7 @@ namespace OpenTkProject
                 texture = curFramebuffers.lightBlurFramebuffer.ColorTexture;
 
 
-            mFilter2d.draw(compositeShader, new int[] { 
+            mFilter2d.draw(ShaderTypes.composite, new int[] { 
             curFramebuffers.sceeneFramebuffer.ColorTexture,
             curFramebuffers.bloomFramebuffer2.ColorTexture,
             curFramebuffers.selectionFb.ColorTexture,
@@ -614,7 +616,7 @@ namespace OpenTkProject
                     //GL.CullFace(CullFaceMode.Front);
 
                     GL.DepthFunc(DepthFunction.Always);
-                    mFilter2d.draw(wipingShader, new int[] { spotlights[i].ProjectionTexture },Shader.Uniform.in_vector,new Vector2(i,lightCount));
+                    mFilter2d.draw(ShaderTypes.wipingShader, new int[] { spotlights[i].ProjectionTexture }, Shader.Uniform.in_vector, new Vector2(i, lightCount));
                     GL.DepthFunc(DepthFunction.Less);
 
                     GL.ColorMask(false, false, false, true);
@@ -661,13 +663,13 @@ namespace OpenTkProject
         internal string getUniqueName()
         {
             int i = 0;
-            name = "GameObject";
-            while (childNames.ContainsKey(name))
+            string tmpName = "GameObject";
+            while (getChild(tmpName) != null)
             {
-                name = "GameObject" + i;
+                tmpName = "GameObject" + i;
                 i++;
             }
-            return name;
+            return tmpName;
         }
 
         internal void drawGuis()
@@ -688,6 +690,26 @@ namespace OpenTkProject
         internal void setTextureId(Material.WorldTexture type, int id)
         {
             worldTextures[(int)type].texture = id;
+        }
+
+        internal void setupShaders()
+        {
+            
+            string[] names = Enum.GetNames(typeof(ShaderTypes));
+            int length = names.Length;
+            shaders = new Shader[names.Length];
+
+            for (int i = 0; i < length; i++)
+            {
+                string tmpName = "SceneFilters\\" + names[i] + ".xsp";
+                shaders[i] = gameWindow.shaderLoader.getShader(tmpName);
+            }
+
+        }
+
+        internal Shader getShader(ShaderTypes shaderType)
+        {
+            return shaders[(int)shaderType];
         }
     }
 }

@@ -72,7 +72,7 @@ namespace OpenTkProject.Drawables.Models.Paticles
 
             generateParticles(particlesPerFrame);
 
-            foreach (var affector in scene.particleAffectors)
+            foreach (var affector in Scene.particleAffectors)
             {
                 affector.affect(ref particles);
             }

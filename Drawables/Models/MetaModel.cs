@@ -18,7 +18,7 @@ namespace OpenTkProject.Drawables.Models
         public MetaModel(GameObject parent)
             : base(parent)
         {
-            volume = new VoxelVolumeSphere(scene.voxelManager, 3f);
+            volume = new VoxelVolumeSphere(Scene.voxelManager, 3f);
 
             IsStatic = true;
 
@@ -38,7 +38,7 @@ namespace OpenTkProject.Drawables.Models
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<"+nodename+" name='" + name + "'>");
+            sb.AppendLine(tab + "<"+nodename+" name='" + Name + "'>");
             sb.AppendLine(tab2 + "<position>" + position + "</position>");
             //sb.AppendLine(tab2 + "<rotation>" + rotation + "</rotation>");
             sb.AppendLine(tab2 + "<materials>" + stringMaterial + "</materials>");
@@ -47,7 +47,7 @@ namespace OpenTkProject.Drawables.Models
             sb.AppendLine(tab2 + "<vradius>" + radius + "</vradius>");
 
 
-            Console.WriteLine("Saving metamodel: '" + name + "'");
+            Console.WriteLine("Saving metamodel: '" + Name + "'");
 
             saveChilds(ref sb, level);
 

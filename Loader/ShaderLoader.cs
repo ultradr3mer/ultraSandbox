@@ -35,6 +35,11 @@ namespace OpenTkProject
             fromCache
         }
 
+        public override string ToString()
+        {
+            return name;
+        }
+
         //light locations
         public int[] lightLocationsLocation;
         public int[] lightDirectionsLocation;
@@ -79,7 +84,7 @@ namespace OpenTkProject
             in_rendersize,
             in_lightambient,
             in_lightsun,
-            shadow_quality,
+            //shadow_quality,
 
             in_particlepos,
             in_particlesize,
@@ -132,7 +137,10 @@ namespace OpenTkProject
             viewUp,
             viewRight,
             viewDirection,
-            viewPosition
+            viewPosition,
+            fresnelExp,
+            fresnelStr,
+            shadowQuality
         }
 
         int[] locations;
@@ -211,7 +219,6 @@ namespace OpenTkProject
         public void generateLocations()
         {
             string[] names = Enum.GetNames(typeof(Uniform));
-            Array values = Enum.GetValues(typeof(Uniform));
 
             int handlesCount = names.Length;
             locations = new int[handlesCount];
@@ -588,13 +595,13 @@ namespace OpenTkProject
 
             GL.CompileShader(vertexShaderHandle);
             GL.GetShaderInfoLog(vertexShaderHandle, out log);
-            parseLog(log,"vertexShader" + name, target.vShader);
-            gameWindow.checkGlError("loadVertexShader (" + name + ")");
+            parseLog(log,"vertexShader" + Name, target.vShader);
+            gameWindow.checkGlError("loadVertexShader (" + Name + ")");
 
             GL.CompileShader(fragmentShaderHandle);
             GL.GetShaderInfoLog(fragmentShaderHandle, out log);
-            parseLog(log, "fragmentShader" + name, target.fShader);
-            gameWindow.checkGlError("loadFragmentShader (" + name + ")");
+            parseLog(log, "fragmentShader" + Name, target.fShader);
+            gameWindow.checkGlError("loadFragmentShader (" + Name + ")");
 
             Debug.WriteLine(GL.GetShaderInfoLog(vertexShaderHandle));
             Debug.WriteLine(GL.GetShaderInfoLog(fragmentShaderHandle));

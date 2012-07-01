@@ -39,7 +39,3 @@ uniform bool use_alpha;
 	v_bnormal = normalize(cross(v_normal, v_tangent));
 		
 	v_texture = in_texture;
-	
-	v_depth = gl_Position.z;
-	v_w = gl_Position.w;
-	//v_depth = gl_Position.z / gl_Position.w;

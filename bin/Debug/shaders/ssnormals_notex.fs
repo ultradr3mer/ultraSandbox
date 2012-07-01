@@ -27,5 +27,5 @@ void main(void)
 
 	out_frag_color.rgb = N * 0.5 + 0.5;
 	
-	out_frag_color.a = v_depth/100.0;
+	out_frag_color.a = 0.5;
 }

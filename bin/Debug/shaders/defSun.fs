@@ -16,7 +16,8 @@ void main()
 	
 	float bias = 0.001/clamp(angle,0.01,1.0);
 	float shadow = calcSunShadow(vec4(g_pos,1), rnd, bias);
+	shadow *= angle;
 	
-	out_frag_color.rgb = in_lightambient+defColor*angle*shadow;
-	out_frag_color.a = spec*shadow*angle;
+	out_frag_color.rgb = in_lightambient+defColor*shadow;
+	out_frag_color.a = spec*shadow;
 }

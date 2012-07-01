@@ -56,7 +56,7 @@ namespace OpenTkProject.Game.Tools
 
             curModel.Position = ghost.Position;
           
-            curModel.setName(Scene.getUniqueName());
+            curModel.Name = Scene.getUniqueName();
         }
 
         protected override void interactDown()

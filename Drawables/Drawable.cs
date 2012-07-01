@@ -51,13 +51,13 @@ namespace OpenTkProject.Drawables
         public override Scene Scene
         {
             get
-            { return scene; }
+            { return base.Scene; }
             set
             {
-                if (scene != null)
-                    scene.drawables.Remove(this);
-                scene = value;
-                scene.drawables.Add(this);
+                if (base.Scene != null)
+                    base.Scene.drawables.Remove(this);
+                base.Scene = value;
+                base.Scene.drawables.Add(this);
             }
         }
 
@@ -237,13 +237,19 @@ namespace OpenTkProject.Drawables
 
             GL.UseProgram(handle);
 
-            activateTexture(Material.TexType.baseTexture,ref curMat, ref texunit, handle);
-            activateTexture(Material.TexType.base2Texture, ref curMat, ref texunit, handle);
-            activateTexture(Material.TexType.base3Texture, ref curMat, ref texunit, handle);
+            curMat.activateTexture(Material.TexType.baseTexture, ref texunit, ref handle);
+            curMat.activateTexture(Material.TexType.base2Texture, ref texunit, ref handle);
+            curMat.activateTexture(Material.TexType.base3Texture, ref texunit, ref handle);
 
-            //activateTexture(Material.TexType.normalTexture, ref curMat, ref texunit, handle);
-            activateTexture(Material.TexType.definfoTexture, ref curMat, ref texunit, handle);
-            activateTexture(Material.TexType.reflectionTexture, ref curMat, ref texunit, handle);
+            curMat.activateTexture(Material.TexType.definfoTexture, ref texunit, ref handle);
+            curMat.activateTexture(Material.TexType.reflectionTexture, ref texunit, ref handle);
+
+            curMat.activateTexture(Material.TexType.normalTexture, ref texunit, ref handle);
+
+            shader.insertUniform(Shader.Uniform.fresnelExp, ref propertys.fresnelExp);
+            shader.insertUniform(Shader.Uniform.fresnelStr, ref propertys.fresnelStr);
+
+
 
             activateWorldTexture(Material.WorldTexture.reflectionMap, ref texunit, handle);
 
@@ -255,7 +261,7 @@ namespace OpenTkProject.Drawables
             {
                 emit = 1;
 
-                //activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
+                //curMat.activateTexture(Material.TexType.emitTexture, ref curMat, ref texunit, handle);
                 shader.insertUniform(Shader.Uniform.in_emitcolor, ref propertys.emitMapTint);
 
                 /*
@@ -342,21 +348,7 @@ namespace OpenTkProject.Drawables
         private void activateWorldTexture(Material.WorldTexture type, ref int texunit, int handle)
         {
             string name = type.ToString();
-            int texid = scene.getTextureId(type);
-
-            if (texid != 0)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0 + texunit);
-                GL.BindTexture(TextureTarget.Texture2D, texid);
-                GL.Uniform1(GL.GetUniformLocation(handle, name), texunit);
-                texunit++;
-            }
-        }
-
-        private static void activateTexture(Material.TexType type, ref Material curMat, ref int texunit, int handle)
-        {
-            string name = type.ToString();
-            int texid = curMat.getTextureId(type);
+            int texid = Scene.getTextureId(type);
 
             if (texid != 0)
             {
@@ -403,7 +395,7 @@ namespace OpenTkProject.Drawables
 
             GL.UseProgram(handle);
 
-            activateTexture(Material.TexType.normalTexture , ref curMat, ref texunit, handle);
+            curMat.activateTexture(Material.TexType.normalTexture, ref texunit, ref handle);
 
             return curMat.selectionshader;
         }

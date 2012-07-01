@@ -32,6 +32,8 @@ namespace OpenTkProject
 
         public LightVolume drawable;
 
+        public float shadowQuality;
+
         /*
         public Light(Vector3 location, Vector3 direction, Vector3 color)
         {

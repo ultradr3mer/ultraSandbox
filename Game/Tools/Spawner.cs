@@ -171,7 +171,7 @@ namespace OpenTkProject.Game.Tools
 
             curModel.IsStatic = template.isStatic;
 
-            curModel.setName(Scene.getUniqueName());
+            curModel.Name = Scene.getUniqueName();
 
             curModel.Orientation = ghost.Orientation;
 

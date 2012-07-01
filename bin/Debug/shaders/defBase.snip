@@ -11,6 +11,8 @@ out vec4 out_frag_color;
 uniform vec2 in_screensize;
 uniform vec2 in_rendersize;
 
+uniform float shadowQuality;
+
 uniform mat4 invMVPMatrix;
 
 uniform vec3 defDirection;
@@ -41,26 +43,24 @@ vec2 screenpos()
 	return gl_FragCoord.xy/in_rendersize;
 }
 
-float shadowSampling(sampler2D texture, float quality, vec3 coords, vec2 size,float bias)
+float shadowSampling(sampler2D texture, vec3 coords, vec2 size,float bias)
 {
 	float shadow = 0;
 	float x,y;
-	for (y = -quality ; y <=quality ; y+=1.0)
-		for (x = -quality ; x <=quality ; x+=1.0)
+	for (y = -shadowQuality ; y <=shadowQuality ; y+=1.0)
+		for (x = -shadowQuality ; x <=shadowQuality ; x+=1.0)
 		{
 			float distanceFromLight = texture(texture ,coords.xy + vec2(x*size.x,y*size.y)).a + bias;	
 			shadow += distanceFromLight < coords.z ? 0.0 : 1.0 ;
 		}
 						
-	shadow /= pow(quality*2+1,2);
+	shadow /= pow(shadowQuality*2+1,2);
 		
 	return shadow;
 }
 
 float calcShadow(vec4 g_pos,vec2 rnd, float bias)
 {
-	float shadowQuality = 1;
-	
 	vec4 v_sun_map_pos = defMatrix * g_pos;
 	vec4 shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
 
@@ -80,33 +80,31 @@ float calcShadow(vec4 g_pos,vec2 rnd, float bias)
 		
 		float light_distance = pow(1-shadowCoordinateWdivide.z,1.3);
 
-		return 10.0*light_angular*light_distance*shadowSampling(Texture2,shadowQuality,shadowCoordinateWdivide.xyz,vec2(1/float(in_no_lights),1)*defRadius,bias);
+		return 10.0*light_angular*light_distance*shadowSampling(Texture2,shadowCoordinateWdivide.xyz,vec2(1/float(in_no_lights),1)*defRadius,bias);
 		//return texture(Texture2,shadowCoordinateWdivide.xy).x;
 	} 
 	
 	return 0.0;
 }
 
-float shadowSamplingR(sampler2D texture, float quality, vec3 coords, vec2 size,float bias)
+float shadowSamplingR(sampler2D texture, vec3 coords, vec2 size,float bias)
 {
 	float shadow = 0;
 	float x,y;
-	for (y = -quality ; y <=quality ; y+=1.0)
-		for (x = -quality ; x <=quality ; x+=1.0)
+	for (y = -shadowQuality ; y <=shadowQuality ; y+=1.0)
+		for (x = -shadowQuality ; x <=shadowQuality ; x+=1.0)
 		{
 			float distanceFromLight = texture(texture ,coords.xy + vec2(x*size.x,y*size.y)).r + bias;	
 			shadow += distanceFromLight < coords.z ? 0.0 : 1.0 ;
 		}
 						
-	shadow /= pow(quality*2+1,2);
+	shadow /= pow(shadowQuality*2+1,2);
 		
 	return shadow;
 }
 
 float calcSunShadow(vec4 g_pos,vec2 rnd, float bias)
 {
-	float sunShadowQuality = 1;
-	
 	vec4 v_sun_map_pos = defInnerMatrix * g_pos;
 	vec4 shadowCoordinateWdivide = v_sun_map_pos / v_sun_map_pos.w;
 
@@ -119,7 +117,7 @@ float calcSunShadow(vec4 g_pos,vec2 rnd, float bias)
 	{		
 		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*defRadius*0.5;
 		
-		return shadowSamplingR(Texture3,sunShadowQuality,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias);
+		return shadowSamplingR(Texture3,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias);
 	} 
 	
 	v_sun_map_pos = defMatrix * g_pos;
@@ -134,7 +132,7 @@ float calcSunShadow(vec4 g_pos,vec2 rnd, float bias)
 	{		
 		shadowCoordinateWdivide.xy += rnd*vec2(1,1)*defRadius*0.5;
 		
-		return shadowSamplingR(Texture2,sunShadowQuality-0.5,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias*2);
+		return shadowSamplingR(Texture2,shadowCoordinateWdivide.xyz,vec2(1,1)*defRadius,bias*2);
 	} 
 	
 	return 1.0;

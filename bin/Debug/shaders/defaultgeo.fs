@@ -4,7 +4,10 @@
 
 #functions
 
-in vec3 heat;
+in vec3 viewDir;
+
+uniform float fresnelExp;
+uniform float fresnelStr;
 
 float PI = 3.14159265;
 int samples = 5; //samples on the first ring (5-10)
@@ -43,14 +46,10 @@ vec4 getback(vec2 coord,float blur_size) {
 
 void main(void)
 {
-	//vec4 NTexValue = texture(normalTexture, v_texture) * vec4(2,2,2,1) - vec4(1,1,1,0);
-	//vec3 N = normalize(NTexValue[2] * v_normal + NTexValue[0] * v_tangent + NTexValue[1] * v_bnormal);
-
 	#include base.snip
 	
 	#include defReflections.snip
-	
-	
+		
 	vec3 emit = vec3(0,0,0);
 	if(use_emit){
 		emit = in_emitcolor;
@@ -58,10 +57,23 @@ void main(void)
 	}
 	
 	#include defLighting.snip
+	
+	float fresnel = 1;
+	if(fresnelExp > 0)
+	{
+		fresnel = clamp(dot(viewDir,v_normal)+1.0,0.0,1.0);
+		fresnel = pow(fresnel,fresnelExp);
+		fresnel *= fresnelStr;
+		fresnel += 1;
+	}
+	
+	float lightBrightness =  3.0 / (all_lights.r + all_lights.g + all_lights.b);
 
-	out_frag_color.rgb = all_lights*base.rgb+all_spec+env+emit;
+	out_frag_color.rgb = all_lights*base.rgb+all_spec*all_lights*lightBrightness*fresnel+env+emit;
 	out_frag_color.a = 1.0;
-
+	
+	//out_frag_color.rgb = vec3(0.2,0.2,0.2)*fresnel;
+	
   //out_frag_color = vec4(all_spec,1);
   //out_frag_color = texture(EnvTexture1,vec2(refn.x,refn.y));
 }

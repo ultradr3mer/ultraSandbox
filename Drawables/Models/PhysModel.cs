@@ -41,7 +41,7 @@ namespace OpenTkProject.Drawables.Models
             string tab = GenericMethods.tabify(level - 1);
             string tab2 = GenericMethods.tabify(level);
 
-            sb.AppendLine(tab + "<"+nodename+" name='" + name + "'>");
+            sb.AppendLine(tab + "<"+nodename+" name='" + Name + "'>");
             sb.AppendLine(tab2 + "<position>" + position + "</position>");
             sb.AppendLine(tab2 + "<rotation>" + rotation + "</rotation>");
             sb.AppendLine(tab2 + "<materials>" + stringMaterial + "</materials>");
@@ -61,7 +61,7 @@ namespace OpenTkProject.Drawables.Models
 
              */
 
-            Console.WriteLine("Saving model: '" + name + "'");
+            Console.WriteLine("Saving model: '" + Name + "'");
 
             saveChilds(ref sb,level);
 
@@ -250,15 +250,6 @@ namespace OpenTkProject.Drawables.Models
             disModel.Scene = Scene;
         }
 
-        public void setName(string newName)
-        {
-            //parent.childNames.Remove(name);
-            //parent.childNames.Add(name, childId);
-
-            Parent.renameChild(this, newName);
-            name = newName;
-        }
-
         public bool IsStatic
         {
             get { return body.IsStatic; }
@@ -266,9 +257,9 @@ namespace OpenTkProject.Drawables.Models
             {
                 if (body != null)
                 {
-                    scene.world.RemoveBody(body);
+                    Scene.world.RemoveBody(body);
                     body.IsStatic = value;
-                    scene.world.AddBody(body);
+                    Scene.world.AddBody(body);
                     body.IsActive = true;
                 }
             }

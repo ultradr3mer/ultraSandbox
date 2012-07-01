@@ -225,8 +225,8 @@ namespace OpenTkProject.Game
         public int windowWidth = 1280;
         public int windowHeight = 720;
 
-        public int virtualScreenWidth = 1920;
-        public int virtualScreenHeight = 1080;
+        public int virtualScreenWidth = 1280;
+        public int virtualScreenHeight = 720;
 
         public float waterScreenPercentage = 0.5f;
 
@@ -237,6 +237,10 @@ namespace OpenTkProject.Game
         public bool bloom = true;
 		public bool depthOfField = false;
 
+        public bool lightmapSmoothing = true;
+        public bool Particles = true;
+        public float shadowQuality = 1;
+
         public QualityLevel shadow = QualityLevel.Low;
         public QualityLevel shader = QualityLevel.Low;
         public QualityLevel lighting = QualityLevel.Low;
@@ -244,7 +248,7 @@ namespace OpenTkProject.Game
         /// <summary>
         /// Added to just showing it can be done :P
         /// </summary>
-        public float gamma = 1;
+        public float gamma = 1.1f;
 
         public enum Target { main, water, window };
 

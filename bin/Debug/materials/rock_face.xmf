@@ -1,5 +1,5 @@
 <material shader="defaultgeo.xsp" ssnshader="ssnormals.xsp" selection="selection.xsp" shadow="shadow.xsp" definfo="defInfo.xsp">
 	<textures base="rock_face.dds" normal="rock_face_n.dds" definfo="rock_face_i.dds"/>
 	<lighted/>
-	<specmap tint="0.7|0.7|0.7" source="normalalpha" exp="15" />
+	<fresnel exp="3" strength="7"/>
 </material>
