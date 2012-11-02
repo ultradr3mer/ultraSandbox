@@ -196,7 +196,7 @@
 		<vradius>6</vradius>
 	</metamodel>
 	<animodel name='GameObject28'>
-		<position>-16.32362|-1279667|-7.949774</position>
+		<position>-16.32362|-1300045|-7.949774</position>
 		<rotation>0.344467|-0.3158072|-0.8840863|0.03881398|0.9457066|-0.3226957|0.9379958|0.07684311|0.3380224</rotation>
 		<materials>testchar.xmf</materials>
 		<meshes>test_char.xmd</meshes>
@@ -259,8 +259,8 @@
 		</lamp>
 	</pmodel>
 	<pmodel name='GameObject31'>
-		<position>-9.616861|2.340282|1.424047</position>
-		<rotation>0.9999921|-0.0005076502|0.003934799|0.0005082223|0.9999999|-0.0001444016|-0.003934726|0.0001464003|0.9999923</rotation>
+		<position>-9.625237|2.342152|1.490105</position>
+		<rotation>0.9952369|0.004274263|0.09739235|-0.004184452|0.9999906|-0.001126384|-0.09739625|0.0007134852|0.9952455</rotation>
 		<materials>temple_pillar.xmf</materials>
 		<meshes>temple_pillar.obj</meshes>
 		<pboxes>temple_pillar_pbox.obj</pboxes>
@@ -272,5 +272,18 @@
 		<meshes>handrail.obj</meshes>
 		<pboxes>handrail_pbox.obj</pboxes>
 		<isstatic/>
+	</pmodel>
+	<pmodel name='GameObject34'>
+		<position>-7.657668|2.913873|14.9176</position>
+		<rotation>0.3680592|-0.6990541|-0.613072|-0.9109642|-0.1390523|-0.3883443|0.1862253|0.7014195|-0.6879918</rotation>
+		<materials>spotlight.xmf</materials>
+		<meshes>spotlight.obj</meshes>
+		<pboxes>spotlight_pbox.obj</pboxes>
+		<isstatic/>
+		<lamp name='GameObject39'>
+			<position>-7.657668|2.913873|14.9176</position>
+			<direction>-0.9109642|-0.1390523|-0.3883443</direction>
+			<color>0.5|0.7|1</color>
+		</lamp>
 	</pmodel>
 </scene>
